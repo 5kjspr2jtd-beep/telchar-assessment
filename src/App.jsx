@@ -35,6 +35,7 @@ const INDUSTRIES = [
   "Manufacturing",
   "Logistics / Transportation",
   "Financial Services",
+  "Insurance",
   "Legal",
   "Marketing / Creative Agency",
   "Other",
@@ -167,13 +168,12 @@ const QUESTIONS = [
     type: "select",
     required: true,
     autoAdvance: true,
-    scoring: { category: "data", scores: { 0: 2, 1: 3, 2: 4, 3: 1, 4: 2 } },
+    scoring: { category: "data", scores: { 0: 2, 1: 3, 2: 4, 3: 1 } },
     options: [
       "Spreadsheets",
       "Accounting software like QuickBooks",
       "A dashboard or BI tool",
       "We don't track this consistently",
-      "Other",
     ],
   },
   {
@@ -445,11 +445,6 @@ const REPORT_CONTENT = {
         interpretation: "Without consistent tracking, decisions are based on gut feel and memory. You cannot identify trends, catch problems early, or prove what is working. This is the biggest data gap a business can have.",
         benchmark: "Businesses that go from no tracking to basic tracking see the fastest improvement in decision quality. You do not need a sophisticated system to start. Tracking three numbers consistently (revenue, customer acquisition cost, and one operational metric specific to your business) provides more value than most businesses realize.",
         opportunity: "Start with one dashboard that tracks three metrics you care about most. AI tools can automatically pull data from your existing systems and present it without manual entry. The goal is not perfection. The goal is consistency. Once you see your numbers weekly, patterns emerge that drive better decisions."
-      },
-      "Other": {
-        interpretation: "You have a tracking approach that doesn't fit the standard categories. This often means industry-specific tools, custom-built tracking, or a combination of methods that work for your particular business.",
-        benchmark: "Custom or industry-specific tracking approaches often have strong data within their domain but limited integration with other business data. The opportunity is typically in connecting these specialized tools to a broader view that includes financial, customer, and operational metrics in one place.",
-        opportunity: "Evaluate how your current tracking connects to the rest of your business data. If your performance data lives in a silo, AI integration tools can bridge the gap and create a unified view without replacing what works."
       }
     }
   },
@@ -804,6 +799,16 @@ function generateQuickWins(answers, categoryScores) {
     }
   });
 
+  // Always include a growth/acquisition quick win regardless of scores
+  const salesScore = categoryScores.sales ? categoryScores.sales.score : 50;
+  if (!wins.find(w => w.title.includes("Revenue") || w.title.includes("Upsell") || w.title.includes("Customer Value"))) {
+    if (salesScore >= 80) {
+      wins.push({ category: "Sales & Customer Experience", title: "Maximize Customer Lifetime Value", desc: "Your sales operations are strong. The next lever is identifying which customers generate the highest margins and where expansion revenue is hiding. AI can analyze purchase patterns, predict churn risk, and surface upsell opportunities your team would otherwise miss." });
+    } else {
+      wins.push({ category: "Sales & Customer Experience", title: "Unlock Revenue You're Already Sitting On", desc: "Most businesses focus on new customer acquisition and overlook the revenue sitting in their existing base. AI-powered customer segmentation can identify your highest-margin clients, predict which prospects look like them, and flag upsell opportunities that your team can act on this month." });
+    }
+  }
+
   if (wins.length < 3) {
     const fillers = [
       { category: "Operations Efficiency", title: "Audit Your Most Time-Intensive Workflows", desc: "Even well-run operations have hidden inefficiencies. A targeted workflow audit can identify 2 to 3 processes where AI automation delivers immediate ROI." },
@@ -820,19 +825,20 @@ function generateQuickWins(answers, categoryScores) {
 
 function Gauge({ score, size = 180, label, isOverall = false }) {
   const [animatedScore, setAnimatedScore] = useState(0);
-  const radius = size * 0.35;
-  const strokeWidth = size * 0.055;
-  const cx = size / 2;
-  const cy = size * 0.45;
-  const startAngle = 135;
-  const endAngle = 405;
-  const sweepAngle = endAngle - startAngle;
+  const gaugeSize = isOverall ? 680 : size;
+  const strokeWidth = isOverall ? 36 : Math.max(10, size * 0.055);
+  const radius = (gaugeSize - strokeWidth) / 2 * 0.78;
+  const circumference = 2 * Math.PI * radius;
+  const gapAngle = 80;
+  const arcLength = circumference * (1 - gapAngle / 360);
+  const gapLength = circumference * (gapAngle / 360);
+  const rotation = 90 + gapAngle / 2;
 
   useEffect(() => {
     const duration = 1200;
-    const start = performance.now();
+    const startTime = performance.now();
     const animate = (now) => {
-      const elapsed = now - start;
+      const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       setAnimatedScore(Math.round(score * eased));
@@ -851,46 +857,32 @@ function Gauge({ score, size = 180, label, isOverall = false }) {
   };
 
   const color = getColor(animatedScore);
-
-  const polarToCartesian = (angle) => {
-    const rad = ((angle - 90) * Math.PI) / 180;
-    return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
-  };
-
-  const describeArc = (startA, endA) => {
-    const s = polarToCartesian(startA);
-    const e = polarToCartesian(endA);
-    const largeArc = endA - startA > 180 ? 1 : 0;
-    return `M ${s.x} ${s.y} A ${radius} ${radius} 0 ${largeArc} 1 ${e.x} ${e.y}`;
-  };
-
-  const filledAngle = startAngle + (sweepAngle * animatedScore) / 100;
-  const svgHeight = isOverall ? size * 0.65 : size * 0.68;
-  const clipId = `gauge-clip-${size}-${Math.random().toString(36).substr(2,5)}`;
+  const filledLength = (animatedScore / 100) * arcLength;
+  const cx = gaugeSize / 2;
+  const cy = gaugeSize / 2;
+  const svgHeight = gaugeSize * 0.6;
 
   return (
     <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <svg width={size} height={svgHeight} viewBox={`0 0 ${size} ${svgHeight}`} style={{ display: "block" }}>
-        <defs>
-          <clipPath id={clipId}>
-            <rect x="0" y="0" width={size} height={svgHeight} />
-          </clipPath>
-        </defs>
-        <g clipPath={`url(#${clipId})`}>
-          <path d={describeArc(startAngle, endAngle)} fill="none" stroke={BRAND.navyLight} strokeWidth={strokeWidth} strokeLinecap="butt" />
-          {animatedScore > 0 && (
-            <path d={describeArc(startAngle, filledAngle)} fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" style={{ filter: isOverall ? `drop-shadow(0 0 8px ${color}80)` : "none" }} />
-          )}
-        </g>
-        <text x={cx} y={cy - (isOverall ? 6 : 4)} textAnchor="middle" dominantBaseline="middle" fill={BRAND.white} fontSize={isOverall ? size * 0.19 : size * 0.17} fontWeight="700" fontFamily="'DM Sans', sans-serif">
+      <svg width={gaugeSize} height={svgHeight} viewBox={`0 0 ${gaugeSize} ${gaugeSize}`} style={{ display: "block", overflow: "hidden" }}>
+        <circle cx={cx} cy={cy} r={radius} fill="none" stroke={BRAND.navyLight} strokeWidth={strokeWidth}
+          strokeDasharray={`${arcLength} ${gapLength}`} strokeLinecap="round"
+          transform={`rotate(${rotation} ${cx} ${cy})`} />
+        {animatedScore > 0 && (
+          <circle cx={cx} cy={cy} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth}
+            strokeDasharray={`${filledLength} ${circumference - filledLength}`} strokeLinecap="round"
+            transform={`rotate(${rotation} ${cx} ${cy})`}
+            style={{ filter: isOverall ? `drop-shadow(0 0 16px ${color}80)` : `drop-shadow(0 0 6px ${color}50)` }} />
+        )}
+        <text x={cx} y={cy - (isOverall ? 28 : gaugeSize * 0.03)} textAnchor="middle" dominantBaseline="middle" fill={BRAND.white} fontSize={isOverall ? 120 : gaugeSize * 0.28} fontWeight="700" fontFamily="'DM Sans', sans-serif">
           {animatedScore}
         </text>
-        <text x={cx} y={cy + (isOverall ? 28 : 18)} textAnchor="middle" fill={BRAND.gray400} fontSize={size * 0.065} fontFamily="'DM Sans', sans-serif">
+        <text x={cx} y={cy + (isOverall ? 52 : gaugeSize * 0.16)} textAnchor="middle" fill={BRAND.gray400} fontSize={isOverall ? 26 : gaugeSize * 0.1} fontFamily="'DM Sans', sans-serif">
           out of 100
         </text>
       </svg>
       {label && (
-        <div style={{ color: BRAND.gray300, fontSize: isOverall ? 16 : 11.5, fontWeight: isOverall ? 600 : 500, marginTop: 8, lineHeight: 1.3, fontFamily: "'DM Sans', sans-serif", padding: "0 2px", minHeight: isOverall ? "auto" : 30, display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
+        <div style={{ color: BRAND.gray300, fontSize: isOverall ? 20 : 14, fontWeight: isOverall ? 600 : 500, marginTop: 4, lineHeight: 1.35, fontFamily: "'DM Sans', sans-serif", padding: "0 4px", minHeight: isOverall ? "auto" : 36, display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
           {label}
         </div>
       )}
@@ -989,6 +981,8 @@ function AssessmentFlow({ onComplete }) {
   const [answers, setAnswers] = useState({});
   const [otherText, setOtherText] = useState("");
   const [error, setError] = useState("");
+  const [showEmailSuggestions, setShowEmailSuggestions] = useState(false);
+  const emailDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com", "msn.com", "live.com", "protonmail.com", "comcast.net", "att.net", "sbcglobal.net", "verizon.net", "cox.net", "charter.net", "earthlink.net", "mac.com", "me.com"];
   const [fadeState, setFadeState] = useState("in");
   const [advancing, setAdvancing] = useState(false);
   const timerRef = useRef(null);
@@ -1007,9 +1001,18 @@ function AssessmentFlow({ onComplete }) {
   const validate = () => {
     if (!question.required) return true;
     if (question.type === "multiselect") return Array.isArray(currentAnswer) && currentAnswer.length > 0;
-    if (question.type === "email") { const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; return currentAnswer && re.test(currentAnswer); }
+    if (question.type === "email") { const re = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/; const commonTlds = ["com","net","org","edu","gov","io","co","ai","us","uk","ca","de","fr","es","it","nl","au","in","jp","biz","info","me","tv","app","dev","tech","xyz","site","online","store","pro","mil"]; if (!currentAnswer || !re.test(currentAnswer)) return false; const tld = currentAnswer.split(".").pop().toLowerCase(); return commonTlds.includes(tld); }
+    if (question.id === "company_name") { const val = (currentAnswer || "").trim(); if (val.length < 4) return false; if (/^(.)\1+$/.test(val.replace(/\s/g, ""))) return false; const words = val.split(/\s+/); if (words.some(w => /^(.)\1+$/i.test(w))) return false; if (words.length > 1 && words.every(w => w.toLowerCase() === words[0].toLowerCase())) return false; return true; }
+    if (question.id === "contact_name") { const words = (currentAnswer || "").trim().split(/\s+/).filter(w => w.length > 0); if (words.length < 2 || !words.every(w => w.length >= 2)) return false; if (words.every(w => w.toLowerCase() === words[0].toLowerCase())) return false; if (words.some(w => /^(.)\1+$/i.test(w))) return false; return true; }
     if (question.id === "industry" && currentAnswer === "Other") return otherText.trim().length > 0;
     return currentAnswer !== undefined && currentAnswer !== null && currentAnswer !== "";
+  };
+
+  const getErrorMessage = () => {
+    if (question.type === "email") return "Please enter a valid email address";
+    if (question.id === "company_name") return "Please enter your full company name";
+    if (question.id === "contact_name") return "Please enter your first and last name";
+    return "Please answer this question to continue";
   };
 
   const animateTo = (newIndex) => {
@@ -1025,7 +1028,7 @@ function AssessmentFlow({ onComplete }) {
 
   const handleNext = () => {
     if (!validate()) {
-      setError(question.type === "email" ? "Please enter a valid email address" : "Please answer this question to continue");
+      setError(getErrorMessage());
       return;
     }
     setError("");
@@ -1099,11 +1102,33 @@ function AssessmentFlow({ onComplete }) {
           </h2>
 
           {(question.type === "text" || question.type === "email") && (
-            <input type={question.type} value={currentAnswer || ""} onChange={(e) => { setError(""); setAnswers((prev) => ({ ...prev, [question.id]: e.target.value })); }} placeholder={question.placeholder} autoFocus
-              style={{ width: "100%", padding: "14px 18px", fontSize: 17, fontFamily: "'DM Sans', sans-serif", background: BRAND.navyLight, border: `1px solid ${error ? BRAND.red : BRAND.navyLight}`, borderRadius: 8, color: BRAND.white, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
-              onFocus={(e) => { if (!error) e.target.style.borderColor = BRAND.blue; }}
-              onBlur={(e) => { if (!error) e.target.style.borderColor = BRAND.navyLight; }}
-            />
+            <div style={{ position: "relative", width: "100%" }}>
+              <input type={question.type === "email" ? "text" : question.type} value={currentAnswer || ""} onChange={(e) => { setError(""); const val = e.target.value; setAnswers((prev) => ({ ...prev, [question.id]: val })); if (question.type === "email" && val.includes("@") && !val.includes("@.") && val.split("@")[1] !== undefined && !val.split("@")[1].includes(".")) { setShowEmailSuggestions(true); } else { setShowEmailSuggestions(false); } }} placeholder={question.placeholder} autoFocus autoComplete="off"
+                style={{ width: "100%", padding: "14px 18px", fontSize: 17, fontFamily: "'DM Sans', sans-serif", background: BRAND.navyLight, border: `1px solid ${error ? BRAND.red : BRAND.navyLight}`, borderRadius: 8, color: BRAND.white, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
+                onFocus={(e) => { if (!error) e.target.style.borderColor = BRAND.blue; }}
+                onBlur={(e) => { if (!error) e.target.style.borderColor = BRAND.navyLight; setTimeout(() => setShowEmailSuggestions(false), 200); }}
+                onKeyDown={(e) => { if (e.key === "Enter" && question.type !== "textarea") handleNext(); }}
+              />
+              {question.type === "email" && showEmailSuggestions && currentAnswer && currentAnswer.includes("@") && (() => {
+                const prefix = currentAnswer.split("@")[0];
+                const typed = currentAnswer.split("@")[1] || "";
+                const filtered = emailDomains.filter(d => d.startsWith(typed.toLowerCase()));
+                if (filtered.length === 0) return null;
+                return (
+                  <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10, background: BRAND.navy, border: `1px solid ${BRAND.navyLight}`, borderRadius: 8, marginTop: 4, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }}>
+                    {filtered.map((domain) => (
+                      <button key={domain} onMouseDown={(e) => { e.preventDefault(); setAnswers((prev) => ({ ...prev, [question.id]: `${prefix}@${domain}` })); setShowEmailSuggestions(false); }}
+                        style={{ width: "100%", padding: "12px 18px", fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: "transparent", border: "none", color: BRAND.gray300, cursor: "pointer", textAlign: "left", display: "block" }}
+                        onMouseOver={(e) => { e.target.style.background = BRAND.navyLight; }}
+                        onMouseOut={(e) => { e.target.style.background = "transparent"; }}
+                      >
+                        {prefix}@{domain}
+                      </button>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
           )}
 
           {question.type === "textarea" && (
@@ -1283,30 +1308,30 @@ function ResultsPage({ answers, scores, quickWins }) {
 
   return (
     <div style={{ minHeight: "100vh", background: `linear-gradient(170deg, ${BRAND.navyDeep} 0%, ${BRAND.navy} 100%)`, padding: "40px 20px 80px" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "all 0.6s ease" }}>
+      <div style={{ maxWidth: 1160, margin: "0 auto", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "all 0.6s ease" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ marginBottom: 24, display: "flex", justifyContent: "center" }}>
             <LogoMark />
           </div>
-          <h1 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 700, color: BRAND.white, marginBottom: 8 }}>Your AI Readiness Scorecard</h1>
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 16, color: BRAND.gray400 }}>{answers.company_name}{answers.industry ? ` \u00B7 ${answers.industry}` : ""}</p>
+          <h1 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: BRAND.white, marginBottom: 8 }}>Telchar AI Readiness Index<sup style={{ fontSize: "0.45em", verticalAlign: "super", opacity: 0.7 }}>{"\u2122"}</sup></h1>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 17, color: BRAND.gray400 }}>{answers.company_name}{answers.industry ? ` \u00B7 ${answers.industry}` : ""}</p>
         </div>
 
-        <div style={{ background: BRAND.navyLight + "80", borderRadius: 16, padding: "48px 24px 40px", textAlign: "center", marginBottom: 32, border: `1px solid ${BRAND.navyLight}` }}>
+        <div style={{ background: BRAND.navyLight + "80", borderRadius: 20, padding: "56px 32px 48px", textAlign: "center", marginBottom: 36, border: `1px solid ${BRAND.navyLight}`, overflow: "hidden" }}>
           <Gauge score={scores.overall} size={240} isOverall />
-          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 22, fontWeight: 600, color: BRAND.white, marginTop: 16 }}>{getScoreLabel(scores.overall)}</div>
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: BRAND.gray400, marginTop: 12, maxWidth: 500, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 26, fontWeight: 600, color: BRAND.white, marginTop: 20 }}>{getScoreLabel(scores.overall)}</div>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 16, color: BRAND.gray400, marginTop: 14, maxWidth: 560, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
             {scores.overall < 40 ? "Your business has significant opportunity to benefit from AI. Most of your operations are running on manual effort, which means the upside is substantial." : scores.overall < 65 ? "You have some systems in place, but there are clear areas where AI can reduce cost, save time, and improve how you operate day to day." : scores.overall < 85 ? "Your business has solid foundations. There are targeted areas where AI can optimize what's already working and unlock the next level of efficiency." : "Your business is well ahead of the curve. Fine-tuned AI integrations can help you scale and maintain your competitive edge."}
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, marginBottom: 48 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 48 }}>
           {categoryOrder.map((key) => {
             const cat = scores.categories[key];
             if (!cat) return null;
             return (
-              <div key={key} style={{ background: BRAND.navyLight + "80", borderRadius: 12, padding: "24px 6px 24px", textAlign: "center", border: `1px solid ${BRAND.navyLight}`, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <Gauge score={cat.score} size={110} label={cat.label} />
+              <div key={key} style={{ background: BRAND.navyLight + "80", borderRadius: 14, padding: "28px 12px 28px", textAlign: "center", border: `1px solid ${BRAND.navyLight}`, display: "flex", flexDirection: "column", alignItems: "center", overflow: "hidden" }}>
+                <Gauge score={cat.score} size={195} label={cat.label} />
               </div>
             );
           })}
@@ -1340,6 +1365,7 @@ function ResultsPage({ answers, scores, quickWins }) {
 
         <div style={{ marginTop: 32, textAlign: "center", paddingBottom: 80 }}>
           <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: BRAND.gray500, lineHeight: 1.5 }}>Your responses are confidential. We do not sell, share, or use your data for any purpose beyond delivering your assessment.</p>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: BRAND.gray500, marginTop: 8 }}>The Telchar AI Readiness Index{"\u2122"} and its scoring methodology are proprietary to Telchar AI.</p>
         </div>
       </div>
 
