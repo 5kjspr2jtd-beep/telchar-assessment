@@ -874,7 +874,7 @@ function Gauge({ score, size = 180, label, isOverall = false }) {
             transform={`rotate(${rotation} ${cx} ${cy})`}
             style={{ filter: isOverall ? `drop-shadow(0 0 14px ${color}70)` : `drop-shadow(0 0 5px ${color}40)` }} />
         )}
-        <text x={cx} y={cy - (isOverall ? 28 : gaugeSize * 0.03)} textAnchor="middle" dominantBaseline="middle" fill={BRAND.white} fontSize={isOverall ? 127 : gaugeSize * 0.297} fontWeight="700" fontFamily="'DM Sans', sans-serif">
+        <text x={cx} y={cy - (isOverall ? 30 : gaugeSize * 0.03)} textAnchor="middle" dominantBaseline="middle" fill={BRAND.white} fontSize={isOverall ? 140 : gaugeSize * 0.327} fontWeight="700" fontFamily="'DM Sans', sans-serif">
           {animatedScore}
         </text>
         <text x={cx} y={cy + (isOverall ? 52 : gaugeSize * 0.16)} textAnchor="middle" fill={BRAND.gray400} fontSize={isOverall ? 26 : gaugeSize * 0.1} fontFamily="'DM Sans', sans-serif">
