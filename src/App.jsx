@@ -197,9 +197,10 @@ const QUESTIONS = [
     section: 4,
     sectionTitle: "Technology and Direction",
     label: "What is your primary focus for the next 12 months?",
-    type: "select",
+    type: "multiselect",
     required: true,
-    autoAdvance: true,
+    maxSelect: 2,
+    helperText: "Select up to two.",
     options: [
       "Increase revenue",
       "Improve margins",
@@ -207,6 +208,34 @@ const QUESTIONS = [
       "Stabilize growth",
       "Prepare for exit",
       "Not sure",
+    ],
+  },
+  {
+    id: "revenue_focus",
+    section: 4,
+    label: "Is this focused on new customer acquisition or expanding existing accounts?",
+    type: "select",
+    required: true,
+    autoAdvance: true,
+    conditional: (answers) => Array.isArray(answers.growth_priority) && answers.growth_priority.includes("Increase revenue"),
+    options: [
+      "New customer acquisition",
+      "Expanding existing accounts",
+      "Both equally",
+    ],
+  },
+  {
+    id: "workload_focus",
+    section: 4,
+    label: "Is this primarily administrative time or delivery capacity?",
+    type: "select",
+    required: true,
+    autoAdvance: true,
+    conditional: (answers) => Array.isArray(answers.growth_priority) && answers.growth_priority.includes("Reduce operational workload"),
+    options: [
+      "Administrative time",
+      "Delivery capacity",
+      "Both equally",
     ],
   },
   {
@@ -1030,6 +1059,26 @@ function AssessmentFlow({ onComplete }) {
     }, 250);
   };
 
+  const findNextIndex = (fromIndex, currentAnswers) => {
+    let idx = fromIndex + 1;
+    while (idx < QUESTIONS.length) {
+      const q = QUESTIONS[idx];
+      if (q.conditional && !q.conditional(currentAnswers)) { idx++; continue; }
+      return idx;
+    }
+    return null;
+  };
+
+  const findPrevIndex = (fromIndex, currentAnswers) => {
+    let idx = fromIndex - 1;
+    while (idx >= 0) {
+      const q = QUESTIONS[idx];
+      if (q.conditional && !q.conditional(currentAnswers)) { idx--; continue; }
+      return idx;
+    }
+    return null;
+  };
+
   const handleNext = () => {
     if (!validate()) {
       setError(getErrorMessage());
@@ -1037,13 +1086,14 @@ function AssessmentFlow({ onComplete }) {
     }
     setError("");
     if (question.id === "industry" && currentAnswer === "Other") setAnswers((prev) => ({ ...prev, industry: `Other: ${otherText}` }));
-    if (isLastQuestion) {
-      const finalAnswers = { ...answers };
-      if (QUESTIONS[currentIndex].id === "industry" && answers.industry === "Other") finalAnswers.industry = `Other: ${otherText}`;
-      onComplete(finalAnswers);
+    const updatedAnswers = { ...answers };
+    if (QUESTIONS[currentIndex].id === "industry" && answers.industry === "Other") updatedAnswers.industry = `Other: ${otherText}`;
+    const nextIdx = findNextIndex(currentIndex, updatedAnswers);
+    if (nextIdx === null) {
+      onComplete(updatedAnswers);
       return;
     }
-    animateTo(currentIndex + 1);
+    animateTo(nextIdx);
   };
 
   const handleBack = () => {
@@ -1051,9 +1101,11 @@ function AssessmentFlow({ onComplete }) {
     setError("");
     clearTimers();
     setAdvancing(false);
+    const prevIdx = findPrevIndex(currentIndex, answers);
+    if (prevIdx === null) return;
     setFadeState("out");
     timerRef.current = setTimeout(() => {
-      setCurrentIndex((i) => Math.max(0, i - 1));
+      setCurrentIndex(prevIdx);
       setFadeState("in");
       timerRef.current = null;
     }, 200);
@@ -1061,14 +1113,16 @@ function AssessmentFlow({ onComplete }) {
 
   const handleSelectOption = (option) => {
     setError("");
+    const updatedAnswers = { ...answers, [question.id]: option };
     setAnswers((prev) => ({ ...prev, [question.id]: option }));
     if (question.autoAdvance && option !== "Other") {
       setAdvancing(true);
       timerRef.current = setTimeout(() => {
-        if (currentIndex === QUESTIONS.length - 1) {
-          onComplete({ ...answers, [question.id]: option });
+        const nextIdx = findNextIndex(currentIndex, updatedAnswers);
+        if (nextIdx === null) {
+          onComplete(updatedAnswers);
         } else {
-          animateTo(currentIndex + 1);
+          animateTo(nextIdx);
         }
       }, 350);
     }
@@ -1077,8 +1131,16 @@ function AssessmentFlow({ onComplete }) {
   const handleMultiSelect = (option) => {
     setError("");
     const current = Array.isArray(currentAnswer) ? [...currentAnswer] : [];
-    if (current.includes(option)) setAnswers((prev) => ({ ...prev, [question.id]: current.filter((o) => o !== option) }));
-    else setAnswers((prev) => ({ ...prev, [question.id]: [...current, option] }));
+    if (current.includes(option)) {
+      setAnswers((prev) => ({ ...prev, [question.id]: current.filter((o) => o !== option) }));
+    } else {
+      const max = question.maxSelect || Infinity;
+      if (current.length >= max) {
+        setError(`Select up to ${max} priorities.`);
+        return;
+      }
+      setAnswers((prev) => ({ ...prev, [question.id]: [...current, option] }));
+    }
   };
 
   const handleKeyPress = (e) => { if (e.key === "Enter" && question.type !== "textarea") handleNext(); };
@@ -1178,7 +1240,7 @@ function AssessmentFlow({ onComplete }) {
 
           {question.type === "multiselect" && (
             <div>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: BRAND.gray400, marginBottom: 12, marginTop: 0 }}>Select all that apply</p>
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: BRAND.gray400, marginBottom: 12, marginTop: 0 }}>{question.helperText || "Select all that apply"}</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {question.options.map((option, idx) => {
                   const selected = Array.isArray(currentAnswer) && currentAnswer.includes(option);
