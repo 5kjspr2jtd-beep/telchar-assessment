@@ -340,7 +340,11 @@ export default function ROICalculator() {
             <>
               <Stepper current={0} labels={["Inputs", "Results"]} />
               <div style={{ background: B.navyLight + "40", borderRadius: 12, border: `1px solid ${B.navyLight}`, padding: pad }}>
-                <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 18 }}>Your time</div>
+                <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Your time</div>
+                <div style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: B.gray300, marginBottom: 4, lineHeight: 1.4 }}>About how many total hours per week does your business spend on the activities below?</div>
+                <div style={{ fontFamily: F, fontSize: 11, color: B.gray500, marginBottom: 18, lineHeight: 1.35 }}>Estimate across the whole business, not just you.</div>
+
+                {catKeys.map(k => <QRow key={k} label={DEFAULTS[k].q} options={HOUR_OPTS} value={hrs[k]} onChange={v => setHrs(p => ({ ...p, [k]: v }))} mob={mob} />)}
 
                 <div style={{ marginBottom: 22 }}>
                   <div style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: B.gray300, marginBottom: 4, lineHeight: 1.4 }}>About what do you pay per hour for the people doing this work?</div>
@@ -349,7 +353,6 @@ export default function ROICalculator() {
                     {COST_OPTS.map(o => <Chip key={o.label} label={o.label} selected={cost === o.label} onClick={() => setCost(o.label)} />)}
                   </div>
                 </div>
-                {catKeys.map(k => <QRow key={k} label={DEFAULTS[k].q} options={HOUR_OPTS} value={hrs[k]} onChange={v => setHrs(p => ({ ...p, [k]: v }))} mob={mob} />)}
 
                 <div style={{ borderTop: `1px solid ${B.navyLight}`, paddingTop: 18, marginTop: 4 }}>
                   <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 18 }}>Context</div>
