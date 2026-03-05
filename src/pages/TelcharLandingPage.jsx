@@ -882,6 +882,7 @@ function ROICalculatorSection() {
   const [showAdjust, setShowAdjust] = useState(false);
   const [rateOverrides, setRateOverrides] = useState({});
   const [showRateSliders, setShowRateSliders] = useState(false);
+  const sectionRef = useRef(null);
   const contentRef = useRef(null);
   const mob = useROIMobile();
 
@@ -951,18 +952,21 @@ function ROICalculatorSection() {
       setTimeout(() => contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
     }
   };
-  const goResults = () => { setStep("results"); };
+  const goResults = () => {
+    setStep("results");
+    setTimeout(() => sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  };
   const resetDefaults = () => { setAdopt("Medium"); setTeam("1–3"); setToolSpend("$0"); setIncludeToolCost(true); setRateOverrides({}); setShowRateSliders(false); };
   const resetAll = () => { setCost(null); setHrs({}); resetDefaults(); setShowAdjust(false); setStep("questions"); };
 
   return (
-    <section style={{ background: ROI_B.navy, borderTop: `1px solid ${ROI_B.navyLight}40`, borderBottom: `1px solid ${ROI_B.navyLight}40` }}>
+    <section ref={sectionRef} style={{ background: ROI_B.navy, borderTop: `1px solid ${ROI_B.navyLight}40`, borderBottom: `1px solid ${ROI_B.navyLight}40` }}>
 
       {/* Collapsed header — always visible */}
       <div
         onClick={handleToggle}
         style={{
-          maxWidth: 1040, margin: "0 auto",
+          maxWidth: 1040, margin: "0 auto", width: "100%", boxSizing: "border-box",
           padding: mob ? "28px 20px" : "36px 32px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
           cursor: "pointer", gap: 24,
@@ -999,7 +1003,7 @@ function ROICalculatorSection() {
         transition: "max-height 0.4s ease",
       }}>
         <div style={{ borderTop: `1px solid ${ROI_B.navyLight}40`, padding: mob ? "32px 20px 48px" : "40px 32px 64px", maxWidth: 1040, margin: "0 auto" }}>
-          <div style={{ maxWidth: 680 }}>
+          <div style={{ maxWidth: 680, margin: "0 auto" }}>
 
             {/* Questions step */}
             {step === "questions" && (
