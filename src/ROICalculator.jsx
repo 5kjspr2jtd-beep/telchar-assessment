@@ -208,6 +208,7 @@ export default function ROICalculator() {
   const [showRateSliders, setShowRateSliders] = useState(false);
   const resultsRef = useRef(null);
   const mob = useMobile();
+  const mobBtn = useMobile(480);
 
   const catKeys = Object.keys(DEFAULTS);
   const hrsReady = cost && catKeys.every(k => hrs[k]);
@@ -317,7 +318,7 @@ export default function ROICalculator() {
                 Answer a few questions about how your team spends time. Get a conservative, transparent estimate of what AI-assisted automation could recover annually.
               </p>
               <button onClick={() => setStep("questions")}
-                style={{ fontFamily: F, fontSize: 16, fontWeight: 600, padding: "14px 40px", background: B.blue, color: B.white, border: "none", borderRadius: 10, cursor: "pointer", transition: "all 0.15s ease", width: "100%", maxWidth: 320, margin: "0 auto", boxSizing: "border-box" }}>
+                style={{ fontFamily: F, fontSize: 16, fontWeight: 600, padding: "14px 40px", background: B.blue, color: B.white, border: "none", borderRadius: 10, cursor: "pointer", transition: "all 0.15s ease", width: "100%", maxWidth: mobBtn ? 420 : 320, margin: "0 auto", boxSizing: "border-box" }}>
                 Start Calculator
               </button>
               <div style={{ marginTop: 28, display: "flex", gap: mob ? 20 : 32 }}>
@@ -337,15 +338,21 @@ export default function ROICalculator() {
             <>
               <Stepper current={0} labels={["Inputs", "Results"]} />
               <div style={{ background: B.navyLight + "40", borderRadius: 12, border: `1px solid ${B.navyLight}`, padding: pad }}>
-                <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 18 }}>Your business</div>
+                <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 18 }}>Time inputs</div>
 
-                <QRow label="Fully loaded hourly labor cost?" options={COST_OPTS} value={cost} onChange={setCost} mob={mob} />
+                <div style={{ marginBottom: 22 }}>
+                  <div style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: B.gray300, marginBottom: 4, lineHeight: 1.4 }}>What is your average hourly cost for the people doing this work?</div>
+                  <div style={{ fontFamily: F, fontSize: 11, color: B.gray500, marginBottom: 10, lineHeight: 1.35 }}>Use your best estimate. Include wages and basic overhead.</div>
+                  <div style={{ display: "grid", gridTemplateColumns: `repeat(${mob ? 2 : 4}, 1fr)`, gap: 8 }}>
+                    {COST_OPTS.map(o => <Chip key={o.label} label={o.label} selected={cost === o.label} onClick={() => setCost(o.label)} />)}
+                  </div>
+                </div>
                 {catKeys.map(k => <QRow key={k} label={DEFAULTS[k].q} options={HOUR_OPTS} value={hrs[k]} onChange={v => setHrs(p => ({ ...p, [k]: v }))} mob={mob} />)}
 
                 <div style={{ borderTop: `1px solid ${B.navyLight}`, paddingTop: 18, marginTop: 4 }}>
                   <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 18 }}>Context</div>
-                  <QRow label="Employees touching these workflows?" options={TEAM_OPTS} value={team} onChange={setTeam} cols={5} mob={mob} />
-                  <QRow label="Current monthly tool spend on automation?" options={TOOL_OPTS} value={toolSpend} onChange={setToolSpend} cols={5} mob={mob} />
+                  <QRow label="How many people do this work each week?" options={TEAM_OPTS} value={team} onChange={setTeam} cols={5} mob={mob} />
+                  <QRow label="What do you spend each month on software that helps automate work?" options={TOOL_OPTS} value={toolSpend} onChange={setToolSpend} cols={5} mob={mob} />
                   <QRow label="Team adoption readiness?" options={ADOPT_OPTS} value={adopt} onChange={setAdopt} cols={3} mob={mob}
                     hint={(v) => ADOPT_OPTS.find(o => o.label === v)?.desc || ""} />
                 </div>
