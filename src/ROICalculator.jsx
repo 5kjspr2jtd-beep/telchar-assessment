@@ -2,9 +2,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 // ── Brand (matches assessment) ────────────────────────────────────────────────
 const B = {
-  navyDeep: "#0A1628", navy: "#0F1923", navyLight: "#1C2B3D",
-  white: "#FFFFFF", gray300: "#D1D5DB", gray400: "#9CA3AF", gray500: "#6B7280",
-  gold: "#D9B95E", blue: "#2979FF", blueGlow: "rgba(41,121,255,0.12)",
+  navyDeep: "#0A1220", navy: "#0F1923", navyLight: "#1C2B3D",
+  white: "#FFFFFF", gray300: "#C5CCD6", gray400: "#8895A5", gray500: "#5A6878",
+  gold: "#C9A84C", blue: "#2979FF", blueGlow: "rgba(41,121,255,0.12)",
   green: "#22C55E", amber: "#F59E0B",
 };
 const F = "'DM Sans', sans-serif";
