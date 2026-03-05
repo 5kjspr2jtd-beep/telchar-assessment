@@ -60,7 +60,7 @@ const DEFAULTS = {
   admin:     { base: 0.28, label: "Admin and Data Entry",  q: "Admin, data entry, invoicing, or scheduling?", min: 0.15, max: 0.45 },
   customer:  { base: 0.22, label: "Customer Follow-up",    q: "Customer follow-up, outreach, or communication?", min: 0.10, max: 0.40 },
   content:   { base: 0.22, label: "Content and Marketing",  q: "Content creation, proposals, or marketing?", min: 0.10, max: 0.40 },
-  reporting: { base: 0.32, label: "Reporting and Tracking", q: "Reporting, tracking, or data compilation?", min: 0.15, max: 0.50 },
+  reporting: { base: 0.32, label: "Reporting and Tracking", q: "Tracking numbers, updating spreadsheets, or putting reports together?", min: 0.15, max: 0.50 },
 };
 const OPT_BUMP = 0.05; // optimistic scenario adds 5pp to base (tighter range)
 const GLOBAL_CAP = 0.25;
@@ -347,8 +347,8 @@ export default function ROICalculator() {
                 {catKeys.map(k => <QRow key={k} label={DEFAULTS[k].q} options={HOUR_OPTS} value={hrs[k]} onChange={v => setHrs(p => ({ ...p, [k]: v }))} mob={mob} />)}
 
                 <div style={{ marginBottom: 22 }}>
-                  <div style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: B.gray300, marginBottom: 4, lineHeight: 1.4 }}>About what do you pay per hour for the people doing this work?</div>
-                  <div style={{ fontFamily: F, fontSize: 11, color: B.gray500, marginBottom: 10, lineHeight: 1.35 }}>Include wages plus payroll taxes and basic benefits.</div>
+                  <div style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: B.gray300, marginBottom: 4, lineHeight: 1.4 }}>On average, what do you pay per hour for the people doing this work?</div>
+                  <div style={{ fontFamily: F, fontSize: 11, color: B.gray500, marginBottom: 10, lineHeight: 1.35 }}>Estimate the average hourly cost across everyone who handles these tasks. Include wages, payroll taxes, and basic benefits.</div>
                   <div style={{ display: "grid", gridTemplateColumns: `repeat(${mob ? 2 : 4}, 1fr)`, gap: 8 }}>
                     {COST_OPTS.map(o => <Chip key={o.label} label={o.label} selected={cost === o.label} onClick={() => setCost(o.label)} />)}
                   </div>
