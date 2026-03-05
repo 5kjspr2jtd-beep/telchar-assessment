@@ -525,8 +525,7 @@ function WhoSection() {
               </div>
             ))}
           </div>
-          {!isMobile && (
-            <div style={{ background: BRAND.white, borderRadius: 12, padding: 28, border: `1px solid ${BRAND.gray200}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ background: BRAND.white, borderRadius: 12, padding: 28, border: `1px solid ${BRAND.gray200}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
               <h3 style={{ fontFamily: font, fontSize: 14, fontWeight: 700, color: BRAND.gray400, marginBottom: 20, letterSpacing: "0.06em" }}>
                 NOT THE BEST FIT
               </h3>
@@ -539,7 +538,6 @@ function WhoSection() {
                 </div>
               ))}
             </div>
-          )}
         </div>
       </div>
     </section>
