@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 // ============================================================
@@ -688,6 +688,502 @@ function ROITeaserSection({ onCTA }) {
 }
 
 // ============================================================
+// SECTION: ROI CALCULATOR (expandable)
+// ============================================================
+
+const ROI_B = {
+  navyDeep: "#0A1220", navy: "#0F1923", navyLight: "#1C2B3D",
+  white: "#FFFFFF", gray300: "#C5CCD6", gray400: "#8895A5", gray500: "#5A6878",
+  gold: "#C9A84C", blue: "#2979FF", blueGlow: "rgba(41,121,255,0.12)",
+  green: "#22C55E", amber: "#F59E0B",
+};
+const ROI_F = "'DM Sans', sans-serif";
+const ROI_MONO = "'DM Mono', 'Courier New', monospace";
+const ROI_COST_OPTS = [
+  { label: "$25–$35", low: 25, high: 35 },
+  { label: "$35–$50", low: 35, high: 50 },
+  { label: "$50–$75", low: 50, high: 75 },
+  { label: "$75+",    low: 75, high: 95 },
+];
+const ROI_HOUR_OPTS = [
+  { label: "<5 hrs",    low: 2,  high: 5 },
+  { label: "5–10 hrs",  low: 5,  high: 10 },
+  { label: "10–20 hrs", low: 10, high: 20 },
+  { label: "20+ hrs",   low: 20, high: 30 },
+];
+const ROI_TEAM_OPTS = [
+  { label: "1–3",    factor: 1.0 },
+  { label: "4–10",   factor: 0.95 },
+  { label: "11–25",  factor: 0.88 },
+  { label: "26–50",  factor: 0.80 },
+  { label: "51–100", factor: 0.72 },
+];
+const ROI_TOOL_OPTS = [
+  { label: "$0",        monthly: 0 },
+  { label: "$1–$50",    monthly: 25 },
+  { label: "$50–$200",  monthly: 125 },
+  { label: "$200–$500", monthly: 350 },
+  { label: "$500+",     monthly: 650 },
+];
+const ROI_ADOPT_OPTS = [
+  { label: "Low",    factor: 0.55, desc: "Limited buy-in. Manual processes entrenched." },
+  { label: "Medium", factor: 0.72, desc: "Open to change. Some automation in place." },
+  { label: "High",   factor: 0.88, desc: "Leadership aligned. Team adopts tools quickly." },
+];
+const ROI_DEFAULTS = {
+  admin:     { base: 0.28, label: "Admin and Data Entry",   q: "Admin, data entry, invoicing, or scheduling?",                              min: 0.15, max: 0.45 },
+  customer:  { base: 0.22, label: "Customer Follow-up",     q: "Customer follow-up, outreach, or communication?",                          min: 0.10, max: 0.40 },
+  content:   { base: 0.22, label: "Content and Marketing",  q: "Content creation, proposals, or marketing?",                               min: 0.10, max: 0.40 },
+  reporting: { base: 0.32, label: "Reporting and Tracking", q: "Tracking numbers, updating spreadsheets, or putting reports together?",    min: 0.15, max: 0.50 },
+};
+const ROI_OPT_BUMP = 0.05;
+const ROI_GLOBAL_CAP = 0.25;
+const ROI_CAT_CAP = 0.35;
+const roi_r50 = (n) => Math.round(n / 50) * 50;
+const roi_rH  = (n) => Math.round(n * 2) / 2;
+const roi_pct = (n) => Math.round(n * 100);
+const roi_clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+function useROIMobile(bp = 600) {
+  const [m, setM] = useState(typeof window !== "undefined" ? window.innerWidth < bp : false);
+  useEffect(() => {
+    const h = () => setM(window.innerWidth < bp);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, [bp]);
+  return m;
+}
+
+function ROIChip({ label, selected, onClick, small }) {
+  const [pr, setPr] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseDown={() => setPr(true)} onMouseUp={() => setPr(false)}
+      onMouseLeave={() => setPr(false)} onTouchStart={() => setPr(true)} onTouchEnd={() => setPr(false)}
+      style={{
+        fontFamily: ROI_F, fontSize: small ? 13 : 14, fontWeight: selected ? 600 : 500,
+        padding: "12px 8px",
+        background: selected ? ROI_B.blueGlow : pr ? ROI_B.navyLight + "CC" : ROI_B.navyLight,
+        border: `1.5px solid ${selected ? ROI_B.blue : ROI_B.navyLight}`, borderRadius: 12,
+        color: selected ? ROI_B.white : ROI_B.gray300, cursor: "pointer", transition: "all 0.12s ease",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        whiteSpace: "nowrap", lineHeight: 1.2, minHeight: 48,
+        boxShadow: selected ? `inset 0 0 8px ${ROI_B.blue}20, 0 0 10px ${ROI_B.blue}12` : "none",
+        WebkitTapHighlightColor: "transparent", outline: "none",
+      }}
+    >{label}</button>
+  );
+}
+
+function ROIQRow({ label, options, value, onChange, cols = 4, hint, mob }) {
+  const mobileCols = cols <= 3 ? cols : 2;
+  const effectiveCols = mob ? mobileCols : cols;
+  return (
+    <div style={{ marginBottom: 22 }}>
+      <div style={{ fontFamily: ROI_F, fontSize: 13, fontWeight: 500, color: ROI_B.gray300, marginBottom: 10, lineHeight: 1.4 }}>{label}</div>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${effectiveCols}, 1fr)`, gap: 8 }}>
+        {options.map(o => <ROIChip key={o.label} label={o.label} selected={value === o.label} onClick={() => onChange(o.label)} small={effectiveCols > 4} />)}
+      </div>
+      {hint && value && <div style={{ fontFamily: ROI_F, fontSize: 11, color: ROI_B.gray500, marginTop: 6, lineHeight: 1.35 }}>{hint(value)}</div>}
+    </div>
+  );
+}
+
+function ROICatRow({ label, hLo, hHi, sLo, sHi, rateLo, rateHi, mob }) {
+  const w = Math.min(100, Math.round((sHi / 35000) * 100));
+  return (
+    <div style={{ padding: mob ? "12px 14px" : "14px 18px", background: ROI_B.navyLight + "60", borderRadius: 10, marginBottom: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 6 }}>
+        <div>
+          <div style={{ fontFamily: ROI_F, fontSize: 14, fontWeight: 600, color: ROI_B.white }}>{label}</div>
+          <div style={{ fontFamily: ROI_F, fontSize: 11, color: ROI_B.gray500, marginTop: 2 }}>{hLo}–{hHi} hrs/wk recovered at {roi_pct(rateLo)}–{roi_pct(rateHi)}%</div>
+        </div>
+        <div style={{ fontFamily: ROI_F, fontSize: 14, fontWeight: 600, color: ROI_B.green, whiteSpace: "nowrap" }}>${sLo.toLocaleString()}–${sHi.toLocaleString()}</div>
+      </div>
+      <div style={{ height: 3, background: ROI_B.navyLight, borderRadius: 2, overflow: "hidden" }}>
+        <div style={{ height: "100%", width: `${w}%`, background: `linear-gradient(90deg, ${ROI_B.blue}CC, ${ROI_B.green})`, borderRadius: 2, transition: "width 0.4s ease" }} />
+      </div>
+    </div>
+  );
+}
+
+function ROIAcc({ title, defaultOpen = false, children }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div style={{ borderBottom: `1px solid ${ROI_B.navyLight}40` }}>
+      <div onClick={() => setOpen(!open)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", padding: "14px 0" }}>
+        <span style={{ fontFamily: ROI_F, fontSize: 13, fontWeight: 600, color: ROI_B.gray300 }}>{title}</span>
+        <span style={{ fontFamily: ROI_F, fontSize: 14, color: ROI_B.gray500, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.15s ease" }}>▾</span>
+      </div>
+      {open && <div style={{ paddingBottom: 16 }}>{children}</div>}
+    </div>
+  );
+}
+
+function ROIStepper({ current, labels }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", marginBottom: 28, gap: 0 }}>
+      {labels.map((l, i) => (
+        <div key={l} style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{
+              width: 26, height: 26, borderRadius: 13,
+              background: i <= current ? ROI_B.blue : "transparent",
+              border: `2px solid ${i <= current ? ROI_B.blue : ROI_B.gray500}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontFamily: ROI_F, fontSize: 11, fontWeight: 600,
+              color: i <= current ? ROI_B.white : ROI_B.gray500,
+              transition: "all 0.2s ease",
+            }}>{i < current ? "✓" : i + 1}</div>
+            <span style={{ fontFamily: ROI_F, fontSize: 12, fontWeight: i === current ? 600 : 400, color: i <= current ? ROI_B.gray300 : ROI_B.gray500 }}>{l}</span>
+          </div>
+          {i < labels.length - 1 && <div style={{ width: 28, height: 2, background: i < current ? ROI_B.blue : ROI_B.navyLight, margin: "0 6px", borderRadius: 1 }} />}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ROIRateSlider({ label, value, min, max, onChange }) {
+  const pctVal = roi_pct(value);
+  const pctMin = roi_pct(min);
+  const pctMax = roi_pct(max);
+  const pos = ((value - min) / (max - min)) * 100;
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+        <span style={{ fontFamily: ROI_F, fontSize: 12, color: ROI_B.gray400 }}>{label}</span>
+        <span style={{ fontFamily: ROI_F, fontSize: 12, fontWeight: 600, color: ROI_B.white }}>{pctVal}%</span>
+      </div>
+      <div style={{ position: "relative", height: 28, display: "flex", alignItems: "center" }}>
+        <input type="range" min={pctMin} max={pctMax} value={pctVal}
+          onChange={(e) => onChange(parseInt(e.target.value) / 100)}
+          style={{ width: "100%", height: 4, appearance: "none", WebkitAppearance: "none", background: `linear-gradient(to right, ${ROI_B.blue} ${pos}%, ${ROI_B.navyLight} ${pos}%)`, borderRadius: 2, outline: "none", cursor: "pointer" }}
+        />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span style={{ fontFamily: ROI_F, fontSize: 10, color: ROI_B.gray500 }}>{pctMin}%</span>
+        <span style={{ fontFamily: ROI_F, fontSize: 10, color: ROI_B.gray500 }}>{pctMax}%</span>
+      </div>
+    </div>
+  );
+}
+
+function ROICalculatorSection() {
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState("questions");
+  const [cost, setCost] = useState(null);
+  const [hrs, setHrs] = useState({});
+  const [team, setTeam] = useState("1–3");
+  const [toolSpend, setToolSpend] = useState("$0");
+  const [adopt, setAdopt] = useState("Medium");
+  const [includeToolCost, setIncludeToolCost] = useState(true);
+  const [showAdjust, setShowAdjust] = useState(false);
+  const [rateOverrides, setRateOverrides] = useState({});
+  const [showRateSliders, setShowRateSliders] = useState(false);
+  const contentRef = useRef(null);
+  const mob = useROIMobile();
+
+  const catKeys = Object.keys(ROI_DEFAULTS);
+  const hrsReady = cost && catKeys.every(k => hrs[k]);
+  const inputCount = (cost ? 1 : 0) + catKeys.filter(k => hrs[k]).length + (team !== "1–3" ? 1 : 0) + (adopt !== "Medium" ? 1 : 0) + (toolSpend !== "$0" ? 1 : 0);
+  const maxInputs = 8;
+  const confidenceScore = Math.min(100, Math.round((inputCount / maxInputs) * 70 + (ROI_ADOPT_OPTS.find(o => o.label === adopt)?.factor || 0.72) * 30));
+  const confidenceLabel = confidenceScore >= 75 ? "Higher" : confidenceScore >= 55 ? "Moderate" : "Lower";
+
+  const getRate = useCallback((key) => {
+    const d = ROI_DEFAULTS[key];
+    return rateOverrides[key] !== undefined ? roi_clamp(rateOverrides[key], d.min, d.max) : d.base;
+  }, [rateOverrides]);
+
+  const compute = useCallback(() => {
+    if (!hrsReady) return null;
+    const c = ROI_COST_OPTS.find(o => o.label === cost);
+    const af = ROI_ADOPT_OPTS.find(o => o.label === adopt)?.factor || 0.72;
+    const tf = ROI_TEAM_OPTS.find(o => o.label === team)?.factor || 1.0;
+    const ts = ROI_TOOL_OPTS.find(o => o.label === toolSpend)?.monthly || 0;
+    if (!c) return null;
+    const cMid = (c.low + c.high) / 2;
+    let tEntMid = 0;
+    catKeys.forEach(k => { const h = ROI_HOUR_OPTS.find(o => o.label === hrs[k]); if (h) tEntMid += (h.low + h.high) / 2; });
+    let tLo = 0, tHi = 0;
+    const bd = [];
+    catKeys.forEach(k => {
+      const d = ROI_DEFAULTS[k];
+      const h = ROI_HOUR_OPTS.find(o => o.label === hrs[k]);
+      if (!h) return;
+      const baseRate = getRate(k);
+      const rateLo = baseRate;
+      const rateHi = Math.min(baseRate + ROI_OPT_BUMP, d.max);
+      let sLo = h.low * rateLo * af * tf;
+      let sHi = h.high * rateHi * af * tf;
+      sLo = Math.min(sLo, h.low * ROI_CAT_CAP);
+      sHi = Math.min(sHi, h.high * ROI_CAT_CAP);
+      tLo += sLo; tHi += sHi;
+      bd.push({ label: d.label, hLo: roi_rH(sLo), hHi: roi_rH(sHi), sLo: roi_r50(sLo * cMid * 52), sHi: roi_r50(sHi * cMid * 52), rateLo, rateHi });
+    });
+    const gCap = tEntMid * ROI_GLOBAL_CAP;
+    if (tHi > gCap) { const sc = gCap / tHi; tHi = gCap; bd.forEach(b => { b.hHi = roi_rH(b.hHi * sc); b.sHi = roi_r50(b.sHi * sc); }); }
+    if (tLo > gCap) { const sc = gCap / tLo; tLo = gCap; bd.forEach(b => { b.hLo = roi_rH(b.hLo * sc); b.sLo = roi_r50(b.sLo * sc); }); }
+    const grossLo = roi_r50(tLo * cMid * 52);
+    const grossHi = roi_r50(tHi * cMid * 52);
+    const annToolCost = ts * 12;
+    const deduct = includeToolCost ? annToolCost : 0;
+    const netLo = grossLo - deduct;
+    const netHi = grossHi - deduct;
+    let payback = null;
+    if (includeToolCost && annToolCost > 0 && grossHi > annToolCost) {
+      const avgMonthly = ((grossLo + grossHi) / 2) / 12;
+      if (avgMonthly > 0) payback = Math.ceil(annToolCost / avgMonthly);
+    }
+    return { bd, grossLo, grossHi, netLo, netHi, annToolCost, payback, wkLo: roi_rH(tLo), wkHi: roi_rH(tHi), costLabel: cost, af, tf };
+  }, [cost, hrs, adopt, team, toolSpend, includeToolCost, hrsReady, getRate, catKeys]);
+
+  const results = step === "results" ? compute() : null;
+  const pad = mob ? "22px 16px" : "32px 28px";
+  const cPad = mob ? "14px 16px" : "18px 22px";
+  const txt = { fontFamily: ROI_F, fontSize: 12, color: ROI_B.gray500, lineHeight: 1.6, marginTop: 0 };
+
+  const handleToggle = () => {
+    setOpen(o => !o);
+    if (!open && contentRef.current) {
+      setTimeout(() => contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    }
+  };
+  const goResults = () => { setStep("results"); };
+  const resetDefaults = () => { setAdopt("Medium"); setTeam("1–3"); setToolSpend("$0"); setIncludeToolCost(true); setRateOverrides({}); setShowRateSliders(false); };
+  const resetAll = () => { setCost(null); setHrs({}); resetDefaults(); setShowAdjust(false); setStep("questions"); };
+
+  return (
+    <section style={{ background: ROI_B.navy, borderTop: `1px solid ${ROI_B.navyLight}40`, borderBottom: `1px solid ${ROI_B.navyLight}40` }}>
+
+      {/* Collapsed header — always visible */}
+      <div
+        onClick={handleToggle}
+        style={{
+          maxWidth: 1040, margin: "0 auto",
+          padding: mob ? "28px 20px" : "36px 32px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          cursor: "pointer", gap: 24,
+        }}
+      >
+        <div>
+          <span style={{ fontFamily: ROI_F, fontSize: 12, fontWeight: 700, color: ROI_B.gold, letterSpacing: "0.12em", textTransform: "uppercase", display: "block", marginBottom: 8 }}>
+            ROI CALCULATOR
+          </span>
+          <h2 style={{ fontFamily: ROI_F, fontSize: mob ? 20 : 24, fontWeight: 700, color: ROI_B.white, margin: 0, lineHeight: 1.2 }}>
+            What is manual work costing your business?
+          </h2>
+          {!open && (
+            <p style={{ fontFamily: ROI_F, fontSize: 14, color: ROI_B.gray400, marginTop: 8, marginBottom: 0, lineHeight: 1.5 }}>
+              8 questions. Conservative estimate. No email required.
+            </p>
+          )}
+        </div>
+        <div style={{
+          width: 36, height: 36, borderRadius: 18, flexShrink: 0,
+          border: `1px solid ${ROI_B.navyLight}`,
+          background: open ? ROI_B.navyLight : "transparent",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "all 0.2s ease",
+        }}>
+          <span style={{ fontFamily: ROI_F, fontSize: 18, color: ROI_B.gray400, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s ease", display: "block", lineHeight: 1 }}>▾</span>
+        </div>
+      </div>
+
+      {/* Expandable calculator body */}
+      <div ref={contentRef} style={{
+        overflow: "hidden",
+        maxHeight: open ? "9999px" : "0px",
+        transition: "max-height 0.4s ease",
+      }}>
+        <div style={{ borderTop: `1px solid ${ROI_B.navyLight}40`, padding: mob ? "32px 20px 48px" : "40px 32px 64px", maxWidth: 1040, margin: "0 auto" }}>
+          <div style={{ maxWidth: 680 }}>
+
+            {/* Questions step */}
+            {step === "questions" && (
+              <>
+                <ROIStepper current={0} labels={["Inputs", "Results"]} />
+                <div style={{ background: ROI_B.navyLight + "40", borderRadius: 12, border: `1px solid ${ROI_B.navyLight}`, padding: pad }}>
+                  <div style={{ fontFamily: ROI_F, fontSize: 11, fontWeight: 600, color: ROI_B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Your time</div>
+                  <div style={{ fontFamily: ROI_F, fontSize: 13, fontWeight: 500, color: ROI_B.gray300, marginBottom: 4, lineHeight: 1.4 }}>About how many total hours per week does your business spend on the activities below?</div>
+                  <div style={{ fontFamily: ROI_F, fontSize: 11, color: ROI_B.gray500, marginBottom: 18, lineHeight: 1.35 }}>Estimate across the whole business, not just you.</div>
+                  {catKeys.map(k => <ROIQRow key={k} label={ROI_DEFAULTS[k].q} options={ROI_HOUR_OPTS} value={hrs[k]} onChange={v => setHrs(p => ({ ...p, [k]: v }))} mob={mob} />)}
+                  <div style={{ marginBottom: 22 }}>
+                    <div style={{ fontFamily: ROI_F, fontSize: 13, fontWeight: 500, color: ROI_B.gray300, marginBottom: 4, lineHeight: 1.4 }}>On average, what do you pay per hour for the people doing this work?</div>
+                    <div style={{ fontFamily: ROI_F, fontSize: 11, color: ROI_B.gray500, marginBottom: 10, lineHeight: 1.35 }}>Estimate the average hourly cost across everyone who handles these tasks. Include wages, payroll taxes, and basic benefits.</div>
+                    <div style={{ display: "grid", gridTemplateColumns: `repeat(${mob ? 2 : 4}, 1fr)`, gap: 8 }}>
+                      {ROI_COST_OPTS.map(o => <ROIChip key={o.label} label={o.label} selected={cost === o.label} onClick={() => setCost(o.label)} />)}
+                    </div>
+                  </div>
+                  <div style={{ borderTop: `1px solid ${ROI_B.navyLight}`, paddingTop: 18, marginTop: 4 }}>
+                    <div style={{ fontFamily: ROI_F, fontSize: 11, fontWeight: 600, color: ROI_B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 18 }}>Context</div>
+                    <ROIQRow label="How many people do this work?" options={ROI_TEAM_OPTS} value={team} onChange={setTeam} cols={5} mob={mob} />
+                    <ROIQRow label="What do you spend per month on software that helps automate this work?" options={ROI_TOOL_OPTS} value={toolSpend} onChange={setToolSpend} cols={5} mob={mob} />
+                    <ROIQRow label="How ready is your team to use new tools?" options={ROI_ADOPT_OPTS} value={adopt} onChange={setAdopt} cols={3} mob={mob}
+                      hint={(v) => ROI_ADOPT_OPTS.find(o => o.label === v)?.desc || ""} />
+                  </div>
+                  <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 8 }}>
+                    <button onClick={goResults} disabled={!hrsReady}
+                      style={{ fontFamily: ROI_F, fontSize: 15, fontWeight: 600, padding: "14px 36px", background: hrsReady ? ROI_B.blue : ROI_B.gray500, color: ROI_B.white, border: "none", borderRadius: 10, cursor: hrsReady ? "pointer" : "default", opacity: hrsReady ? 1 : 0.4, transition: "all 0.2s ease" }}>
+                      Calculate ROI
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Results step */}
+            {step === "results" && results && (
+              <div>
+                <ROIStepper current={1} labels={["Inputs", "Results"]} />
+
+                {/* Hero */}
+                <div style={{ background: `linear-gradient(135deg, ${ROI_B.navyLight}CC, ${ROI_B.navy})`, borderRadius: 14, border: `1px solid ${ROI_B.gold}25`, padding: mob ? "28px 20px" : "36px 32px", textAlign: "center", marginBottom: 20 }}>
+                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                    <span style={{ fontFamily: ROI_F, fontSize: 10, fontWeight: 600, color: ROI_B.gold, textTransform: "uppercase", letterSpacing: "0.06em" }}>Conservative estimate</span>
+                    <span style={{ fontFamily: ROI_F, fontSize: 10, fontWeight: 600, color: confidenceLabel === "Higher" ? ROI_B.green : confidenceLabel === "Moderate" ? ROI_B.amber : ROI_B.gray500, background: (confidenceLabel === "Higher" ? ROI_B.green : confidenceLabel === "Moderate" ? ROI_B.amber : ROI_B.gray500) + "15", padding: "3px 8px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                      {confidenceLabel} confidence
+                    </span>
+                  </div>
+                  <div style={{ fontFamily: ROI_F, fontSize: 10, color: ROI_B.gray500, marginBottom: 12 }}>Based on {inputCount} of {maxInputs} inputs provided and {adopt} adoption readiness</div>
+                  <div style={{ fontFamily: ROI_F, fontSize: 12, color: ROI_B.gray400, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                    {includeToolCost && results.annToolCost > 0 ? "Estimated Net Annual Savings" : "Estimated Annual Savings"}
+                  </div>
+                  <div style={{ fontFamily: ROI_F, fontSize: mob ? 34 : 44, fontWeight: 700, color: ROI_B.gold, lineHeight: 1 }}>
+                    {includeToolCost && results.annToolCost > 0
+                      ? (results.netHi <= 0 ? "No net savings" : `$${Math.max(0, results.netLo).toLocaleString()}–$${results.netHi.toLocaleString()}`)
+                      : `$${results.grossLo.toLocaleString()}–$${results.grossHi.toLocaleString()}`}
+                  </div>
+                  <div style={{ fontFamily: ROI_F, fontSize: 14, color: ROI_B.gray400, marginTop: 10 }}>
+                    {results.wkLo}–{results.wkHi} hours recovered per week
+                  </div>
+                  {includeToolCost && results.annToolCost > 0 && (
+                    <div style={{ fontFamily: ROI_F, fontSize: 12, color: ROI_B.gray500, marginTop: 8 }}>
+                      Gross: ${results.grossLo.toLocaleString()}–${results.grossHi.toLocaleString()} | Tools: ${results.annToolCost.toLocaleString()}/yr
+                    </div>
+                  )}
+                  {results.payback !== null && includeToolCost && (
+                    <div style={{ fontFamily: ROI_F, fontSize: 12, color: ROI_B.green, marginTop: 6 }}>Estimated payback: {results.payback} {results.payback === 1 ? "month" : "months"}</div>
+                  )}
+                </div>
+
+                {/* Category breakdown */}
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontFamily: ROI_F, fontSize: 11, fontWeight: 600, color: ROI_B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>Savings by category</div>
+                  {results.bd.map((r, i) => <ROICatRow key={i} {...r} mob={mob} />)}
+                </div>
+
+                {/* Inputs summary */}
+                <div style={{ background: ROI_B.navyLight + "40", borderRadius: 10, border: `1px solid ${ROI_B.navyLight}`, padding: cPad, marginBottom: 12 }}>
+                  <div style={{ fontFamily: ROI_F, fontSize: 11, fontWeight: 600, color: ROI_B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Your inputs</div>
+                  <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: mob ? "2px 0" : "2px 24px", fontFamily: ROI_F, fontSize: 12, color: ROI_B.gray300, lineHeight: 1.8 }}>
+                    <div><span style={{ color: ROI_B.gray500 }}>Labor cost:</span> {results.costLabel}/hr</div>
+                    <div><span style={{ color: ROI_B.gray500 }}>Team size:</span> {team} employees</div>
+                    {catKeys.map(k => <div key={k}><span style={{ color: ROI_B.gray500 }}>{ROI_DEFAULTS[k].label}:</span> {hrs[k]}</div>)}
+                    <div><span style={{ color: ROI_B.gray500 }}>Adoption:</span> {adopt} ({roi_pct(results.af)}%)</div>
+                    <div><span style={{ color: ROI_B.gray500 }}>Tool spend:</span> {toolSpend}/mo</div>
+                  </div>
+                </div>
+
+                {/* Adjust assumptions */}
+                <div style={{ background: ROI_B.navyLight + "40", borderRadius: 10, border: `1px solid ${ROI_B.navyLight}`, marginBottom: 12, overflow: "hidden" }}>
+                  <div onClick={() => setShowAdjust(!showAdjust)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", padding: cPad }}>
+                    <span style={{ fontFamily: ROI_F, fontSize: 13, fontWeight: 600, color: ROI_B.gray300 }}>Adjust assumptions</span>
+                    <span style={{ fontFamily: ROI_F, fontSize: 14, color: ROI_B.gray500, transform: showAdjust ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.15s ease" }}>▾</span>
+                  </div>
+                  {showAdjust && (
+                    <div style={{ padding: `0 ${mob ? "16px" : "22px"} 18px` }}>
+                      <ROIQRow label="Adoption readiness" options={ROI_ADOPT_OPTS} value={adopt} onChange={setAdopt} cols={3} mob={mob}
+                        hint={(v) => ROI_ADOPT_OPTS.find(o => o.label === v)?.desc || ""} />
+                      <ROIQRow label="Employees on these workflows" options={ROI_TEAM_OPTS} value={team} onChange={setTeam} cols={5} mob={mob} />
+                      <ROIQRow label="Monthly tool spend" options={ROI_TOOL_OPTS} value={toolSpend} onChange={setToolSpend} cols={5} mob={mob} />
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                        <div onClick={() => setIncludeToolCost(!includeToolCost)}
+                          style={{ width: 20, height: 20, borderRadius: 4, border: `1.5px solid ${includeToolCost ? ROI_B.blue : ROI_B.gray500}`, background: includeToolCost ? ROI_B.blue : "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 12, color: ROI_B.white, flexShrink: 0 }}>
+                          {includeToolCost ? "✓" : ""}
+                        </div>
+                        <span style={{ fontFamily: ROI_F, fontSize: 12, color: ROI_B.gray400, cursor: "pointer" }} onClick={() => setIncludeToolCost(!includeToolCost)}>Subtract tool cost from savings</span>
+                      </div>
+                      <div style={{ borderTop: `1px solid ${ROI_B.navyLight}`, paddingTop: 14, marginTop: 4 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                          <span style={{ fontFamily: ROI_F, fontSize: 12, color: ROI_B.gray400 }}>Tune time savings assumptions</span>
+                          <div onClick={() => setShowRateSliders(!showRateSliders)} style={{ width: 36, height: 20, borderRadius: 10, background: showRateSliders ? ROI_B.blue : ROI_B.navyLight, border: `1px solid ${showRateSliders ? ROI_B.blue : ROI_B.gray500}`, position: "relative", cursor: "pointer", transition: "all 0.15s ease" }}>
+                            <div style={{ width: 16, height: 16, borderRadius: 8, background: ROI_B.white, position: "absolute", top: 1, left: showRateSliders ? 18 : 1, transition: "left 0.15s ease" }} />
+                          </div>
+                        </div>
+                        {showRateSliders && catKeys.map(k => (
+                          <ROIRateSlider key={k} label={ROI_DEFAULTS[k].label} value={getRate(k)} min={ROI_DEFAULTS[k].min} max={ROI_DEFAULTS[k].max}
+                            onChange={(v) => setRateOverrides(p => ({ ...p, [k]: v }))} />
+                        ))}
+                      </div>
+                      <div style={{ marginTop: 12 }}>
+                        <span onClick={resetDefaults} style={{ fontFamily: ROI_F, fontSize: 12, color: ROI_B.blue, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>Reset to defaults</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* How we calculate */}
+                <div style={{ background: ROI_B.navyLight + "40", borderRadius: 10, border: `1px solid ${ROI_B.navyLight}`, padding: cPad, marginBottom: 16 }}>
+                  <ROIAcc title="How we calculate this">
+                    <div style={{ marginBottom: 12 }}>
+                      <div style={{ fontFamily: ROI_F, fontSize: 12, fontWeight: 600, color: ROI_B.gray300, marginBottom: 8 }}>Formula</div>
+                      <div style={{ fontFamily: ROI_MONO, fontSize: 12, color: ROI_B.gray300, lineHeight: 1.6 }}>
+                        <div>Recovered Hrs = Entered Hrs x Rate x Adoption x Team Factor</div>
+                        <div>Annual Savings = Recovered Hrs/Wk x Cost/Hr x 52</div>
+                        <div>Net Savings = Gross Savings - Annual Tool Cost</div>
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontFamily: ROI_F, fontSize: 12, fontWeight: 600, color: ROI_B.gray300, marginBottom: 8 }}>Input definitions</div>
+                      <div style={{ fontFamily: ROI_F, fontSize: 12, color: ROI_B.gray500, lineHeight: 1.7 }}>
+                        <div><span style={{ color: ROI_B.gray400 }}>Hourly cost:</span> Fully loaded (salary + benefits + overhead)</div>
+                        <div><span style={{ color: ROI_B.gray400 }}>Adoption:</span> Multiplier for organizational readiness ({adopt}: {roi_pct(results.af)}%)</div>
+                        <div><span style={{ color: ROI_B.gray400 }}>Team factor:</span> Coordination discount for larger teams ({team}: {roi_pct(results.tf)}%)</div>
+                        <div><span style={{ color: ROI_B.gray400 }}>Global cap:</span> Total recovered hours capped at {roi_pct(ROI_GLOBAL_CAP)}% of entered hours</div>
+                      </div>
+                    </div>
+                  </ROIAcc>
+                  <ROIAcc title="Limitations">
+                    <div style={{ ...txt }}>
+                      <div style={{ marginBottom: 6 }}>Does not account for implementation time, training, or workflow redesign costs</div>
+                      <div style={{ marginBottom: 6 }}>Actual results depend on tools selected, process quality, and team commitment</div>
+                      <div>This is a directional planning estimate. It is not a projection or financial commitment.</div>
+                    </div>
+                  </ROIAcc>
+                </div>
+
+                {/* Actions */}
+                <div style={{ display: "flex", flexDirection: mob ? "column" : "row", gap: 12, alignItems: mob ? "stretch" : "center", marginBottom: 20 }}>
+                  <button onClick={() => { setStep("questions"); }}
+                    style={{ fontFamily: ROI_F, fontSize: 14, fontWeight: 600, padding: "13px 24px", background: ROI_B.blue, color: ROI_B.white, border: "none", borderRadius: 10, cursor: "pointer", textAlign: "center" }}>
+                    Adjust inputs
+                  </button>
+                  <a href="/assessment"
+                    style={{ fontFamily: ROI_F, fontSize: 13, color: ROI_B.blue, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px", textAlign: mob ? "center" : "left" }}>
+                    Take the AI Readiness Assessment
+                  </a>
+                  <span onClick={resetAll}
+                    style={{ fontFamily: ROI_F, fontSize: 13, color: ROI_B.gray500, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px", textAlign: mob ? "center" : "left" }}>
+                    Start over
+                  </span>
+                </div>
+
+                <div style={{ paddingTop: 14, borderTop: `1px solid ${ROI_B.navyLight}` }}>
+                  <p style={{ fontFamily: ROI_F, fontSize: 11, color: ROI_B.gray500, lineHeight: 1.4, marginTop: 0 }}>No data stored. No email required. Provided by Telchar AI as a free planning resource.</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
 // SECTION: FIT CHECK
 // ============================================================
 function WhoSection() {
@@ -976,7 +1472,7 @@ export default function TelcharLandingPage() {
       <AuthorityBand />
       <ProofSection onCTA={handleCTA} />
       <TierSection onCTA={handleCTA} />
-      <ROITeaserSection onCTA={handleCTA} />
+      <ROICalculatorSection />
       <WhoSection />
       <StepsSection />
       <CTASection onCTA={handleCTA} />
