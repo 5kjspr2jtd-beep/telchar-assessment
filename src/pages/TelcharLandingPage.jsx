@@ -966,38 +966,34 @@ function ROICalculatorSection() {
       <div
         onClick={handleToggle}
         style={{
+          position: "relative",
           maxWidth: 1040, margin: "0 auto", width: "100%", boxSizing: "border-box",
           padding: mob ? "28px 20px" : "36px 32px",
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
-          alignItems: "center",
-          cursor: "pointer", gap: 24,
+          cursor: "pointer",
         }}
       >
-        <div />
         <div style={{ textAlign: "center" }}>
           <span style={{ fontFamily: ROI_F, fontSize: 12, fontWeight: 700, color: ROI_B.gold, letterSpacing: "0.12em", textTransform: "uppercase", display: "block", marginBottom: 8 }}>
             ROI CALCULATOR
           </span>
-          <h2 style={{ fontFamily: ROI_F, fontSize: mob ? 20 : 24, fontWeight: 700, color: ROI_B.white, margin: 0, lineHeight: 1.2 }}>
+          <h2 style={{ fontFamily: ROI_F, fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: ROI_B.white, margin: 0, lineHeight: 1.2, letterSpacing: "-0.01em" }}>
             What is manual work costing your business?
           </h2>
           {!open && (
-            <p style={{ fontFamily: ROI_F, fontSize: 14, color: ROI_B.gray400, marginTop: 8, marginBottom: 0, lineHeight: 1.5 }}>
+            <p style={{ fontFamily: ROI_F, fontSize: 15, color: ROI_B.gray400, marginTop: 14, marginBottom: 0, lineHeight: 1.6 }}>
               8 questions. Conservative estimate. No email required.
             </p>
           )}
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: 18, flexShrink: 0,
-            border: `1px solid ${ROI_B.navyLight}`,
-            background: open ? ROI_B.navyLight : "transparent",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            transition: "all 0.2s ease",
-          }}>
-            <span style={{ fontFamily: ROI_F, fontSize: 18, color: ROI_B.gray400, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s ease", display: "block", lineHeight: 1 }}>▾</span>
-          </div>
+        <div style={{
+          position: "absolute", top: "50%", right: mob ? 20 : 32, transform: "translateY(-50%)",
+          width: 36, height: 36, borderRadius: 18,
+          border: `1px solid ${ROI_B.navyLight}`,
+          background: open ? ROI_B.navyLight : "transparent",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "all 0.2s ease",
+        }}>
+          <span style={{ fontFamily: ROI_F, fontSize: 18, color: ROI_B.gray400, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s ease", display: "block", lineHeight: 1 }}>▾</span>
         </div>
       </div>
 
