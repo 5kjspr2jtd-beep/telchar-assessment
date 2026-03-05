@@ -317,7 +317,7 @@ export default function ROICalculator() {
                 Answer a few questions about how your team spends time. Get a conservative, transparent estimate of what AI-assisted automation could recover annually.
               </p>
               <button onClick={() => setStep("questions")}
-                style={{ fontFamily: F, fontSize: 16, fontWeight: 600, padding: "14px 40px", background: B.blue, color: B.white, border: "none", borderRadius: 10, cursor: "pointer", transition: "all 0.15s ease", width: mob ? "100%" : "auto", maxWidth: mob ? undefined : 280 }}>
+                style={{ fontFamily: F, fontSize: 16, fontWeight: 600, padding: "14px 40px", background: B.blue, color: B.white, border: "none", borderRadius: 10, cursor: "pointer", transition: "all 0.15s ease", width: mob ? "100%" : "auto", maxWidth: mob ? "none" : 280, boxSizing: "border-box" }}>
                 Start Calculator
               </button>
               <div style={{ marginTop: 28, display: "flex", gap: mob ? 20 : 32 }}>
