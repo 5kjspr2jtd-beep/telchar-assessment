@@ -299,8 +299,8 @@ export default function ROICalculator() {
         <div style={{ position: "sticky", top: 0, zIndex: 200, background: B.navyDeep + "F0", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: `1px solid ${B.navyLight}`, marginBottom: mob ? 16 : 24 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: mob ? "14px 16px" : "18px 0" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <img src={ANVIL_URL} alt="Telchar AI" style={{ height: 22 }} />
-              <span style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 15, color: B.white, letterSpacing: "0.08em", textTransform: "uppercase" }}>TELCHAR AI</span>
+              <img src={ANVIL_URL} alt="Telchar AI" style={{ height: 24 }} />
+              <span style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 16, color: B.white, letterSpacing: "0.08em", textTransform: "uppercase" }}>TELCHAR AI</span>
               <span style={{ fontFamily: F, fontSize: 12, color: B.gray500, margin: "0 2px" }}>/</span>
               <span style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: B.gray400 }}>ROI Calculator</span>
             </div>
@@ -317,10 +317,12 @@ export default function ROICalculator() {
               <p style={{ fontFamily: F, fontSize: 14, color: B.gray400, marginBottom: 28, lineHeight: 1.55, maxWidth: 460 }}>
                 Answer a few questions about how your team spends time. Get a conservative, transparent estimate of what AI-assisted automation could recover annually.
               </p>
-              <button onClick={() => setStep("questions")}
-                style={{ fontFamily: F, fontSize: 16, fontWeight: 600, padding: "14px 40px", background: B.blue, color: B.white, border: "none", borderRadius: 10, cursor: "pointer", transition: "all 0.15s ease", width: "100%", maxWidth: mobBtn ? 420 : 320, margin: "0 auto", boxSizing: "border-box" }}>
-                Start Calculator
-              </button>
+              <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+                <button onClick={() => setStep("questions")}
+                  style={{ fontFamily: F, fontSize: 16, fontWeight: 600, padding: "14px 40px", background: B.blue, color: B.white, border: "none", borderRadius: 10, cursor: "pointer", transition: "all 0.15s ease", width: mob ? "100%" : 280, maxWidth: mob ? 420 : 280, boxSizing: "border-box" }}>
+                  Start Calculator
+                </button>
+              </div>
               <div style={{ marginTop: 28, display: "flex", gap: mob ? 20 : 32 }}>
                 {[{ n: "8", t: "Questions" }, { n: "4", t: "Categories" }, { n: "~2 min", t: "To complete" }].map(s => (
                   <div key={s.t}>
@@ -338,11 +340,11 @@ export default function ROICalculator() {
             <>
               <Stepper current={0} labels={["Inputs", "Results"]} />
               <div style={{ background: B.navyLight + "40", borderRadius: 12, border: `1px solid ${B.navyLight}`, padding: pad }}>
-                <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 18 }}>Time inputs</div>
+                <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 18 }}>Your time</div>
 
                 <div style={{ marginBottom: 22 }}>
-                  <div style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: B.gray300, marginBottom: 4, lineHeight: 1.4 }}>What is your average hourly cost for the people doing this work?</div>
-                  <div style={{ fontFamily: F, fontSize: 11, color: B.gray500, marginBottom: 10, lineHeight: 1.35 }}>Use your best estimate. Include wages and basic overhead.</div>
+                  <div style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: B.gray300, marginBottom: 4, lineHeight: 1.4 }}>About what do you pay per hour for the people doing this work?</div>
+                  <div style={{ fontFamily: F, fontSize: 11, color: B.gray500, marginBottom: 10, lineHeight: 1.35 }}>Include wages plus payroll taxes and basic benefits.</div>
                   <div style={{ display: "grid", gridTemplateColumns: `repeat(${mob ? 2 : 4}, 1fr)`, gap: 8 }}>
                     {COST_OPTS.map(o => <Chip key={o.label} label={o.label} selected={cost === o.label} onClick={() => setCost(o.label)} />)}
                   </div>
@@ -351,9 +353,9 @@ export default function ROICalculator() {
 
                 <div style={{ borderTop: `1px solid ${B.navyLight}`, paddingTop: 18, marginTop: 4 }}>
                   <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: B.gray500, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 18 }}>Context</div>
-                  <QRow label="How many people do this work each week?" options={TEAM_OPTS} value={team} onChange={setTeam} cols={5} mob={mob} />
-                  <QRow label="What do you spend each month on software that helps automate work?" options={TOOL_OPTS} value={toolSpend} onChange={setToolSpend} cols={5} mob={mob} />
-                  <QRow label="Team adoption readiness?" options={ADOPT_OPTS} value={adopt} onChange={setAdopt} cols={3} mob={mob}
+                  <QRow label="How many people do this work?" options={TEAM_OPTS} value={team} onChange={setTeam} cols={5} mob={mob} />
+                  <QRow label="What do you spend per month on software that helps automate this work?" options={TOOL_OPTS} value={toolSpend} onChange={setToolSpend} cols={5} mob={mob} />
+                  <QRow label="How ready is your team to use new tools?" options={ADOPT_OPTS} value={adopt} onChange={setAdopt} cols={3} mob={mob}
                     hint={(v) => ADOPT_OPTS.find(o => o.label === v)?.desc || ""} />
                 </div>
 
