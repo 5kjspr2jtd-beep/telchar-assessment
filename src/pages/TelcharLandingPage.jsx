@@ -374,7 +374,7 @@ function TierSection({ onCTA }) {
             Every assessment starts free
           </h2>
           <p style={{ fontFamily: font, fontSize: 15, color: BRAND.gray400, marginTop: 14, lineHeight: 1.6 }}>
-            Answer the same 17 questions. Choose how deep you want the analysis.
+            Answer the same 18 questions. Choose how deep you want the analysis.
           </p>
           <p style={{ fontFamily: font, fontSize: 13, color: BRAND.gray500, marginTop: 8 }}>
             Start free. Upgrade after you see your score.
@@ -555,7 +555,7 @@ function StepsSection() {
   const steps = [
     {
       num: "1",
-      title: "Answer 17 questions",
+      title: "Answer 18 questions",
       desc: "Takes about five minutes. No preparation needed.",
     },
     {
@@ -636,7 +636,7 @@ function CTASection({ onCTA }) {
           Know where you stand before you spend a dollar on AI
         </h2>
         <p style={{ fontFamily: font, fontSize: 16, color: BRAND.gray300, lineHeight: 1.7, marginBottom: 44 }}>
-          17 questions. 5 minutes. Free results on screen. Upgrade to a detailed report if you want more.
+          18 questions. 5 minutes. Free results on screen. Upgrade to a detailed report if you want more.
         </p>
 
         <button className="final-cta" onClick={onCTA} style={{

@@ -991,7 +991,7 @@ function LandingPage({ onStart }) {
         </p>
 
         <div style={{ marginTop: 40, display: "flex", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
-          {[{ num: "17", text: "Questions" }, { num: "5", text: "AI Categories Scored" }, { num: "100%", text: "Confidential" }].map((item, i) => (
+          {[{ num: "18", text: "Questions" }, { num: "5", text: "AI Categories Scored" }, { num: "100%", text: "Confidential" }].map((item, i) => (
             <div key={i} style={{ textAlign: "center" }}>
               <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 22, fontWeight: 700, color: BRAND.blue }}>{item.num}</div>
               <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: BRAND.gray400, marginTop: 2 }}>{item.text}</div>
@@ -1174,9 +1174,12 @@ function AssessmentFlow({ onComplete }) {
         )}
 
         <div style={{ opacity: fadeState === "in" ? 1 : 0, transform: fadeState === "in" ? "translateY(0)" : "translateY(8px)", transition: "all 0.25s ease" }}>
-          <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: BRAND.white, lineHeight: 1.4, marginBottom: 28 }}>
+          <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: BRAND.white, lineHeight: 1.4, marginBottom: 10 }}>
             {question.label}
           </h2>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: BRAND.gray500, marginBottom: 24, letterSpacing: "0.01em", opacity: 0.7 }}>
+            Your AI readiness score appears instantly after the final question.
+          </p>
 
           {(question.type === "text" || question.type === "email") && (
             <div style={{ position: "relative", width: "100%" }}>
@@ -1592,6 +1595,17 @@ export default function TelcharAssessment() {
   const [page, setPage] = useState("assessment");
   const [answers, setAnswers] = useState(null);
   const [scores, setScores] = useState(null);
+
+  // Warn before leaving during assessment
+  useEffect(() => {
+    if (page !== "assessment") return;
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "You are part way through the AI readiness assessment. Leaving now will lose your progress.";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [page]);
   const [quickWins, setQuickWins] = useState(null);
   const [leadQuality, setLeadQuality] = useState(null);
   const [tier, setTier] = useState("free");
