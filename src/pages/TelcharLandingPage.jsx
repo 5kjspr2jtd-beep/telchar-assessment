@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 // ============================================================
 
 const BRAND = {
-  navy: "#1B2A3D",
-  navyDeep: "#0F1720",
+  navy: "#0F1923",
+  navyDeep: "#0A1220",
   navyMid: "#162231",
-  navyLight: "#243447",
+  navyLight: "#1C2B3D",
   navySurface: "#1A2738",
-  blue: "#2D8BF0",
-  blueBright: "#3B9AFF",
+  blue: "#2979FF",
+  blueBright: "#4B8EFF",
   white: "#FFFFFF",
   gray50: "#F8FAFB",
   gray100: "#F1F4F7",
@@ -21,9 +21,9 @@ const BRAND = {
   gray300: "#C5CCD6",
   gray400: "#8895A5",
   gray500: "#5A6878",
-  gold: "#D9B95E",
-  green: "#34C759",
-  orange: "#F5A623",
+  gold: "#C9A84C",
+  green: "#22C55E",
+  orange: "#F59E0B",
   purple: "#8B5CF6",
 };
 
