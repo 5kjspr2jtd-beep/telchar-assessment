@@ -672,6 +672,9 @@ function Footer() {
         <p style={{ fontFamily: font, fontSize: 12, fontWeight: 400, color: BRAND.white, opacity: 0.45, margin: 0, letterSpacing: "0.01em", lineHeight: 1 }}>
           AI guidance for real businesses.
         </p>
+        <a href="/?page=roi" style={{ fontFamily: font, fontSize: 11, fontWeight: 500, color: BRAND.white, opacity: 0.3, margin: 0, letterSpacing: "0.02em", lineHeight: 1, textDecoration: "underline", textUnderlineOffset: "3px" }}>
+          ROI Calculator
+        </a>
         <p className="footer-copy" style={{ fontFamily: font, fontSize: 11, fontWeight: 500, color: BRAND.white, opacity: 0.3, margin: 0, letterSpacing: "0.02em", lineHeight: 1 }}>
           &copy; {new Date().getFullYear()} Telchar AI. All rights reserved.
         </p>
