@@ -133,16 +133,18 @@ function HeroSection({ onCTA }) {
             ))}
           </div>
 
-          <button onClick={onCTA} style={{
-            fontFamily: FONT, fontSize: 11, fontWeight: 700,
-            letterSpacing: "0.12em", textTransform: "uppercase",
-            padding: "11px 24px",
-            background: P.gold, color: "#fff",
-            border: "none", cursor: "pointer", transition: "all 0.2s ease",
-            minHeight: isMobile ? 48 : "auto",
-          }}>
-            Start Free Assessment
-          </button>
+          <div style={{ textAlign: "center" }}>
+            <button onClick={onCTA} style={{
+              fontFamily: FONT, fontSize: 11, fontWeight: 700,
+              letterSpacing: "0.12em", textTransform: "uppercase",
+              padding: "14px 32px", minWidth: 280,
+              background: P.gold, color: "#fff",
+              border: "none", cursor: "pointer", transition: "all 0.2s ease",
+              minHeight: isMobile ? 48 : "auto",
+            }}>
+              Start Free Assessment
+            </button>
+          </div>
 
           <p style={{
             fontFamily: FONT, fontSize: 12, color: P.navyText, marginTop: 16,
@@ -844,16 +846,18 @@ function CTASection({ onCTA }) {
           18 questions. 5 minutes. Free results on screen. Upgrade to a detailed report if you want more.
         </p>
 
-        <button onClick={onCTA} style={{
-          fontFamily: FONT, fontSize: 11, fontWeight: 700,
-          letterSpacing: "0.12em", textTransform: "uppercase",
-          padding: "11px 24px",
-          background: P.gold, color: "#fff",
-          border: "none", cursor: "pointer", transition: "all 0.2s ease",
-          minHeight: isMobile ? 48 : "auto",
-        }}>
-          Start Free Assessment
-        </button>
+        <div style={{ textAlign: "center" }}>
+          <button onClick={onCTA} style={{
+            fontFamily: FONT, fontSize: 11, fontWeight: 700,
+            letterSpacing: "0.12em", textTransform: "uppercase",
+            padding: "14px 32px", minWidth: 280,
+            background: P.gold, color: "#fff",
+            border: "none", cursor: "pointer", transition: "all 0.2s ease",
+            minHeight: isMobile ? 48 : "auto",
+          }}>
+            Start Free Assessment
+          </button>
+        </div>
 
         <p style={{ fontFamily: FONT, fontSize: 12, color: P.navyText, marginTop: 16, letterSpacing: "0.04em", opacity: 0.5 }}>
           Free. No login. Upgrade anytime.

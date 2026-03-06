@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { TELCHAR as P, FONT, MONO, scoreColor, scoreTier, GOOGLE_FONTS_URL } from "../design/telcharDesign";
 
 // ============================================================
@@ -1551,7 +1552,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
               <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginTop: 8 }}>Without a structured roadmap, most teams delay action and lose momentum.</p>
               <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginTop: 6, fontStyle: "italic", maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>This roadmap is built from your assessment responses. More detailed and accurate inputs produce a stronger plan.</p>
               <p style={{ fontFamily: FONT, fontSize: 11, color: P.inkFaint, marginTop: 4 }}>Designed for execution. Not external research or bespoke consulting.</p>
-              <p style={{ marginTop: 10 }}><span onClick={() => { alert("In production: opens sample 90-day roadmap PDF preview."); }} style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample 90-day roadmap</span></p>
+              <p style={{ marginTop: 10 }}><span onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample 90-day roadmap</span></p>
 
               <div style={{ marginTop: 28, paddingTop: 24, borderTop: `1px solid ${P.paperRule}` }}>
                 <button onClick={handleCheckout} disabled={checkoutLoading}
@@ -1564,7 +1565,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
                 <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, marginTop: 10 }}>Detailed action steps and tool guidance you can execute immediately.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginTop: 4 }}>For teams who prefer to determine sequencing internally.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginTop: 6, fontStyle: "italic" }}>The quality of your report depends on the accuracy of the information provided in your assessment.</p>
-                <p style={{ marginTop: 8 }}><span onClick={() => { alert("In production: opens sample full report PDF preview."); }} style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample full report</span></p>
+                <p style={{ marginTop: 8 }}><span onClick={() => navigate("/report?tier=report&demo=true")} style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample full report</span></p>
               </div>
 
               <div style={{ marginTop: 24, paddingTop: 16, borderTop: `1px solid ${P.paperRule}` }}>
@@ -1635,6 +1636,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
 }
 
 export default function TelcharAssessment() {
+  const navigate = useNavigate();
   const [page, setPage] = useState("landing");
   const [answers, setAnswers] = useState(null);
   const [scores, setScores] = useState(null);
@@ -1720,52 +1722,13 @@ export default function TelcharAssessment() {
     window.scrollTo(0, 0);
   };
 
-  const handleCheckout = async () => {
-    try {
-      const res = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          companyName: answers?.company_name || "",
-          contactEmail: answers?.contact_email || "",
-          tier: "pro",
-        }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("No checkout URL returned:", data);
-        alert("Unable to start checkout. Please try again.");
-      }
-    } catch (err) {
-      console.error("Checkout fetch error:", err);
-      alert("Unable to start checkout. Please try again.");
-    }
+  // TODO: Re-enable Stripe checkout when going live. For now, bypass to report preview.
+  const handleCheckout = () => {
+    navigate("/report?tier=report&demo=true");
   };
 
-  const handleAdvancedCheckout = async () => {
-    try {
-      const res = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          companyName: answers?.company_name || "",
-          contactEmail: answers?.contact_email || "",
-          tier: "advanced",
-        }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("No checkout URL returned:", data);
-        alert("Unable to start checkout. Please try again.");
-      }
-    } catch (err) {
-      console.error("Advanced checkout fetch error:", err);
-      alert("Unable to start checkout. Please try again.");
-    }
+  const handleAdvancedCheckout = () => {
+    navigate("/report?tier=plan&demo=true");
   };
 
   return (
