@@ -260,7 +260,7 @@ function SegScale({ score }) {
       </div>
       <div style={{ display:"flex", justifyContent:"space-between" }}>
         {[0,20,40,60,80,100].map(n=>(
-          <span key={n} style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:7, color:P.inkFaint }}>{n}</span>
+          <span key={n} style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:12, color:P.inkFaint }}>{n}</span>
         ))}
       </div>
     </div>
@@ -271,8 +271,8 @@ function SecLabel({ children, style={} }) {
   return (
     <div style={{
       fontFamily:"'IBM Plex Sans',sans-serif",
-      fontSize:8, fontWeight:700,
-      letterSpacing:"0.28em", textTransform:"uppercase",
+      fontSize:12, fontWeight:700,
+      letterSpacing:"0.22em", textTransform:"uppercase",
       color:P.inkFaint, marginBottom:14, ...style,
     }}>{children}</div>
   );
@@ -297,12 +297,12 @@ function ReportPage({ children, pg, total }) {
         padding:"0 36px", height:56,
       }}>
         <div>
-          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, fontWeight:600, color:P.navyText, lineHeight:1.2 }}>{CO}</div>
-          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:9, color:P.navyDim, marginTop:2, letterSpacing:"0.04em" }}>{IND}</div>
+          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, fontWeight:600, color:"#E6EEF8", lineHeight:1.2 }}>{CO}</div>
+          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, color:"#9BB1C7", marginTop:2, letterSpacing:"0.04em" }}>{IND}</div>
         </div>
         <div style={{ textAlign:"right" }}>
-          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7.5, fontWeight:700, letterSpacing:"0.24em", textTransform:"uppercase", color:P.navyFaint, marginBottom:2 }}>Telchar AI Readiness Index{"\u2122"}</div>
-          <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:7, color:P.navyDim, letterSpacing:"0.1em" }}>Confidential · {DATE}</div>
+          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.22em", textTransform:"uppercase", color:P.navyFaint, marginBottom:2 }}>Telchar AI Readiness Index{"\u2122"}</div>
+          <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:12, color:"#9BB1C7", letterSpacing:"0.1em" }}>Confidential · {DATE}</div>
         </div>
       </div>
 
@@ -319,8 +319,8 @@ function ReportPage({ children, pg, total }) {
         display:"flex", alignItems:"center", justifyContent:"space-between",
         padding:"0 36px",
       }}>
-        <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7.5, fontWeight:500, letterSpacing:"0.2em", textTransform:"uppercase", color:P.navyDim }}>Telchar AI · Confidential</span>
-        <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:7.5, color:P.navyDim, letterSpacing:"0.1em" }}>Page {pg} of {total}</span>
+        <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:500, letterSpacing:"0.2em", textTransform:"uppercase", color:"#9BB1C7" }}>Telchar AI · Confidential</span>
+        <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:12, color:"#9BB1C7", letterSpacing:"0.1em" }}>Page {pg} of {total}</span>
       </div>
     </div>
   );
@@ -333,10 +333,10 @@ function Paywall({ tier, onUpgrade }) {
     : { label:"Full Scorecard — $150", desc:"Unlock your 90-day implementation roadmap, risk analysis, data infrastructure plan, and engagement pathway.", color:"#2D6FBA" };
   return (
     <div style={{ background:P.paperShade, borderLeft:`3px solid ${cfg.color}`, padding:"20px 24px", marginTop:32 }}>
-      <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:8, fontWeight:700, letterSpacing:"0.24em", textTransform:"uppercase", color:cfg.color, marginBottom:8 }}>{cfg.label}</div>
+      <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.22em", textTransform:"uppercase", color:cfg.color, marginBottom:8 }}>{cfg.label}</div>
       <p style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, color:P.inkMid, lineHeight:1.7, margin:"0 0 14px" }}>{cfg.desc}</p>
       <button onClick={onUpgrade} style={{
-        fontFamily:"'IBM Plex Sans',sans-serif", fontSize:11, fontWeight:700,
+        fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700,
         letterSpacing:"0.1em", textTransform:"uppercase",
         padding:"9px 20px", background:cfg.color, color:"#fff", border:"none", cursor:"pointer",
       }}>Unlock Report</button>
@@ -361,12 +361,12 @@ function PageCover({ pg, total }) {
 
       {/* Content */}
       <div style={{ flex:1, padding:"52px 48px 0", display:"flex", flexDirection:"column" }}>
-        <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:8, fontWeight:700, letterSpacing:"0.28em", textTransform:"uppercase", color:P.navyDim, marginBottom:12 }}>Telchar AI Readiness Index{"\u2122"}</div>
+        <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.22em", textTransform:"uppercase", color:"#9BB1C7", marginBottom:12 }}>Telchar AI Readiness Index{"\u2122"}</div>
 
         <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:36, fontWeight:700, color:"#E4EEF8", lineHeight:1.1, letterSpacing:"-0.01em", marginBottom:8 }}>
           {CO}
         </div>
-        <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:16, color:P.navyText, marginBottom:48 }}>{IND}</div>
+        <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:16, color:"#9BB1C7", marginBottom:48 }}>{IND}</div>
 
         <Rule diamond={false} style={{ borderTop:`1px solid #162438`, height:0, marginBottom:40 }}/>
 
@@ -375,19 +375,19 @@ function PageCover({ pg, total }) {
           <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:80, fontWeight:700, color:scoreColor(SCORES.overall), lineHeight:1, letterSpacing:"-0.04em" }}>{SCORES.overall}</div>
           <div>
             <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:14, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", color:scoreColor(SCORES.overall), marginBottom:4 }}>{scoreTier(SCORES.overall)}</div>
-            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:11, color:P.navyDim }}>out of 100</div>
+            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, color:"#9BB1C7" }}>out of 100</div>
           </div>
         </div>
 
-        <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, color:P.navyText, lineHeight:1.7, maxWidth:520, marginBottom:48 }}>
+        <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, color:"#9BB1C7", lineHeight:1.7, maxWidth:520, marginBottom:48 }}>
           This report presents findings from the Telchar AI Readiness Index{"\u2122"} across five operational dimensions. Scores reflect self-reported data collected via structured questionnaire and facilitated analysis.
         </div>
 
         <div style={{ display:"flex", gap:32 }}>
           {[["Assessment date", DATE],["Framework","v2.4 · Five Category"],["Classification","Confidential"]].map(([k,v])=>(
             <div key={k}>
-              <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7, fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", color:P.navyDim, marginBottom:4 }}>{k}</div>
-              <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:11, fontWeight:500, color:P.navyText }}>{v}</div>
+              <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", color:"#9BB1C7", marginBottom:4 }}>{k}</div>
+              <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, fontWeight:500, color:"#E6EEF8" }}>{v}</div>
             </div>
           ))}
         </div>
@@ -395,8 +395,8 @@ function PageCover({ pg, total }) {
 
       {/* Footer */}
       <div style={{ borderTop:`1px solid #162438`, height:38, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 48px", flexShrink:0 }}>
-        <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7.5, fontWeight:500, letterSpacing:"0.2em", textTransform:"uppercase", color:P.navyDim }}>Telchar AI · Confidential</span>
-        <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:7.5, color:P.navyDim }}>Page {pg} of {total}</span>
+        <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:500, letterSpacing:"0.2em", textTransform:"uppercase", color:"#9BB1C7" }}>Telchar AI · Confidential</span>
+        <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:12, color:"#9BB1C7" }}>Page {pg} of {total}</span>
       </div>
     </div>
   );
@@ -429,8 +429,8 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
           <div style={{ borderTop:`1px solid ${P.paperRule}` }}>
             {[["Industry",IND],["Categories","5 of 5 scored"],["SMB benchmark",`${BENCHMARK} / 100`]].map(([k,v])=>(
               <div key={k} style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", padding:"8px 0", borderBottom:`1px solid ${P.paperRule}`, gap:8 }}>
-                <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7.5, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", color:P.inkFaint, flexShrink:0 }}>{k}</span>
-                <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:11, fontWeight:500, color:P.inkMid, textAlign:"right" }}>{v}</span>
+                <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", color:P.inkFaint, flexShrink:0 }}>{k}</span>
+                <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, fontWeight:500, color:P.inkMid, textAlign:"right" }}>{v}</span>
               </div>
             ))}
           </div>
@@ -442,11 +442,11 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
           <p style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:mobile?13.5:14, color:P.inkMid, lineHeight:1.9, margin:"0 0 28px" }}>{interp}</p>
           {/* Benchmark block */}
           <div style={{ background:P.paperShade, borderLeft:`3px solid ${P.goldLight}`, padding:"14px 18px" }}>
-            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7.5, fontWeight:700, letterSpacing:"0.22em", textTransform:"uppercase", color:P.inkFaint, marginBottom:12 }}>Score vs. SMB benchmark</div>
+            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.22em", textTransform:"uppercase", color:P.inkFaint, marginBottom:12 }}>Score vs. SMB benchmark</div>
             <div style={{ display:"flex" }}>
               {[["Your score",SCORES.overall,P.navy],["SMB average",BENCHMARK,P.inkLight],["Delta",(delta>=0?"+":"")+delta,delta>=0?P.green:P.amber]].map(([label,val,col],i)=>(
                 <div key={label} style={{ paddingRight:i<2?20:0, paddingLeft:i>0?20:0, borderRight:i<2?`1px solid ${P.paperRule}`:"none" }}>
-                  <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", color:P.inkFaint, marginBottom:4 }}>{label}</div>
+                  <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", color:P.inkFaint, marginBottom:4 }}>{label}</div>
                   <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:22, fontWeight:700, color:col, lineHeight:1 }}>{val}</div>
                 </div>
               ))}
@@ -461,7 +461,7 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
       <SecLabel>Category breakdown</SecLabel>
       <div style={{ display:"grid", gridTemplateColumns:mobile?"44px 1fr 82px":"60px 1fr 110px", gap:mobile?12:22, paddingBottom:8, borderBottom:`2px solid ${P.ink}` }}>
         {["Score","Category & scale","Maturity"].map((h,i)=>(
-          <div key={h} style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7.5, fontWeight:700, letterSpacing:"0.22em", textTransform:"uppercase", color:P.inkLight, textAlign:i===0?"center":i===2?"right":"left" }}>{h}</div>
+          <div key={h} style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.22em", textTransform:"uppercase", color:P.inkLight, textAlign:i===0?"center":i===2?"right":"left" }}>{h}</div>
         ))}
       </div>
       {SCORES.cats.map(cat=>{
@@ -502,17 +502,17 @@ function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
       {visibleWins.map((w,i)=>(
         <div key={i} style={{ marginBottom:28, paddingBottom:28, borderBottom:i<visibleWins.length-1?`1px solid ${P.paperRule}`:"none" }}>
           <div style={{ display:"grid", gridTemplateColumns:"24px 1fr", gap:14 }}>
-            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:8, fontWeight:700, color:P.inkFaint, paddingTop:4, letterSpacing:"0.1em" }}>0{i+1}</div>
+            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, color:P.inkFaint, paddingTop:4, letterSpacing:"0.1em" }}>0{i+1}</div>
             <div>
               <div style={{ display:"flex", gap:10, alignItems:"baseline", flexWrap:"wrap", marginBottom:6 }}>
                 <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:mobile?13:15, fontWeight:700, color:P.ink }}>{w.title}</div>
-                <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:8, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:P.goldLight }}>{w.cat}</span>
+                <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:P.goldLight }}>{w.cat}</span>
               </div>
               <p style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, color:P.inkLight, lineHeight:1.75, margin:"0 0 14px" }}>{w.desc}</p>
               <div style={{ display:"flex", gap:0, borderTop:`1px solid ${P.paperRule}`, paddingTop:10 }}>
                 {[["Built with",w.tool],["Monthly cost",w.toolCost],["Timeline",w.time]].map(([k,v],j)=>(
                   <div key={k} style={{ paddingRight:j<2?20:0, paddingLeft:j>0?20:0, borderRight:j<2?`1px solid ${P.paperRule}`:"none" }}>
-                    <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:P.inkFaint, marginBottom:3 }}>{k}</div>
+                    <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:P.inkFaint, marginBottom:3 }}>{k}</div>
                     <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:600, color:P.ink }}>{v}</div>
                   </div>
                 ))}
@@ -534,12 +534,12 @@ function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
             <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:0 }}>
               {items.map(([label,val],i)=>(
                 <div key={label} style={{ paddingRight:i<2?24:0, paddingLeft:i>0?24:0, borderRight:i<2?`1px solid ${P.paperRule}`:"none" }}>
-                  <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7, fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", color:P.inkFaint, marginBottom:6 }}>{label}</div>
+                  <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", color:P.inkFaint, marginBottom:6 }}>{label}</div>
                   <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:15, fontWeight:700, color:P.gold }}>{val}</div>
                 </div>
               ))}
             </div>
-            <div style={{ marginTop:12, fontFamily:"'IBM Plex Sans',sans-serif", fontSize:10, color:P.inkFaint, lineHeight:1.7 }}>
+            <div style={{ marginTop:12, fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, color:P.inkFaint, lineHeight:1.7 }}>
               Estimates based on SMB automation benchmarks across comparable operational profiles. Actual results depend on implementation scope and workflow complexity.
             </div>
             {!demo && tier === "starter" && <Paywall tier="starter" onUpgrade={onUpgrade}/>}
@@ -576,7 +576,7 @@ function PageCategory({ catKey, pg, total }) {
       <div style={{ display:"flex", gap:mobile?16:32, alignItems:"flex-start", marginBottom:28, paddingBottom:24, borderBottom:`1px solid ${P.paperRule}` }}>
         <div style={{ flexShrink:0 }}>
           <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:72, fontWeight:700, color:scoreColor(cat.score), lineHeight:1, letterSpacing:"-0.04em" }}>{cat.score}</div>
-          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:scoreColor(cat.score), marginTop:4 }}>{scoreTier(cat.score)}</div>
+          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:scoreColor(cat.score), marginTop:4 }}>{scoreTier(cat.score)}</div>
         </div>
         <div style={{ flex:1, paddingTop:8 }}>
           <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:mobile?16:20, fontWeight:700, color:P.ink, marginBottom:12 }}>{cat.label}</div>
@@ -594,7 +594,7 @@ function PageCategory({ catKey, pg, total }) {
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:0, marginBottom:28, paddingBottom:28, borderBottom:`1px solid ${P.paperRule}` }}>
         {[["Your score",cat.score,scoreColor(cat.score)],["SMB average",BENCHMARK,P.inkLight],["Delta",(cat.score-BENCHMARK>=0?"+":"")+(cat.score-BENCHMARK),cat.score>=BENCHMARK?P.green:P.amber]].map(([label,val,col],i)=>(
           <div key={label} style={{ paddingRight:i<2?20:0, paddingLeft:i>0?20:0, borderRight:i<2?`1px solid ${P.paperRule}`:"none" }}>
-            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", color:P.inkFaint, marginBottom:4 }}>{label}</div>
+            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", color:P.inkFaint, marginBottom:4 }}>{label}</div>
             <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:22, fontWeight:700, color:col }}>{val}</div>
           </div>
         ))}
@@ -605,11 +605,11 @@ function PageCategory({ catKey, pg, total }) {
       <div style={{ background:P.paperShade, borderLeft:`3px solid ${tool.color}`, padding:"18px 20px" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:8, flexWrap:"wrap", gap:8 }}>
           <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:16, fontWeight:700, color:P.ink }}>{tool.name}</div>
-          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:9, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", color:tool.color }}>{tool.role}</div>
+          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", color:tool.color }}>{tool.role}</div>
         </div>
         <p style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, color:P.inkLight, lineHeight:1.75, margin:"0 0 14px" }}>{rec.focus}</p>
         <div style={{ borderTop:`1px solid ${P.paperRule}`, paddingTop:12 }}>
-          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:P.inkFaint, marginBottom:8 }}>How it applies here</div>
+          <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:P.inkFaint, marginBottom:8 }}>How it applies here</div>
           {tool.examples.map((ex,i)=>(
             <div key={i} style={{ display:"flex", gap:8, marginBottom:6 }}>
               <Diamond size={6} fill={tool.color} stroke="none" sw={0} style={{ marginTop:3 }}/>
@@ -647,9 +647,9 @@ function PageRoadmap({ pg, total }) {
         <div key={ph.phase} style={{ marginBottom:28, paddingBottom:28, borderBottom:i<phases.length-1?`1px solid ${P.paperRule}`:"none" }}>
           <div style={{ display:"grid", gridTemplateColumns:mobile?"1fr":"140px 1fr", gap:mobile?12:24, alignItems:"start" }}>
             <div>
-              <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:8, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", color:ph.color, marginBottom:4 }}>{ph.phase}</div>
+              <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", color:ph.color, marginBottom:4 }}>{ph.phase}</div>
               <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:15, fontWeight:700, color:P.ink, marginBottom:4 }}>{ph.label}</div>
-              <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:P.inkFaint, letterSpacing:"0.04em" }}>{ph.window}</div>
+              <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:12, color:P.inkFaint, letterSpacing:"0.04em" }}>{ph.window}</div>
             </div>
             <div>
               {ph.steps.map((s,j)=>(
@@ -690,8 +690,8 @@ function PageRisk({ pg, total }) {
             <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, color:P.inkLight, lineHeight:1.7 }}>{r.desc}</div>
           </div>
           <div style={{ textAlign:"right" }}>
-            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:P.inkFaint, marginBottom:4 }}>Severity</div>
-            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:11, fontWeight:700, color:sCol[r.severity]||P.ink }}>{r.severity}</div>
+            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:P.inkFaint, marginBottom:4 }}>Severity</div>
+            <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, fontWeight:700, color:sCol[r.severity]||P.ink }}>{r.severity}</div>
           </div>
         </div>
       ))}
@@ -717,7 +717,7 @@ function PageDataInfra({ pg, total }) {
       </p>
       {layers.map((l,i)=>(
         <div key={i} style={{ display:"grid", gridTemplateColumns:"24px 1fr", gap:16, marginBottom:22, paddingBottom:22, borderBottom:i<layers.length-1?`1px solid ${P.paperRule}`:"none" }}>
-          <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:P.inkFaint, paddingTop:3, letterSpacing:"0.1em" }}>0{i+1}</div>
+          <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:12, color:P.inkFaint, paddingTop:3, letterSpacing:"0.1em" }}>0{i+1}</div>
           <div>
             <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, fontWeight:700, color:P.ink, marginBottom:6 }}>{l.label}</div>
             <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, color:P.inkLight, lineHeight:1.7 }}>{l.desc}</div>
@@ -751,11 +751,11 @@ function PageEngagement({ pg, total }) {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:10, flexWrap:"wrap", gap:8 }}>
             <div>
               <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:16, fontWeight:700, color:P.ink }}>{e.phase}</div>
-              <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:P.inkFaint, letterSpacing:"0.04em", marginTop:2 }}>{e.window}</div>
+              <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:12, color:P.inkFaint, letterSpacing:"0.04em", marginTop:2 }}>{e.window}</div>
             </div>
             <div style={{ textAlign:"right" }}>
               <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:15, fontWeight:700, color:P.gold }}>{e.price}</div>
-              {e.credit && <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:10, color:P.inkFaint, marginTop:2 }}>{e.credit}</div>}
+              {e.credit && <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, color:P.inkFaint, marginTop:2 }}>{e.credit}</div>}
             </div>
           </div>
           <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
@@ -771,10 +771,10 @@ function PageEngagement({ pg, total }) {
 
       {/* CTA */}
       <div style={{ background:P.navy, padding:"24px 28px", marginTop:8 }}>
-        <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:8, fontWeight:700, letterSpacing:"0.26em", textTransform:"uppercase", color:P.navyDim, marginBottom:8 }}>Next step</div>
+        <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.22em", textTransform:"uppercase", color:"#9BB1C7", marginBottom:8 }}>Next step</div>
         <div style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:18, fontWeight:700, color:"#E4EEF8", marginBottom:10 }}>Schedule a free 30-minute consultation</div>
-        <p style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, color:P.navyText, lineHeight:1.75, margin:"0 0 18px" }}>Review your findings, ask questions, and understand whether a Discovery engagement is the right next step. No obligation.</p>
-        <button onClick={()=>alert("Production: opens calendar booking link.")} style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", padding:"11px 24px", background:P.gold, color:"#fff", border:"none", cursor:"pointer" }}>Book a Call</button>
+        <p style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, color:"#9BB1C7", lineHeight:1.75, margin:"0 0 18px" }}>Review your findings, ask questions, and understand whether a Discovery engagement is the right next step. No obligation.</p>
+        <button onClick={()=>alert("Production: opens calendar booking link.")} style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", padding:"14px 32px", background:P.gold, color:"#fff", border:"none", cursor:"pointer" }}>Book a Call</button>
       </div>
     </ReportPage>
   );
@@ -861,17 +861,17 @@ export default function App({ initialTier = "free", demo = false }) {
         <div style={{ width:1, height:12, background:P.navyFaint, flexShrink:0 }}/>
 
         {/* Page label — truncates gracefully */}
-        <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:11, color:P.navyText, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", flex:1, minWidth:0 }}>{page.label}</span>
+        <span style={{ fontFamily:"'IBM Plex Sans',sans-serif", fontSize:13, color:"#E6EEF8", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", flex:1, minWidth:0 }}>{page.label}</span>
 
         {/* Tier tabs */}
         <div style={{ display:"flex", gap:3, flexShrink:0 }}>
           {[["free","Free"],["starter","$50"],["full","$150"]].map(([t,label])=>(
             <button key={t} onClick={()=>upgrade(t)} style={{
-              fontFamily:"'IBM Plex Sans',sans-serif", fontSize:7, fontWeight:700,
+              fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, fontWeight:700,
               letterSpacing:"0.12em", textTransform:"uppercase",
               padding:"3px 7px",
               background:tier===t?P.gold+"22":"transparent",
-              color:tier===t?P.goldLight:P.navyDim,
+              color:tier===t?P.goldLight:"#9BB1C7",
               border:`1px solid ${tier===t?P.gold+"55":P.navyFaint}`,
               cursor:"pointer",
             }}>{label}</button>
@@ -879,7 +879,7 @@ export default function App({ initialTier = "free", demo = false }) {
         </div>
 
         {/* Page counter */}
-        <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:P.navyDim, flexShrink:0, marginLeft:4 }}>{cur+1}/{pages.length}</span>
+        <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:12, color:"#9BB1C7", flexShrink:0, marginLeft:4 }}>{cur+1}/{pages.length}</span>
 
         {/* Next — minimal text button */}
         <button onClick={next} disabled={cur===pages.length-1} style={{
@@ -894,8 +894,14 @@ export default function App({ initialTier = "free", demo = false }) {
 
       {/* Report page — seamless paper background, no padding gap on mobile */}
       <div style={{ display:"flex", justifyContent:"center", overflowX:"hidden" }}>
-        <div style={{ width:"100%", maxWidth:960 }}>
+        <div style={{ width:"100%", maxWidth:1100 }}>
           {page.node}
+          {/* Bottom navigation */}
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"24px 36px", borderTop:"1px solid rgba(255,255,255,0.08)", background:P.navy }}>
+            <span onClick={cur>0?prev:undefined} style={{ fontFamily:"'IBM Plex Sans', sans-serif", fontSize:13, color:"#9BB1C7", cursor:cur>0?"pointer":"default", visibility:cur===0?"hidden":"visible" }}>{"\u2190"} Previous section</span>
+            <span style={{ fontFamily:"'IBM Plex Sans', sans-serif", fontSize:13, color:"#9BB1C7" }}>Page {cur+1} of {pages.length}</span>
+            <span onClick={cur<pages.length-1?next:undefined} style={{ fontFamily:"'IBM Plex Sans', sans-serif", fontSize:13, color:"#9BB1C7", cursor:cur<pages.length-1?"pointer":"default", visibility:cur===pages.length-1?"hidden":"visible" }}>Next section {"\u2192"}</span>
+          </div>
         </div>
       </div>
     </div>

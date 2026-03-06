@@ -68,10 +68,10 @@ function Chip({ label, selected, onClick, small }) {
   return (
     <button onClick={onClick}
       style={{
-        fontFamily: FONT, fontSize: small ? 12 : 13, fontWeight: selected ? 700 : 500,
+        fontFamily: FONT, fontSize: small ? 12 : 13, fontWeight: selected ? 600 : 400,
         padding: "10px 8px",
-        background: selected ? P.gold + "22" : P.paperShade,
-        border: `1.5px solid ${selected ? P.gold : P.paperRule}`,
+        background: selected ? P.goldFaint : "transparent",
+        border: `1px solid ${selected ? P.gold : P.paperRule}`,
         color: selected ? P.ink : P.inkMid,
         cursor: "pointer", transition: "all 0.12s ease",
         display: "flex", alignItems: "center", justifyContent: "center",
@@ -93,7 +93,7 @@ function QRow({ label, options, value, onChange, cols = 4, hint, mob: isMob }) {
       <div style={{ display: "grid", gridTemplateColumns: `repeat(${effectiveCols}, 1fr)`, gap: 8 }}>
         {options.map(o => <Chip key={o.label} label={o.label} selected={value === o.label} onClick={() => onChange(o.label)} small={effectiveCols > 4} />)}
       </div>
-      {hint && value && <div style={{ fontFamily: FONT, fontSize: 11, color: P.inkLight, marginTop: 6, lineHeight: 1.35 }}>{hint(value)}</div>}
+      {hint && value && <div style={{ fontFamily: FONT, fontSize: 13, color: P.inkLight, marginTop: 6, lineHeight: 1.35 }}>{hint(value)}</div>}
     </div>
   );
 }
@@ -105,7 +105,7 @@ function CatRow({ label, hLo, hHi, sLo, sHi, rateLo, rateHi, mob }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 12 }}>
         <div>
           <div style={{ fontFamily: FONT, fontSize: 13, fontWeight: 600, color: P.ink }}>{label}</div>
-          <div style={{ fontFamily: FONT, fontSize: 11, color: P.inkLight, marginTop: 3 }}>{hLo}–{hHi} hrs/wk at {pct(rateLo)}–{pct(rateHi)}%</div>
+          <div style={{ fontFamily: FONT, fontSize: 13, color: P.inkLight, marginTop: 3 }}>{hLo}–{hHi} hrs/wk at {pct(rateLo)}–{pct(rateHi)}%</div>
         </div>
         <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 700, color: P.green, whiteSpace: "nowrap" }}>
           ${sLo.toLocaleString()}–${sHi.toLocaleString()}
@@ -143,7 +143,7 @@ function Stepper({ current, labels }) {
               sw={1.5}
             />
             <span style={{
-              fontFamily: FONT, fontSize: 8, fontWeight: 700,
+              fontFamily: FONT, fontSize: 12, fontWeight: 700,
               letterSpacing: "0.18em", textTransform: "uppercase",
               color: i <= current ? P.gold : P.inkFaint,
             }}>{l}</span>
@@ -176,8 +176,8 @@ function RateSlider({ label, value, min, max, onChange }) {
         />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <span style={{ fontFamily: FONT, fontSize: 10, color: P.inkFaint }}>{pctMin}%</span>
-        <span style={{ fontFamily: FONT, fontSize: 10, color: P.inkFaint }}>{pctMax}%</span>
+        <span style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint }}>{pctMin}%</span>
+        <span style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint }}>{pctMax}%</span>
       </div>
     </div>
   );
@@ -195,6 +195,7 @@ export default function ROICalculator() {
   const [showAdjust, setShowAdjust] = useState(false);
   const [rateOverrides, setRateOverrides] = useState({});
   const [showRateSliders, setShowRateSliders] = useState(false);
+  const [estimationMode, setEstimationMode] = useState("conservative");
   const resultsRef = useRef(null);
   const mob = useMobile();
   const mobBtn = useMobile(480);
@@ -206,6 +207,7 @@ export default function ROICalculator() {
 
   const confidenceScore = Math.min(100, Math.round((inputCount / maxInputs) * 70 + (ADOPT_OPTS.find(o => o.label === adopt)?.factor || 0.72) * 30));
   const confidenceLabel = confidenceScore >= 75 ? "Higher" : confidenceScore >= 55 ? "Moderate" : "Lower";
+  const modeMult = estimationMode === "conservative" ? 1.0 : estimationMode === "balanced" ? 1.35 : 1.7;
 
   const getRate = useCallback((key) => {
     const d = DEFAULTS[key];
@@ -248,8 +250,9 @@ export default function ROICalculator() {
     if (tHi > gCap) { const sc = gCap / tHi; tHi = gCap; bd.forEach(b => { b.hHi = rH(b.hHi * sc); b.sHi = r50(b.sHi * sc); }); }
     if (tLo > gCap) { const sc = gCap / tLo; tLo = gCap; bd.forEach(b => { b.hLo = rH(b.hLo * sc); b.sLo = r50(b.sLo * sc); }); }
 
-    const grossLo = r50(tLo * cMid * 52);
-    const grossHi = r50(tHi * cMid * 52);
+    bd.forEach(b => { b.sLo = r50(b.sLo * modeMult); b.sHi = r50(b.sHi * modeMult); });
+    const grossLo = r50(tLo * cMid * 52 * modeMult);
+    const grossHi = r50(tHi * cMid * 52 * modeMult);
     const annToolCost = ts * 12;
     const deduct = includeToolCost ? annToolCost : 0;
     const netLo = grossLo - deduct;
@@ -261,7 +264,7 @@ export default function ROICalculator() {
     }
 
     return { bd, grossLo, grossHi, netLo, netHi, annToolCost, payback, wkLo: rH(tLo), wkHi: rH(tHi), costLabel: cost, af, tf };
-  }, [cost, hrs, adopt, team, toolSpend, includeToolCost, hrsReady, getRate, catKeys]);
+  }, [cost, hrs, adopt, team, toolSpend, includeToolCost, hrsReady, getRate, catKeys, modeMult]);
 
   const results = step === "results" ? compute() : null;
   const txt = { fontFamily: FONT, fontSize: 12, color: P.inkLight, lineHeight: 1.6, marginTop: 0 };
@@ -271,7 +274,7 @@ export default function ROICalculator() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const resetDefaults = () => { setAdopt("Medium"); setTeam("1–3"); setToolSpend("$0"); setIncludeToolCost(true); setRateOverrides({}); setShowRateSliders(false); };
-  const resetAll = () => { setCost(null); setHrs({}); resetDefaults(); setShowAdjust(false); setStep("intro"); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const resetAll = () => { setCost(null); setHrs({}); resetDefaults(); setShowAdjust(false); setEstimationMode("conservative"); setStep("intro"); window.scrollTo({ top: 0, behavior: "smooth" }); };
 
   const confColor = confidenceLabel === "Higher" ? P.green : confidenceLabel === "Moderate" ? P.amber : P.inkLight;
 
@@ -301,7 +304,7 @@ export default function ROICalculator() {
           <span style={{ fontFamily: FONT, fontSize: 13, fontWeight: 600, color: P.navyText }}>ROI Calculator</span>
         </div>
         <span style={{
-          fontFamily: FONT, fontSize: 7, fontWeight: 700,
+          fontFamily: FONT, fontSize: 12, fontWeight: 700,
           letterSpacing: "0.12em", textTransform: "uppercase",
           padding: "3px 7px",
           background: P.gold + "22", color: P.goldLight,
@@ -326,9 +329,9 @@ export default function ROICalculator() {
 
               <button onClick={() => setStep("questions")}
                 style={{
-                  fontFamily: FONT, fontSize: 11, fontWeight: 700,
+                  fontFamily: FONT, fontSize: 12, fontWeight: 700,
                   letterSpacing: "0.12em", textTransform: "uppercase",
-                  padding: "11px 24px",
+                  padding: "14px 32px",
                   background: P.gold, color: "#fff", border: "none",
                   cursor: "pointer",
                   width: mob ? "100%" : "auto",
@@ -341,13 +344,13 @@ export default function ROICalculator() {
               <div style={{ display: "flex", gap: 0 }}>
                 {[{ n: "8", t: "Questions" }, { n: "4", t: "Categories" }, { n: "~2 min", t: "To complete" }].map((s, i) => (
                   <div key={s.t} style={{ paddingRight: i < 2 ? 24 : 0, paddingLeft: i > 0 ? 24 : 0, borderRight: i < 2 ? `1px solid ${P.paperRule}` : "none" }}>
-                    <div style={{ fontFamily: FONT, fontSize: 7, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 4 }}>{s.t}</div>
+                    <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 4 }}>{s.t}</div>
                     <div style={{ fontFamily: FONT, fontSize: 18, fontWeight: 700, color: P.ink }}>{s.n}</div>
                   </div>
                 ))}
               </div>
 
-              <p style={{ fontFamily: FONT, fontSize: 11, color: P.inkFaint, marginTop: 28, lineHeight: 1.5 }}>No email required. No data stored. Results update live.</p>
+              <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, marginTop: 28, lineHeight: 1.5 }}>No email required. No data stored. Results update live.</p>
             </div>
           )}
 
@@ -361,7 +364,7 @@ export default function ROICalculator() {
                 <div style={{ fontFamily: FONT, fontSize: 13, fontWeight: 500, color: P.inkMid, marginBottom: 4, lineHeight: 1.5 }}>
                   About how many total hours per week does your business spend on the activities below?
                 </div>
-                <div style={{ fontFamily: FONT, fontSize: 11, color: P.inkLight, marginBottom: 18, lineHeight: 1.35 }}>
+                <div style={{ fontFamily: FONT, fontSize: 13, color: P.inkLight, marginBottom: 18, lineHeight: 1.35 }}>
                   Estimate across the whole business, not just you.
                 </div>
 
@@ -371,7 +374,7 @@ export default function ROICalculator() {
                   <div style={{ fontFamily: FONT, fontSize: 13, fontWeight: 500, color: P.inkMid, marginBottom: 4, lineHeight: 1.4 }}>
                     On average, what do you pay per hour for the people doing this work?
                   </div>
-                  <div style={{ fontFamily: FONT, fontSize: 11, color: P.inkLight, marginBottom: 10, lineHeight: 1.35 }}>
+                  <div style={{ fontFamily: FONT, fontSize: 13, color: P.inkLight, marginBottom: 10, lineHeight: 1.35 }}>
                     Estimate the average hourly cost across everyone who handles these tasks.
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: `repeat(${mob ? 2 : 4}, 1fr)`, gap: 8 }}>
@@ -390,9 +393,9 @@ export default function ROICalculator() {
                   <div style={{ display: "flex", gap: 14, alignItems: "center", marginTop: 8 }}>
                     <button onClick={goResults} disabled={!hrsReady}
                       style={{
-                        fontFamily: FONT, fontSize: 11, fontWeight: 700,
+                        fontFamily: FONT, fontSize: 12, fontWeight: 700,
                         letterSpacing: "0.12em", textTransform: "uppercase",
-                        padding: "11px 24px",
+                        padding: "14px 32px",
                         background: hrsReady ? P.gold : P.inkFaint,
                         color: "#fff", border: "none",
                         cursor: hrsReady ? "pointer" : "default",
@@ -409,9 +412,9 @@ export default function ROICalculator() {
                 <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, padding: "10px 16px", background: P.navy, borderTop: `1px solid ${P.navyFaint}`, zIndex: 100 }}>
                   <button onClick={goResults} disabled={!hrsReady}
                     style={{
-                      fontFamily: FONT, fontSize: 11, fontWeight: 700,
+                      fontFamily: FONT, fontSize: 12, fontWeight: 700,
                       letterSpacing: "0.12em", textTransform: "uppercase",
-                      width: "100%", padding: "11px 0",
+                      width: "100%", padding: "14px 0",
                       background: hrsReady ? P.gold : P.inkFaint,
                       color: "#fff", border: "none",
                       cursor: hrsReady ? "pointer" : "default",
@@ -429,19 +432,43 @@ export default function ROICalculator() {
             <div ref={resultsRef}>
               <Stepper current={1} labels={["Inputs", "Results"]} />
 
+              {/* Estimation mode toggle */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 8 }}>Estimation mode</div>
+                <div style={{ display: "flex", gap: 0 }}>
+                  {["conservative", "balanced", "aggressive"].map((mode) => {
+                    const isActive = estimationMode === mode;
+                    return (
+                      <button key={mode} onClick={() => setEstimationMode(mode)}
+                        style={{
+                          fontFamily: FONT, fontSize: 12, fontWeight: isActive ? 600 : 400,
+                          padding: "8px 16px", cursor: "pointer",
+                          background: isActive ? P.goldFaint : "transparent",
+                          border: `1px solid ${isActive ? P.gold : P.paperRule}`,
+                          color: P.ink,
+                          textTransform: "capitalize",
+                          outline: "none", WebkitTapHighlightColor: "transparent",
+                        }}>
+                        {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Hero — matches PDF Score Summary structure */}
               <div style={{ marginBottom: 28 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-                  <SecLabel style={{ marginBottom: 0 }}>Conservative estimate</SecLabel>
-                  <div style={{ fontFamily: FONT, fontSize: 7, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: confColor, borderLeft: `3px solid ${confColor}`, paddingLeft: 8 }}>
+                  <SecLabel style={{ marginBottom: 0 }}>{estimationMode.charAt(0).toUpperCase() + estimationMode.slice(1)} estimate</SecLabel>
+                  <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: confColor, borderLeft: `3px solid ${confColor}`, paddingLeft: 8 }}>
                     {confidenceLabel} confidence
                   </div>
                 </div>
-                <div style={{ fontFamily: FONT, fontSize: 10, color: P.inkFaint, marginBottom: 16 }}>
+                <div style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginBottom: 16 }}>
                   Based on {inputCount} of {maxInputs} inputs provided and {adopt} adoption readiness
                 </div>
 
-                <div style={{ fontFamily: FONT, fontSize: 7, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 6 }}>
+                <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 6 }}>
                   {includeToolCost && results.annToolCost > 0 ? "Estimated Net Annual Savings" : "Estimated Annual Savings"}
                 </div>
                 <div style={{ fontFamily: FONT, fontSize: mob ? 36 : 48, fontWeight: 700, color: P.gold, lineHeight: 1, letterSpacing: "-0.04em" }}>
@@ -462,17 +489,17 @@ export default function ROICalculator() {
                     ...(results.payback !== null && includeToolCost ? [["Payback", pl(results.payback, "month")]] : []),
                   ].map(([label, val], i, arr) => (
                     <div key={label} style={{ paddingRight: i < arr.length - 1 ? 20 : 0, paddingLeft: i > 0 ? 20 : 0, borderRight: i < arr.length - 1 ? `1px solid ${P.paperRule}` : "none" }}>
-                      <div style={{ fontFamily: FONT, fontSize: 7, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 4 }}>{label}</div>
+                      <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 4 }}>{label}</div>
                       <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 700, color: P.ink }}>{val}</div>
                     </div>
                   ))}
                 </div>
 
                 {includeToolCost && results.annToolCost > 0 && results.netHi <= 0 && (
-                  <div style={{ fontFamily: FONT, fontSize: 11, color: P.inkFaint, marginTop: 12 }}>No payback under these assumptions</div>
+                  <div style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, marginTop: 12 }}>No payback under these assumptions</div>
                 )}
                 {results.annToolCost === 0 && (
-                  <div style={{ fontFamily: FONT, fontSize: 11, color: P.inkFaint, marginTop: 12 }}>Most teams add tooling as they scale. Adjust below to model costs.</div>
+                  <div style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, marginTop: 12 }}>Most teams add tooling as they scale. Adjust below to model costs.</div>
                 )}
               </div>
 
@@ -511,7 +538,7 @@ export default function ROICalculator() {
 
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
                       <div onClick={() => setIncludeToolCost(!includeToolCost)}
-                        style={{ width: 18, height: 18, border: `1.5px solid ${includeToolCost ? P.gold : P.inkFaint}`, background: includeToolCost ? P.gold : "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 11, color: "#fff", flexShrink: 0 }}>
+                        style={{ width: 18, height: 18, border: `1.5px solid ${includeToolCost ? P.gold : P.inkFaint}`, background: includeToolCost ? P.gold : "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 13, color: "#fff", flexShrink: 0 }}>
                         {includeToolCost ? "\u2713" : ""}
                       </div>
                       <span style={{ fontFamily: FONT, fontSize: 12, color: P.inkMid, cursor: "pointer" }} onClick={() => setIncludeToolCost(!includeToolCost)}>Subtract tool cost from savings</span>
@@ -525,7 +552,7 @@ export default function ROICalculator() {
                           <div style={{ width: 16, height: 16, background: showRateSliders ? "#fff" : P.paper, position: "absolute", top: 1, left: showRateSliders ? 18 : 1, transition: "left 0.15s ease" }} />
                         </div>
                       </div>
-                      <div style={{ fontFamily: FONT, fontSize: 11, color: P.inkLight, lineHeight: 1.4, marginBottom: showRateSliders ? 10 : 0 }}>
+                      <div style={{ fontFamily: FONT, fontSize: 13, color: P.inkLight, lineHeight: 1.4, marginBottom: showRateSliders ? 10 : 0 }}>
                         {showRateSliders
                           ? "How much of this work AI can realistically take off your plate."
                           : "Conservative defaults are applied. Toggle on to customize per category."
@@ -549,7 +576,7 @@ export default function ROICalculator() {
                 <Acc title="How we calculate this" defaultOpen={false}>
                   <div style={{ marginBottom: 12 }}>
                     <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 600, color: P.inkMid, marginBottom: 8 }}>Formula</div>
-                    <div style={{ fontFamily: MONO, fontSize: 11, color: P.inkMid, lineHeight: 1.6 }}>
+                    <div style={{ fontFamily: MONO, fontSize: 13, color: P.inkMid, lineHeight: 1.6 }}>
                       <div>Recovered Hrs = Entered Hrs × Rate × Adoption × Team Factor</div>
                       <div>Annual Savings = Recovered Hrs/Wk × Cost/Hr × 52</div>
                       <div>Net Savings = Gross Savings − Annual Tool Cost</div>
@@ -618,9 +645,9 @@ export default function ROICalculator() {
               <div style={{ display: "flex", flexDirection: mob ? "column" : "row", gap: 14, alignItems: mob ? "stretch" : "center", marginBottom: 20 }}>
                 <button onClick={() => { setStep("questions"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                   style={{
-                    fontFamily: FONT, fontSize: 11, fontWeight: 700,
+                    fontFamily: FONT, fontSize: 12, fontWeight: 700,
                     letterSpacing: "0.12em", textTransform: "uppercase",
-                    padding: "11px 24px",
+                    padding: "14px 32px",
                     background: P.gold, color: "#fff", border: "none",
                     cursor: "pointer", textAlign: "center",
                   }}>
@@ -638,7 +665,7 @@ export default function ROICalculator() {
 
               {/* Footer note */}
               <div style={{ paddingTop: 14, borderTop: `1px solid ${P.paperRule}` }}>
-                <p style={{ fontFamily: FONT, fontSize: 10, color: P.inkFaint, lineHeight: 1.5 }}>No data stored. No email required. Provided by Telchar AI as a free planning resource.</p>
+                <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, lineHeight: 1.5 }}>No data stored. No email required. Provided by Telchar AI as a free planning resource.</p>
               </div>
             </div>
           )}

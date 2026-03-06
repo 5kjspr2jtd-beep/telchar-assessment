@@ -19,7 +19,7 @@ export const TELCHAR = {
   ink:        "#1A1714",
   inkMid:     "#3C3530",
   inkLight:   "#6A6055",
-  inkFaint:   "#A89C8C",
+  inkFaint:   "#8C8376",
   green:      "#4E7C45",
   amber:      "#B8912A",
   red:        "#8A2A2A",
@@ -77,11 +77,17 @@ export function Rule({ diamond = false, weight = 1, color, style = {} }) {
   return <div style={{ height: weight, background: c, ...style }} />;
 }
 
+// ── Navy-background text hierarchy ───────────────────────────────────────────
+export const NAVY_TEXT = {
+  primary:   "#E6EEF8",
+  secondary: "#9BB1C7",
+};
+
 export function SecLabel({ children, color, style = {} }) {
   return (
     <div style={{
-      fontFamily: FONT, fontSize: 8, fontWeight: 700,
-      letterSpacing: "0.28em", textTransform: "uppercase",
+      fontFamily: FONT, fontSize: 12, fontWeight: 700,
+      letterSpacing: "0.22em", textTransform: "uppercase",
       color: color || TELCHAR.inkFaint, marginBottom: 14, ...style,
     }}>{children}</div>
   );
