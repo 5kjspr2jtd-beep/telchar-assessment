@@ -304,7 +304,8 @@ export default function ROICalculator({ embedded = false }) {
                 Start Calculator
               </button>
 
-              <Rule diamond style={{ marginTop: 36, marginBottom: 28 }} />
+              {!mob && <Rule diamond style={{ marginTop: 36, marginBottom: 28 }} />}
+              {mob && <div style={{ height: 28 }} />}
 
               <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, marginTop: 0, lineHeight: 1.5 }}>No email required. No data stored. Results update live.</p>
             </div>

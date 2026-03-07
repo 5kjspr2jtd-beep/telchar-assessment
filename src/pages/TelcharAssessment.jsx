@@ -930,7 +930,7 @@ function DiamondStepper({ current, total }) {
           const sectionNum = i + 1;
           const isActive = currentSection === sectionNum;
           return (
-            <div key={i} style={{ fontSize: isMobile ? 10 : 12, fontWeight: 700, letterSpacing: isMobile ? "0.08em" : "0.22em", textTransform: "uppercase", color: isActive ? P.ink : P.inkFaint, fontFamily: FONT, textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", padding: "0 2px" }}>
+            <div key={i} style={{ fontSize: isMobile ? 10 : 11, fontWeight: 700, letterSpacing: isMobile ? "0.08em" : "0.06em", textTransform: "uppercase", color: isActive ? P.ink : P.inkFaint, fontFamily: FONT, textAlign: "center", ...(isMobile ? { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } : {}), padding: "0 2px" }}>
               {title}
             </div>
           );
