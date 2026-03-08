@@ -1,13 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { TELCHAR as P, FONT, MONO, GOOGLE_FONTS_URL, Diamond, Rule, SecLabel, TEXT, NAVY_TEXT, TYPE, CTA } from "../design/telcharDesign";
+import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, Diamond, Rule, SecLabel, TEXT, TYPE, CTA } from "../design/telcharDesign";
 
 // ============================================================
 // TELCHAR AI — Implementation Support Application
 // Screens for mutual fit before implementation leadership
 // ============================================================
-
-// Logo — Horizontal Decal 1 (Telchar AI wordmark, from /Documents)
-const HDECAL = "/horizontal-decal-1.png";
 
 // ── Responsive hook (matches TelcharReport) ─────────────────
 function useWidth() {
@@ -20,54 +17,54 @@ function useWidth() {
   return w;
 }
 
-// Horizontal Decal 2 — decorative divider asset (from /Documents)
-const HDECAL2_URL = "/horizontal-decal-2.png";
-
-// ── Page shell (matches report layout) ──────────────────────
+// ── Page shell ──────────────────────────────────────────────
 function AppPage({ children }) {
   const w = useWidth();
   const mobile = w < 640;
   return (
     <div style={{
       width: "100%",
-      background: P.paper,
-      boxShadow: mobile ? "none" : "0 8px 48px rgba(0,0,0,0.28)",
+      background: "#080f1e",
+      position: "relative",
       display: "flex", flexDirection: "column",
-      minHeight: "calc(100vh - 48px)",
+      minHeight: "100vh",
     }}>
+      {/* Atmosphere layer */}
+      <div style={{
+        position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+        background: "radial-gradient(ellipse 90% 60% at 50% 0%, rgba(37,99,235,0.22) 0%, rgba(13,22,40,0.4) 40%, transparent 70%), radial-gradient(ellipse 50% 40% at 85% 60%, rgba(37,99,235,0.08) 0%, transparent 60%), radial-gradient(ellipse 40% 30% at 10% 70%, rgba(13,22,40,0.6) 0%, transparent 60%)",
+      }} />
+
       {/* Header */}
       <div style={{
-        background: P.navy, flexShrink: 0,
-        padding: mobile ? "12px 20px" : "14px 36px",
+        background: "rgba(8,15,30,0.9)",
+        backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255,255,255,0.07)",
+        height: 52, flexShrink: 0,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: mobile ? "0 20px" : "0 36px",
+        position: "relative", zIndex: 1,
       }}>
-        {/* Top row: Logo left, title right */}
-        <div style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          marginBottom: 10,
-        }}>
-          <img src={HDECAL} alt="Telchar AI"
-            style={{ height: 14, width: "auto", filter: "brightness(0) invert(1)", flexShrink: 0 }} />
-          <div style={{ textAlign: "right" }}>
-            <div style={{
-              fontFamily: "'IBM Plex Sans',sans-serif", fontSize: 12, fontWeight: 700,
-              letterSpacing: "0.22em", textTransform: "uppercase",
-              color: "#D8DEE9", marginBottom: 2,
-            }}>Implementation Support Application</div>
-            <div style={{
-              fontFamily: "'IBM Plex Mono',monospace", fontSize: 12,
-              color: "#D8DEE9", letterSpacing: "0.1em",
-            }}>Confidential</div>
-          </div>
+        {/* Left: Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <img src="/white_decal.svg" alt="Telchar AI" style={{ height: 18, width: "auto", display: "block" }} />
         </div>
-        {/* Horizontal Decal 2 — full-width decorative divider */}
-        <div style={{ display: "flex", justifyContent: "center", overflow: "visible" }}>
-          <img src={HDECAL2_URL} alt=""
-            style={{ width: "100%", height: 8, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.5 }} />
+        {/* Right: Application title + Confidential */}
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <span style={{
+            fontFamily: FONT, fontSize: 12,
+            letterSpacing: "0.22em", textTransform: "uppercase",
+            color: "rgba(255,255,255,0.4)",
+          }}>Implementation Support Application</span>
+          <span style={{
+            fontFamily: FONT, fontSize: 12,
+            color: "rgba(255,255,255,0.4)",
+          }}>Confidential</span>
         </div>
       </div>
 
       {/* Body */}
-      <div style={{ flex: 1, padding: mobile ? "24px 20px 0" : "44px 36px 0" }}>
+      <div style={{ flex: 1, padding: mobile ? "24px 20px 0" : "44px 36px 0", position: "relative", zIndex: 1 }}>
         {children}
       </div>
 
@@ -75,23 +72,19 @@ function AppPage({ children }) {
 
       {/* Footer */}
       <div style={{
-        background: P.navy, flexShrink: 0,
-        padding: mobile ? "10px 20px" : "10px 36px",
+        background: "rgba(8,15,30,0.9)",
+        backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+        borderTop: "1px solid rgba(255,255,255,0.07)",
+        flexShrink: 0,
+        padding: "14px 36px",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        position: "relative", zIndex: 1,
       }}>
-        {/* Horizontal Decal 2 — full-width decorative divider */}
-        <div style={{ display: "flex", justifyContent: "center", overflow: "visible", marginBottom: 8 }}>
-          <img src={HDECAL2_URL} alt=""
-            style={{ width: "100%", height: 8, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.5 }} />
-        </div>
-        <div style={{
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
-          <span style={{
-            fontFamily: "'IBM Plex Sans',sans-serif", fontSize: 12, fontWeight: 500,
-            letterSpacing: "0.2em", textTransform: "uppercase",
-            color: "#D8DEE9",
-          }}>Telchar AI &mdash; Confidential</span>
-        </div>
+        <span style={{
+          fontFamily: FONT, fontSize: 11, fontWeight: 500,
+          letterSpacing: "0.2em", textTransform: "uppercase",
+          color: "rgba(255,255,255,0.3)",
+        }}>TELCHAR AI &middot; CONFIDENTIAL</span>
       </div>
     </div>
   );
@@ -113,9 +106,9 @@ function ProgressBar({ current, total }) {
           {pct}%
         </span>
       </div>
-      <div style={{ height: 3, background: P.paperRule, borderRadius: 2 }}>
+      <div style={{ height: 3, background: P.linedark, borderRadius: 2 }}>
         <div style={{
-          height: 3, background: P.gold, borderRadius: 2,
+          height: 3, background: P.blue, borderRadius: 2,
           width: `${pct}%`, transition: "width 0.4s ease",
         }} />
       </div>
@@ -139,9 +132,9 @@ function FormLabel({ children, required }) {
 function TextInput({ value, onChange, placeholder, multiline, rows }) {
   const shared = {
     fontFamily: FONT, fontSize: TYPE.smallBody, color: TEXT.primary,
-    background: "#fff", border: `1px solid ${P.paperRule}`,
+    background: P.navy3, border: `1px solid ${P.linedark}`,
     padding: "10px 14px", width: "100%", boxSizing: "border-box",
-    borderRadius: 0, outline: "none",
+    borderRadius: 8, outline: "none",
     transition: "border-color 0.15s ease",
   };
   if (multiline) {
@@ -149,16 +142,16 @@ function TextInput({ value, onChange, placeholder, multiline, rows }) {
       <textarea value={value} onChange={e => onChange(e.target.value)}
         placeholder={placeholder} rows={rows || 4}
         style={{ ...shared, resize: "vertical", minHeight: 80 }}
-        onFocus={e => { e.target.style.borderColor = P.gold; }}
-        onBlur={e => { e.target.style.borderColor = P.paperRule; }}
+        onFocus={e => { e.target.style.borderColor = P.blue; }}
+        onBlur={e => { e.target.style.borderColor = P.linedark; }}
       />
     );
   }
   return (
     <input type="text" value={value} onChange={e => onChange(e.target.value)}
       placeholder={placeholder} style={shared}
-      onFocus={e => { e.target.style.borderColor = P.gold; }}
-      onBlur={e => { e.target.style.borderColor = P.paperRule; }}
+      onFocus={e => { e.target.style.borderColor = P.blue; }}
+      onBlur={e => { e.target.style.borderColor = P.linedark; }}
     />
   );
 }
@@ -168,11 +161,11 @@ function SelectInput({ value, onChange, options, placeholder }) {
     <select value={value} onChange={e => onChange(e.target.value)}
       style={{
         fontFamily: FONT, fontSize: TYPE.smallBody, color: value ? TEXT.primary : TEXT.muted,
-        background: "#fff", border: `1px solid ${P.paperRule}`,
+        background: P.navy3, border: `1px solid ${P.linedark}`,
         padding: "10px 14px", width: "100%", boxSizing: "border-box",
-        borderRadius: 0, outline: "none", cursor: "pointer",
+        borderRadius: 8, outline: "none", cursor: "pointer",
         appearance: "none", WebkitAppearance: "none",
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236A6055' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,
         backgroundRepeat: "no-repeat",
         backgroundPosition: "right 14px center",
       }}>
@@ -188,10 +181,12 @@ function RadioGroup({ value, onChange, options, mobile }) {
       {options.map(opt => (
         <button key={opt} onClick={() => onChange(opt)}
           style={{
-            fontFamily: FONT, fontSize: TYPE.smallBody, color: TEXT.primary,
-            textAlign: "left", padding: "12px 16px", cursor: "pointer",
-            background: value === opt ? P.goldFaint : "transparent",
-            border: value === opt ? `2px solid ${P.gold}` : `1px solid ${P.paperRule}`,
+            fontFamily: FONT, fontSize: TYPE.smallBody,
+            color: value === opt ? "#ffffff" : TEXT.primary,
+            textAlign: "left", padding: "14px 20px", cursor: "pointer",
+            background: value === opt ? "rgba(37,99,235,0.15)" : "rgba(255,255,255,0.04)",
+            border: value === opt ? "2px solid rgba(37,99,235,0.4)" : "1px solid rgba(255,255,255,0.09)",
+            borderRadius: 10,
             fontWeight: value === opt ? 600 : 400,
             transition: "all 0.15s ease",
             width: "100%", boxSizing: "border-box",
@@ -213,8 +208,9 @@ function Checkbox({ checked, onChange, label }) {
       <span style={{
         display: "inline-flex", alignItems: "center", justifyContent: "center",
         width: 20, height: 20, minWidth: 20, marginTop: 2,
-        border: checked ? `2px solid ${P.gold}` : `1px solid ${P.paperRule}`,
-        background: checked ? P.gold : "#fff",
+        border: checked ? `2px solid ${P.blue}` : `1px solid ${P.linedark}`,
+        background: checked ? P.blue : P.navy3,
+        borderRadius: 4,
         transition: "all 0.15s ease",
       }}
         onClick={e => { e.preventDefault(); onChange(!checked); }}>
@@ -286,10 +282,10 @@ function NDASection({ ndaAgreed, setNdaAgreed, onAccept, mobile }) {
     <div style={{ maxWidth: 680, margin: "0 auto", padding: mobile ? "0 0" : "0 24px" }}>
       {/* Why we ask section */}
       <div style={{
-        background: P.paperShade, border: `1px solid ${P.paperRule}`,
-        padding: mobile ? "24px 20px" : "28px 32px", marginBottom: 40,
+        background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)",
+        borderRadius: 14, padding: "24px 28px", marginBottom: 40,
       }}>
-        <SecLabel color={P.gold}>Why We Ask for This Information</SecLabel>
+        <SecLabel color={P.blue}>Why We Ask for This Information</SecLabel>
         <p style={{
           fontFamily: FONT, fontSize: TYPE.smallBody, color: TEXT.secondary,
           lineHeight: 1.8, margin: "0 0 16px 0",
@@ -317,12 +313,12 @@ function NDASection({ ndaAgreed, setNdaAgreed, onAccept, mobile }) {
 
       {/* NDA document */}
       <div style={{
-        border: `1px solid ${P.paperRule}`, background: "#fff",
-        marginBottom: 32,
+        border: "1px solid rgba(255,255,255,0.09)", background: "rgba(255,255,255,0.04)",
+        borderRadius: 14, marginBottom: 32, overflow: "hidden",
       }}>
         <button onClick={() => setExpanded(!expanded)} style={{
           fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 600,
-          color: TEXT.primary, background: P.paperShade,
+          color: TEXT.primary, background: "transparent",
           border: "none", padding: "14px 20px", width: "100%",
           textAlign: "left", cursor: "pointer",
           display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -333,7 +329,7 @@ function NDASection({ ndaAgreed, setNdaAgreed, onAccept, mobile }) {
         {expanded && (
           <div ref={scrollRef} style={{
             maxHeight: 400, overflowY: "auto", padding: "20px 24px",
-            fontFamily: MONO, fontSize: 12, lineHeight: 1.8,
+            fontFamily: FONT, fontSize: 12, lineHeight: 1.8,
             color: TEXT.secondary, whiteSpace: "pre-wrap",
           }}>
             {NDA_TEXT}
@@ -472,12 +468,12 @@ function Questionnaire({ answers, setAnswers, onSubmit, mobile }) {
       <div style={{ marginTop: 40 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
           <span style={{
-            fontFamily: MONO, fontSize: TYPE.micro, fontWeight: 600,
-            color: P.gold, letterSpacing: "0.06em",
+            fontFamily: FONT, fontSize: TYPE.micro, fontWeight: 600,
+            color: P.blue, letterSpacing: "0.06em",
           }}>SECTION {section.letter}</span>
         </div>
         <h2 style={{
-          fontFamily: FONT, fontSize: TYPE.section, fontWeight: 600,
+          fontFamily: FONT, fontSize: TYPE.section, fontWeight: 300,
           color: TEXT.primary, margin: "0 0 32px 0",
         }}>{section.label}</h2>
 
@@ -524,7 +520,7 @@ function Questionnaire({ answers, setAnswers, onSubmit, mobile }) {
           {currentSection > 0 ? (
             <button onClick={() => setCurrentSection(currentSection - 1)}
               style={{
-                ...CTA.secondary,
+                ...CTA.ghost,
                 width: mobile ? "100%" : 140,
                 margin: 0,
               }}>
@@ -671,30 +667,55 @@ function storeApplication(ndaAgreed, answers, fitClassification) {
 function Confirmation() {
   return (
     <div style={{
-      maxWidth: 600, margin: "0 auto", padding: "80px 24px",
-      textAlign: "center",
+      background: "#080f1e", minHeight: "100vh", position: "relative",
+      overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center",
     }}>
-      <Diamond size={14} fill={P.gold} stroke="none" sw={0}
-        style={{ margin: "0 auto 24px auto" }} />
-      <h2 style={{
-        fontFamily: FONT, fontSize: TYPE.section, fontWeight: 600,
-        color: TEXT.primary, margin: "0 0 16px 0",
+      {/* Atmosphere */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+        background: `radial-gradient(ellipse 90% 60% at 50% 0%, rgba(37,99,235,0.22) 0%, rgba(13,22,40,0.4) 40%, transparent 70%),
+          radial-gradient(ellipse 50% 40% at 85% 60%, rgba(37,99,235,0.08) 0%, transparent 60%),
+          radial-gradient(ellipse 40% 30% at 10% 70%, rgba(13,22,40,0.6) 0%, transparent 60%)`
+      }} />
+      {/* Grid */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", opacity: 0.025,
+        backgroundImage: `linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)`,
+        backgroundSize: "60px 60px"
+      }} />
+
+      {/* Glass card */}
+      <div style={{
+        position: "relative", zIndex: 10,
+        maxWidth: 480, margin: "0 auto", textAlign: "center",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.09)",
+        borderRadius: 16, padding: "48px 40px",
+        backdropFilter: "blur(20px)",
       }}>
-        Application Received
-      </h2>
-      <Rule diamond style={{ maxWidth: 200, margin: "0 auto 24px auto" }} />
-      <p style={{
-        fontFamily: FONT, fontSize: TYPE.body, color: TEXT.secondary,
-        lineHeight: 1.7, maxWidth: 480, margin: "0 auto 16px auto",
-      }}>
-        We will review fit and follow up if there is a strong mutual match.
-      </p>
-      <p style={{
-        fontFamily: FONT, fontSize: TYPE.smallBody, color: TEXT.muted,
-        lineHeight: 1.7, maxWidth: 480, margin: "0 auto",
-      }}>
-        A confirmation has been sent to your email address. If you do not see it, please check your spam folder.
-      </p>
+        <Diamond size={28} fill={P.blue} stroke="none" sw={0}
+          style={{ margin: "0 auto 20px auto" }} />
+        <h2 style={{
+          fontFamily: FONT, fontSize: "clamp(28px,5vw,36px)", fontWeight: 300,
+          color: "#ffffff", margin: "0 0 16px 0",
+        }}>
+          Application Received
+        </h2>
+        <Rule diamond style={{ maxWidth: 200, margin: "0 auto 24px auto", borderColor: "rgba(255,255,255,0.07)" }} />
+        <p style={{
+          fontFamily: FONT, fontSize: 14, fontWeight: 300,
+          color: TEXT.secondary,
+          lineHeight: 1.75, maxWidth: 480, margin: "0 auto 16px auto",
+        }}>
+          We will review fit and follow up if there is a strong mutual match.
+        </p>
+        <p style={{
+          fontFamily: FONT, fontSize: 12, fontWeight: 300,
+          color: TEXT.muted,
+          lineHeight: 1.75, maxWidth: 480, margin: "0 auto",
+        }}>
+          A confirmation has been sent to your email address. If you do not see it, please check your spam folder.
+        </p>
+      </div>
     </div>
   );
 }
@@ -758,28 +779,50 @@ export default function TelcharImplementation() {
     setStep(3);
   };
 
+  if (step === 3) return <Confirmation />;
+
   return (
     <div style={{
-      minHeight: "100vh", fontFamily: "'IBM Plex Sans','Helvetica Neue',Arial,sans-serif",
-      background: P.paper, overflowX: "clip", width: "100%",
+      minHeight: "100vh", fontFamily: FONT,
+      background: "#080f1e", overflowX: "clip", width: "100%",
+      position: "relative", overflow: "hidden",
     }}>
+      {/* Atmosphere */}
+      <div style={{
+        position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+        background: `
+          radial-gradient(ellipse 90% 60% at 50% 0%, rgba(37,99,235,0.22) 0%, rgba(13,22,40,0.4) 40%, transparent 70%),
+          radial-gradient(ellipse 50% 40% at 85% 60%, rgba(37,99,235,0.08) 0%, transparent 60%),
+          radial-gradient(ellipse 40% 30% at 10% 70%, rgba(13,22,40,0.6) 0%, transparent 60%)
+        `
+      }} />
+      {/* Grid */}
+      <div style={{
+        position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", opacity: 0.025,
+        backgroundImage: `
+          linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)
+        `,
+        backgroundSize: "60px 60px",
+      }} />
+
       <style>{`
         @import url('${GOOGLE_FONTS_URL}');
         *{box-sizing:border-box;margin:0;padding:0;}
-        html,body{overflow-x:clip;max-width:100vw;background:${P.paper};}
+        html,body{overflow-x:clip;max-width:100vw;background:${P.navy};}
         button{font-family:inherit;}
       `}</style>
 
-      <div style={{ display: "flex", justifyContent: "center", overflowX: "hidden" }}>
+      <div style={{ position: "relative", zIndex: 10, display: "flex", justifyContent: "center", overflowX: "hidden" }}>
         <div style={{ width: "100%", maxWidth: 1100 }}>
           <AppPage>
             {/* ── INTRO ── */}
           {step === 0 && (
             <div style={{ maxWidth: 680, margin: "0 auto" }}>
-              <SecLabel color={P.gold}>Implementation Support</SecLabel>
+              <SecLabel color={P.blue2}>Implementation Support</SecLabel>
               <h1 style={{
-                fontFamily: FONT, fontSize: mobile ? TYPE.section : TYPE.headline,
-                fontWeight: 700, color: TEXT.primary, margin: "0 0 24px 0",
+                fontFamily: FONT, fontSize: "clamp(28px,5vw,40px)",
+                fontWeight: 300, color: TEXT.primary, margin: "0 0 24px 0",
                 lineHeight: 1.2,
               }}>
                 Apply for Implementation Support
@@ -787,53 +830,76 @@ export default function TelcharImplementation() {
               <Rule diamond style={{ marginBottom: 32 }} />
 
               <p style={{
-                fontFamily: FONT, fontSize: TYPE.body, color: TEXT.secondary,
+                fontFamily: FONT, fontSize: TYPE.body, fontWeight: 300,
+                color: "rgba(255,255,255,0.5)",
                 lineHeight: 1.8, marginBottom: 24,
               }}>
                 This application determines whether there is a strong mutual fit for implementation leadership support.
               </p>
               <p style={{
-                fontFamily: FONT, fontSize: TYPE.body, color: TEXT.secondary,
+                fontFamily: FONT, fontSize: TYPE.body, fontWeight: 300,
+                color: "rgba(255,255,255,0.5)",
                 lineHeight: 1.8, marginBottom: 32,
               }}>
                 Implementation support focuses on helping businesses execute the recommendations from their Telchar report through structured project and program leadership. This is not technical contracting. This is operational leadership for delivery.
               </p>
 
+              {/* "What Implementation Leadership Includes" — blue glass */}
               <div style={{
-                background: P.paperShade, border: `1px solid ${P.paperRule}`,
-                padding: mobile ? "24px 20px" : "28px 32px", marginBottom: 32,
+                background: "rgba(37,99,235,0.08)",
+                border: "1px solid rgba(37,99,235,0.25)",
+                borderLeft: "3px solid #2563eb",
+                borderRadius: 14, padding: mobile ? "24px 20px" : "24px 28px", marginBottom: 12,
               }}>
-                <SecLabel>What Implementation Leadership Includes</SecLabel>
-                <ul style={{
-                  fontFamily: FONT, fontSize: TYPE.smallBody, color: TEXT.secondary,
-                  lineHeight: 1.8, paddingLeft: 20, margin: 0,
+                <div style={{
+                  fontSize: 10, fontWeight: 600, letterSpacing: "0.22em",
+                  textTransform: "uppercase", color: "#4a80f5", marginBottom: 16, fontFamily: FONT,
                 }}>
-                  <li>Building the implementation roadmap</li>
-                  <li>Coordinating internal teams and external vendors</li>
-                  <li>Sequencing automation initiatives by impact</li>
-                  <li>Ensuring timelines and accountability</li>
-                  <li>Ensuring measurable ROI at each stage</li>
-                </ul>
+                  WHAT IMPLEMENTATION LEADERSHIP INCLUDES
+                </div>
+                {[
+                  "Building the implementation roadmap",
+                  "Coordinating internal teams and external vendors",
+                  "Sequencing automation initiatives by impact",
+                  "Ensuring timelines and accountability",
+                  "Ensuring measurable ROI at each stage",
+                ].map((item, i) => (
+                  <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8 }}>
+                    <span style={{ color: "#2563eb", fontSize: 9, marginTop: 4, flexShrink: 0 }}>◆</span>
+                    <span style={{ fontSize: 14, fontWeight: 300, color: "rgba(255,255,255,0.75)", lineHeight: 1.65, fontFamily: FONT }}>{item}</span>
+                  </div>
+                ))}
               </div>
 
+              {/* "What This Is Not" — gray/muted, intentional contrast */}
               <div style={{
-                background: "#fff", border: `1px solid ${P.paperRule}`,
-                padding: mobile ? "24px 20px" : "28px 32px", marginBottom: 40,
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.07)",
+                borderLeft: "3px solid rgba(255,255,255,0.15)",
+                borderRadius: 14, padding: mobile ? "24px 20px" : "24px 28px", marginBottom: 24,
               }}>
-                <SecLabel color={P.red}>What This Is Not</SecLabel>
-                <ul style={{
-                  fontFamily: FONT, fontSize: TYPE.smallBody, color: TEXT.secondary,
-                  lineHeight: 1.8, paddingLeft: 20, margin: 0,
+                <div style={{
+                  fontSize: 10, fontWeight: 600, letterSpacing: "0.22em",
+                  textTransform: "uppercase", color: "rgba(255,255,255,0.28)", marginBottom: 16, fontFamily: FONT,
                 }}>
-                  <li>Building every automation personally</li>
-                  <li>Replacing your IT staff or internal teams</li>
-                  <li>Acting as a technical contractor</li>
-                </ul>
+                  WHAT THIS IS NOT
+                </div>
+                {[
+                  "Building every automation personally",
+                  "Replacing your IT staff or internal teams",
+                  "Acting as a technical contractor",
+                ].map((item, i) => (
+                  <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8 }}>
+                    <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 9, marginTop: 4, flexShrink: 0 }}>◆</span>
+                    <span style={{ fontSize: 14, fontWeight: 300, color: "rgba(255,255,255,0.4)", lineHeight: 1.65, fontFamily: FONT }}>{item}</span>
+                  </div>
+                ))}
               </div>
 
               <p style={{
-                fontFamily: FONT, fontSize: TYPE.smallBody, color: TEXT.muted,
-                lineHeight: 1.7, marginBottom: 32, fontStyle: "italic",
+                fontFamily: SERIF, fontSize: TYPE.smallBody, fontStyle: "italic",
+                color: "rgba(255,255,255,0.35)",
+                lineHeight: 1.7, marginBottom: 32,
               }}>
                 This engagement is selective. Not all applications will be accepted. We review each application to determine whether there is a strong mutual fit for leadership support.
               </p>
@@ -868,8 +934,6 @@ export default function TelcharImplementation() {
             />
           )}
 
-            {/* ── SUBMITTED ── */}
-            {step === 3 && <Confirmation />}
           </AppPage>
         </div>
       </div>

@@ -1,12 +1,10 @@
-import { useState, useEffect, useRef, useCallback, Fragment } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
-import { TELCHAR as P, FONT, MONO, scoreColor, scoreTier, GOOGLE_FONTS_URL, TEXT, NAVY_TEXT, TYPE, CTA, OPTION_CARD } from "../design/telcharDesign";
+import { TELCHAR as P, FONT, SERIF, scoreColor, scoreTier, GOOGLE_FONTS_URL, TEXT, TYPE, CTA, OPTION_CARD } from "../design/telcharDesign";
 
 // ============================================================
 // TELCHAR AI - AI READINESS ASSESSMENT v2
 // ============================================================
-const ANVIL_URL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG4AAAAsCAYAAACEy42cAAATHklEQVR42u1ce3hU5Zl/v+/MZJJMMrknJBEkayiIwqOu2gWt4FYqlUe7Pq2XLm5tt0YExa2AZQ26IaJbXVwvtVCyus8WBKSTCltEBK0J0CAkJIGY+2Qmk3tmhkzmkrnmnO9794+cgydjEnJDUfd9nu/JZb7zXd77+3tPAvAVUlpaWlx3d7cNEVGSJM45x6kMxpiIiFhXV1eg7GE2m3+LiMgYE6dhfYaI6Pf7TQBAv0reaRYvXpzV29vLAoEAflmbpqSk0I6ODpafn/83SUlJ6QAAgiBMaU1EBEqpEAwGxZaWlj8rv6+trf0gJyfnCUrplBlNCCEAAIFAIPexxx67effu3ZZZs2YJTqeTfxl8I4QgIpKbb76ZkMrKyqqsrKxcAGBfphYhIkZFRWlSU1PjpmM9zjmnlNKenp767OzsaxGRUEoxLy9Pu2XLFnN6evosAODTcUfOOdjt9gAiDirC/JJ4xgkhgt1uL9fodLqtmZmZ78LXnCilHACo2+3+k8xLgXOOhBAxPz//EACsVoQ7DZoPmZmZsQAQ+1Xctb29/TW6YMGCP7a1tZUDAGeMSbIvR7/fj6FQCDkf0wtwAJAAQOSci/LzEgBIXCbG2JhxY5o0EQBAkCRJMplM78s/8+LiYiXO7ZMtkMqfTVlwF4mFyD8niXMuybwRAUCUeTYqYxljEAwGMRAIcEmSkDGG8nPY3t7+50WLFn2oAQCsra0tnDlz5mFBEBAACGMMXC4XBAIBkRBSbrfbQzk5OVSv14eDwWBufHy8FgBS4uLi4hXXE6nIqp85AKA8lINRQghQSgERicKMKboQ6nA4TPfee28VIhJCCMoemTz55JMVN9xwgzkpKSlXmTtFJQFKKXLOARFBEAS1EIg8lD1G3cvn8w0gYp/P5xMTExMbXS6XvqWlhWZkZCQLgrBAr9eTGTNmKN5YGBwcJPX19S8gIiGIKBBCWGtr68mcnJzFcqy7kCmIoigFAgG/JEm9LpfL7HQ6bZzzyo8++si9dOlSr8FgkMLh8ML09PR4l8s1/6qrrsrU6/XxAwMD1+h0Oo1OpwONRnNRfsj7DlNstYBlZowWcyRKqcZkMm2ZO2/evyHnGrJ5M4fCzYgIAiFEam1tfTMnJ+dxzjmjlI51oEiBRJqoMNZZAAAkSYJQKAThcFhKSEio83q9A21tbR0JCQkmp9PpMxgMZ7u7u6NPnTplWL58eRoiLkxLS8s0GAzfEQRhRnx8fKz6jPKZBbPZ/OGcOXPuQkRBo2h7c3Pzpuzs7JKoqKgLmkUIAa1Wq0lISEgAgISUlJR5ubm5AACPLFiwIBQIBDo1Gk2F1Wo929TUVH7kyJFtb7755nl5v5j8/PxkrVZ71cqVK9MTExOTPB7PopiYmDin05mbnZ0dazAYdJIkzY6OjiaEkC8wMyLT/ILlAgDhnBNKKRVFkVdWVh4CRCguLkYoLOQAhVBcbEQAgJ6eHuPMmTOf0Gg0VI51yDlHlWe4YCmq3wkjWVwwGAStVmt1u92D3d3d/uTk5FbGmCcpKemkw+Fw796925GQkNC8YcMGPwAEAQDWrFkz45577rkxNTX16oyMjFUZGRk3LFq06IrY2NiYcVg3BAIBfvLkyc2EECguLh7SHMXqrFbrkdmzZ9/JGGOCimuICIiIcgIAEa7gAoXDYcnv97cFg0ELIeTI+fPnGz0ez2dLlizpHelgRUVFsbm5uXOio6P19fX1Vy9dujQqJSUlLhwOLxIEIen8+fNzs7KySFxcXJRWq00eS8t7e3vri4qKFsLSzbTwdiLNWblthU6Azrpda2oLEEjD/ffrioqK6pOSknLGYpQkSU6PxyPa7Xaenp7eKIpif2Ji4smOjo7wyZMnB6+77roGt9sdqKmpaVm/fn1wpHWam5uzJUlaaDAYrhME4fs6ne4qvV4/W6fTjZYnoGxZlAzRsJAHAEJzc/O78+bN+0dFVgAAYDQaBUIIvPfeezf5/X5kjDHOOY5FchDmjDEJEUVElEaa5/f7eSgUqmxpaTnW19eX73A4btu5c+fV4wwp+oceekh/5MiR5MrKyu+ZzeYfGo3GwpaWlkJRFF/s6+sr9fv9VkTkpibTFgCASkQtAAhJa45bZqwtewMAoKAUowEALBbL64iIPp/P5HA4SsPh8Iv19fWF+/btK2xubr7rzJkzt5SWliYuW7ZMDwD68Rxw7969Cy0Wyx12u/0Fs9l8wufz1YfD4dHYJiq8YoxxRBybyUOfM5/PN7hz587vICJBRBqpbQIAQGdn5x/lh8I4ceJsiMYUpsfjkURRPNPZ2bnfbDa/6PV6b9m6deu18+fPj5posvDhxx+vCIdFPHTgwHWKK5j141cWGzZ2YNKTVb3fWfJoqnLZmpqa74XDYdy/f/+iie6zZMmS6G3bti0MBAK3tLS0vNTT07M/FArVeL3e0XghIaLIGJNkxIVPlJmMsTAiYkdHx+9lGWlGchMUEUlpaem1g4ODag2RJrNphNZIKmGykSadP38eg8Fg3cDAwI6ysrLfeL3e2955551MANCNcFYBEXWISP/62WdJTRbL/jfWrtVBwZCAkvM+fifpXzt4dL4DU37x/mr5KWI0FiXU1NQcLCoq0sr31X1Bg4co+sMPP8xsampa/umnn77k9/uLAoFAQ39//6g8VvGKTQe/FD55vV48dOjQlYhICgoKhgXkYcIjhPDm5ua85OTkp1JTU9UuTeKcC5TS6UAKlMSAy3XiiOt6vd6AKIrdMTExpWfOnLFrNJrTer3+0+uvv94PAKKS9i9YcWtS7QcnXQCczLv3xRmOK++tD2v0iaiNBp2/tfqO3sXfLZ6PSJ6nfMeOHamrVq1yyvARAIDOaDQmZWdn3ygIws1z587NkSRpUUxMTKZer4+9SAZMVUnNVNEYBIBhGe/AwEBVb2/vb+fOnbtLVeKMGqAVqUZVVFQ80NXV9YnP5+MRLoDh9BNXaa44mtaGQiGH1Wo1NzQ0bBl23oJSDQDAzMcOr47fZMPYdVYxbl0rM/zaxJIfLf4uABK4zyjIzxAAIK2trf9ptVpb/X6/6yKWJCLiReP+ZEh2oxdCis/nC3d2dr7f2Nh4p0omZLxFpqDObI4ePfq3drv91YGBgV71npIkKUH2UpESM8VIN+vz+fx79uxJJYTAffcZBUAkV165JDpl9RlTTL4NY9dZWOw6qxS3yY7xq44fGBIu0oKCAg0AwNatW+eLojiikCYbkyZ4r2EG4Ha7e1paWl49fPjwQrXAlNzjC92BUSAdBgBKBoOEkCoAqHrllVf+/e677/5pXFzc6qysrKtVFcN0utFhR5HXpBGuStLr9TG5ubk/QMS98+9K0wIhIfjZ7ttJXMYcLgaZQKhAgCEMBlETnbAidcXzc/oKScs1xjoN4mZSX1//fY1Go0B2WnmPEVGgaSQuDw2lVOCcg9PprPB6vTu2b9/+/quvvtqneJHi4mIiy4GNW3AKg5R6QRYgJYT0bdiw4U0A+H1ZWdldWVlZj2ZlZd2h0+l08mUZY4xQSuklBM2JUu/MmjXrHwBg790LlrIGAKEkdvbGQRqDwD1AgAACJcCYxPSZ2pgrbvk5AGyqh2vgfkKws739JwBAL5HCDasNOedchhMFAKB+vz9kt9uPNDU1bV+xYsXHqrkaAOCEkIu2iTTj4tTQQlz2tZRSKt16660HAeDgiRMn5l9zzTX3U0rzEhMTs2QrRBV0dimYQgkhEBMT8/dFRUUJN95IPQhA06kUxykDjQRAgAMBChJQoISCBsLJAACF99NBo3FXTmpa2o1ycnKpzAsBgBFCBEEQKACAy+WyhEKhdz744ANjXl5eo4JalZSUaJYuXcoIIdK4GTDRRh4hhCEiMRqNAiLS2267rSElJWXzyy+/vLCiomK1zWarkgWska2DjYWET7KFQwCAJSQkpMyfP38FAIIAwJnk3EapSCinQJAABwSBCFQT7gtjX+1/C4QAIQg3LV68JDomJpYQIhE6fa5BsS75zgQANIwx0tnZeerUqVN5q1atWpCVlVWYl5fXiIhU5iHcfvvt0pgZ4yVyBTSiMKTV1dVLbDbbTo/H41Nno0rrf5pIRERuNpuNSiC/4gdPJRuerOqL3WBDw6/MXPu0RTJs7MPUxz45owYZ+p2Oo3KGKE1LpvH5WkyFGLktFsv/lJSULIngl0Zdj33lJBfvGnVsO3jw4CyTyfSCy+VqiWT6VLNR5fn+/v6+lStXGkBOmdMe+XiH/lk3JjxlEnUbrFL8M72YsfKP/zx0ogJ67ty59GDA71GVIFM9gxgB8dV0dXVtMBqN2eoWV2lpqWbcaf1XRIobvZByLl68OL62tvbBzs7OEypURnm5ZypWKHHO8eTJEz+RAx/kPPj6wuRfNbDY9Wam/3U3pq050Xflj36U+DnsdTZPZbGTrr3kdF4RFnZ2dv6lqqrqHgCIVpdVRqNRgK8byXXIsASourr6JpvN9ju32+2JKOonDK0pb3W1NDXtUWVldMajx/6qy+9FwzMOzFz1l+cBAArqMAoAqMNhPygD5NIkoShJhbna2tratu3fv/9m9R2/DtY1EQEK6sts2rTpyvLy8k0Oh6MlQhjjRmZU7tL+8MMPJxbIWGXOz/fdp88/j4b1jYHcB/5wlbLnCy+8kOl0OsMTcZOMMS5J0jDrdLlcZ0wm0+qdO3emRMT6S5VFXxZCpBFoQOzZs2fvtdlsh3w+nxQRB9l43WV1dfUdyvoZy5bpk56oCqetqfwIAOCNwyYdAMDp06d/qax9MfgqEoryeDxSW1vbwWPHjt2tLqNkhaTwbaGCggJaWlo6zI0eO3ZsgcVied3v97dH8HAsaE1ERLRYLH8AADAOuUTIfOTdV2c/YvwZAAFjXV0UAEBXV9d7F4lvChTFVVBUV3t7+0v79u27Vv2y0DfGHU5FgIgYhUMNUJBxxPSqqqqn7HZ7zTiyUcY5x/7+/o5du3bph5iJJGPZQ/rc5ct1CnPXr1+f7nK5/KO4SaYWpiRJ2NXVVXn69Okn1q1bl6qyLi0iai+rdP5ypaqqquVOp/M9n883GNl9j3SXR48e/aGSHKjrJkQkFovlx6pE6EL8UrtMv98fsNvte44dO7bs/zk/RgcCEcn+/ft/ajKZShobG9/u7+/f1NPTs7yqqmrRc889d8vhw4cNyvy1a9emVVdXP+NwOOoiQ5+cXfL29vb/UhXaRAWUg8Vi+V+1m1QENjg4yFwuV3lDQ8Pja9euvbDfkSNHkgsKCm797LPPFjmdzuVer3fT2bNn37VYLCV+v//v1Gt/2wQXBQBQVlb2m5GCjdvtxlAo5Ojv7zchYnF1dfU7paWlm+vq6tbX1tbucDqdZkmSGCJy+Ss6HI7uoqIirQwCEMVNbt++Pcnn8/WpMlEeDod5V1dXZ2Vl5e9bW1v/5fjx45vPnTu3GxH/5PF4WoLBYJ/H4xkxEJ44cWITIQTq5Nj5raHKykotAEBubq7O5XLVyxYTVvXcxuyHSZLkGxgY8Ef00yRE5IcOHVquWJ3sMklFRcUX3GQ4HEaPxxMURTE4VnKpGiJjLMwYkxwOxykAiBr1PZBvaCJCAQD27Nkzr6+v75gsCBaJ/aneIlN3ocUx8EUREbG1tfV3qtgmAAB0dHQYZcuUIvBFde2o3oNFxr8IYWJXV9fhAwcOzFSVON/MDFOdMDQ0NDzh9/udakZMAtAdNmSrlWw2WzsAaAghQAiBt99+O97lctnUc0YYE4ba5NrO2dra+k8j3fGbYmUCAIDRaMzt7+9/T+XypIlihOMRtFwkAwDAJ5988ovxwo8TUR41ZGa1Wg8eP348U510fWOsrKmp6Zder7d/Mt0Bea4kf4+hUKgcEY8zxk4g4nHVKEHEE42NjY8q+5rN5o2qzy7MVZ5ljJWrFUmSpEmda2BgoMdqtT74tbY+dSx77bXX5vb29h6IiCcTAXYvZCA2m626vLz8zuk+b0lJyUq3230ustc3AQFKqvdD9+7duzfra2d9ak0rLy9/xOPxOFWN1HEzQ+1GnU5nZ3t7+8MKRignA2MNMgI+OuqQp2m6u7vzXC6XPTKWjdf6FHfr9Xp76uvrH1DXrJd9FwAA4Nlnn53b1tZ2cLKxTIljbrfbb7FYnn/88cdTFIzwUvS31K8jPv3001lWq/U/PB5PeKLC45yjupNgs9l2vvXWWxmK8lyWzVP5YKSsrGy10+l0qmTGJ5OxtbW1vbtr167cCEu+lG6HqL3Fvn37ru3v739XjYdOwFtciH1ut7uzpqbmJ0oIuexaNQAAFRUVb00ylg0T2rlz54oiscYvuXd4QYAWi6VoopY3Eg/cbvdjl53bVBhrMpnqVPUSTsI9cp/PZ7riiitivuq2v9Jn27hxY0IwGLTLLZ8Jv6MiSVJYvtsblx3SohJc+VS18+zZsx9fLjFBsQ6LxfLBFLyI0rR9aToFN93MmfJ6wWAQ4TJq/yMi6evr88jfTy54DiU+9LJi9Eik/PH7RId8SeVPay8L4RFCUKfT4edynNidlH83cpF/OzJh+j+UAHztH17IhAAAAABJRU5ErkJggg==";
-
 const INDUSTRIES = [
   "Professional Services",
   "Healthcare",
@@ -229,7 +227,7 @@ const QUESTIONS = [
     autoAdvance: true,
     conditional: (answers) => Array.isArray(answers.growth_priority) && answers.growth_priority.includes("Prepare for exit"),
     options: [
-      "Actively preparing to sell in the next 12–24 months",
+      "Actively preparing to sell in the next 12\u201324 months",
       "Exploring potential buyers or strategic partners",
       "Planning to transition ownership internally",
       "Unsure / evaluating options",
@@ -288,9 +286,6 @@ const QUESTIONS = [
 // ============================================================
 const REPORT_CONTENT = {
 
-  // ============================================================
-  // CUSTOMER INTAKE (Operations)
-  // ============================================================
   customer_intake: {
     category: "Operations Efficiency",
     title: "Customer Inquiry and Intake Management",
@@ -318,9 +313,6 @@ const REPORT_CONTENT = {
     }
   },
 
-  // ============================================================
-  // SCHEDULING (Operations)
-  // ============================================================
   scheduling: {
     category: "Operations Efficiency",
     title: "Scheduling and Coordination",
@@ -348,9 +340,6 @@ const REPORT_CONTENT = {
     }
   },
 
-  // ============================================================
-  // ADMIN HOURS (Operations)
-  // ============================================================
   admin_hours: {
     category: "Data & Performance Visibility",
     title: "Administrative Time and Repetitive Tasks",
@@ -383,13 +372,9 @@ const REPORT_CONTENT = {
     }
   },
 
-  // ============================================================
-  // CUSTOMER ACQUISITION (Sales - multiselect)
-  // ============================================================
   customer_acquisition: {
     category: "Sales & Customer Experience",
     title: "Customer Acquisition Channels",
-    // For multiselect, content is based on selection count and specific picks
     answers: {
       "single_channel": {
         interpretation: "You are relying on a single channel to find customers. This creates concentration risk. If that channel slows down or becomes more competitive, your pipeline stalls with no backup.",
@@ -414,9 +399,6 @@ const REPORT_CONTENT = {
     }
   },
 
-  // ============================================================
-  // SALES PROCESS (Sales)
-  // ============================================================
   sales_process: {
     category: "Sales & Customer Experience",
     title: "Sales Process Maturity",
@@ -444,9 +426,6 @@ const REPORT_CONTENT = {
     }
   },
 
-  // ============================================================
-  // PERFORMANCE TRACKING (Data)
-  // ============================================================
   performance_tracking: {
     category: "Data & Performance Visibility",
     title: "Business Performance Tracking",
@@ -474,9 +453,6 @@ const REPORT_CONTENT = {
     }
   },
 
-  // ============================================================
-  // CONTENT CREATION (Content)
-  // ============================================================
   content_creation: {
     category: "Content & Knowledge Management",
     title: "Content Creation and Marketing",
@@ -504,9 +480,6 @@ const REPORT_CONTENT = {
     }
   },
 
-  // ============================================================
-  // KNOWLEDGE MANAGEMENT (Content)
-  // ============================================================
   knowledge_management: {
     category: "Content & Knowledge Management",
     title: "Internal Knowledge and Documentation",
@@ -534,9 +507,6 @@ const REPORT_CONTENT = {
     }
   },
 
-  // ============================================================
-  // TECH COMFORT (Technology)
-  // ============================================================
   tech_comfort: {
     category: "Technology Readiness",
     title: "Team Technology Adoption",
@@ -564,9 +534,6 @@ const REPORT_CONTENT = {
     }
   },
 
-  // ============================================================
-  // AI EXPERIENCE (Technology)
-  // ============================================================
   ai_experience: {
     category: "Technology Readiness",
     title: "Current AI Usage",
@@ -594,8 +561,6 @@ const REPORT_CONTENT = {
     }
   }
 };
-
-
 
 
 function getAcquisitionContent(answers) {
@@ -634,7 +599,6 @@ function generatePDFContent(answers, scores, quickWins) {
     { id: "ai_experience", cat: "technology", label: "Have you tried using any AI tools in your business?" },
   ];
 
-  // Find lowest category score for impact flagging
   const catScores = scores.categories;
   const sortedCats = Object.entries(catScores).sort((a, b) => a[1].score - b[1].score);
   const lowestCatKeys = sortedCats.filter(([, v]) => v.score < 70).map(([k]) => k);
@@ -665,9 +629,7 @@ function generatePDFContent(answers, scores, quickWins) {
     }
   });
 
-  // Sort by category score ascending (weakest areas first)
   sections.sort((a, b) => a.categoryScore - b.categoryScore);
-
   return sections;
 }
 
@@ -825,7 +787,6 @@ function generateQuickWins(answers, categoryScores) {
     }
   });
 
-  // Always include a growth/acquisition quick win regardless of scores
   const salesScore = categoryScores.sales ? categoryScores.sales.score : 50;
   if (!wins.find(w => w.title.includes("Revenue") || w.title.includes("Upsell") || w.title.includes("Customer Value"))) {
     if (salesScore >= 80) {
@@ -849,6 +810,75 @@ function generateQuickWins(answers, categoryScores) {
   return wins.slice(0, 2);
 }
 
+
+// ============================================================
+// DESIGN HELPERS
+// ============================================================
+const ATMOSPHERE = `radial-gradient(ellipse 90% 60% at 50% 0%, rgba(37,99,235,0.22) 0%, rgba(13,22,40,0.4) 40%, transparent 70%), radial-gradient(ellipse 50% 40% at 85% 60%, rgba(37,99,235,0.08) 0%, transparent 60%), radial-gradient(ellipse 40% 30% at 10% 70%, rgba(13,22,40,0.6) 0%, transparent 60%)`;
+
+const GLASS_CARD = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.09)",
+  borderRadius: 14,
+  backdropFilter: "blur(20px)",
+};
+
+function PageShell({ children, style = {} }) {
+  return (
+    <div style={{ minHeight: "100vh", background: "#080f1e", position: "relative", overflow: "hidden", ...style }}>
+      {/* Atmosphere layer */}
+      <div style={{ position: "absolute", inset: 0, backgroundImage: ATMOSPHERE, zIndex: 0, pointerEvents: "none" }} />
+      {/* Grid overlay */}
+      <div style={{
+        position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
+        backgroundImage: "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
+        backgroundSize: "60px 60px",
+        opacity: 0.025,
+      }} />
+      {/* Content */}
+      <div style={{ position: "relative", zIndex: 10 }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function NavBar({ onStart }) {
+  return (
+    <div style={{
+      position: "fixed", top: 0, left: 0, right: 0, zIndex: 300,
+      display: "flex", alignItems: "center", justifyContent: "space-between",
+      padding: "0 36px", height: 64,
+      background: "rgba(8,15,30,0.85)",
+      backdropFilter: "blur(20px)",
+      borderBottom: "1px solid rgba(255,255,255,0.07)",
+    }}>
+      {/* Left: logo */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <img src="/white_decal.svg" alt="Telchar AI" style={{ height: 18, width: "auto", display: "block" }} />
+      </div>
+      {/* Right: CTA */}
+      {onStart && (
+        <button onClick={onStart} style={{
+          fontFamily: FONT, fontSize: 12, fontWeight: 600,
+          background: "#2563eb", color: "#fff",
+          padding: "10px 24px", borderRadius: 6,
+          border: "none", cursor: "pointer",
+          transition: "background 0.15s ease",
+        }}
+          onMouseOver={e => e.currentTarget.style.background = P.blue2}
+          onMouseOut={e => e.currentTarget.style.background = "#2563eb"}
+        >
+          Start Free Assessment
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// SCORE DISPLAY
+// ============================================================
 function ScoreDisplay({ score, label, isOverall = false }) {
   const [animatedScore, setAnimatedScore] = useState(0);
 
@@ -869,18 +899,29 @@ function ScoreDisplay({ score, label, isOverall = false }) {
 
   return (
     <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", padding: isOverall ? "32px 24px 24px" : "16px 8px 12px" }}>
-      <div style={{ fontSize: isOverall ? 96 : 48, fontWeight: 700, fontFamily: FONT, color: color, lineHeight: 1, letterSpacing: "-0.02em" }}>
+      <div style={{
+        fontSize: isOverall ? "clamp(80px,16vw,120px)" : 48,
+        fontWeight: 300,
+        fontFamily: FONT,
+        color: color,
+        lineHeight: 1,
+        letterSpacing: "-0.02em",
+      }}>
         {animatedScore}
       </div>
-      <div style={{ fontSize: isOverall ? 15 : 12, fontFamily: MONO, color: P.inkFaint, marginTop: isOverall ? 4 : 4, letterSpacing: "0.08em" }}>
+      <div style={{ fontSize: isOverall ? 15 : 12, fontFamily: FONT, color: P.muted, marginTop: 4, letterSpacing: "0.08em" }}>
         out of 100
       </div>
       {/* Score bar */}
-      <div style={{ width: "100%", maxWidth: isOverall ? 280 : 140, height: 3, background: P.paperRule, marginTop: isOverall ? 16 : 10 }}>
-        <div style={{ width: `${animatedScore}%`, height: "100%", background: color, transition: "width 1.2s ease" }} />
+      <div style={{ width: "100%", maxWidth: isOverall ? 320 : 140, height: 4, background: "rgba(255,255,255,0.08)", marginTop: isOverall ? 16 : 10, borderRadius: 2 }}>
+        <div style={{
+          width: `${animatedScore}%`, height: "100%",
+          background: isOverall ? "linear-gradient(90deg, #111e38 0%, #4a80f5 100%)" : color,
+          transition: "width 1.2s ease", borderRadius: 2,
+        }} />
       </div>
       {label && (
-        <div style={{ color: P.inkLight, fontSize: isOverall ? 16 : 12, fontWeight: 600, marginTop: isOverall ? 14 : 10, lineHeight: 1.35, fontFamily: FONT, padding: "0 4px", minHeight: isOverall ? "auto" : 28, display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
+        <div style={{ color: P.dim, fontSize: isOverall ? 16 : 12, fontWeight: 600, marginTop: isOverall ? 14 : 10, lineHeight: 1.35, fontFamily: FONT, padding: "0 4px", minHeight: isOverall ? "auto" : 28, display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
           {label}
         </div>
       )}
@@ -888,6 +929,9 @@ function ScoreDisplay({ score, label, isOverall = false }) {
   );
 }
 
+// ============================================================
+// DIAMOND STEPPER
+// ============================================================
 function DiamondStepper({ current, total }) {
   const SECTION_TITLES = ["Your Business", "Operational Friction", "Visibility and Systems", "Technology and Direction", "Your Scorecard"];
   const SECTION_TITLES_SHORT = ["Business", "Friction", "Visibility", "Technology", "Scorecard"];
@@ -898,10 +942,7 @@ function DiamondStepper({ current, total }) {
   const titles = isMobile ? SECTION_TITLES_SHORT : SECTION_TITLES;
 
   return (
-    <div style={{ width: "100%", padding: "0 0 24px 0", overflow: "hidden" }}>
-      <div style={{ fontFamily: MONO, fontSize: 13, color: P.inkFaint, letterSpacing: "0.08em", marginBottom: 12 }}>
-        Question {current + 1}
-      </div>
+    <div style={{ width: "100%", padding: "20px 0 24px", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", alignItems: "center", marginBottom: 8, position: "relative" }}>
         {titles.map((title, i) => {
           const sectionNum = i + 1;
@@ -910,15 +951,15 @@ function DiamondStepper({ current, total }) {
           return (
             <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
               {i > 0 && (
-                <div style={{ position: "absolute", right: "50%", left: 0, top: "50%", height: 1, background: currentSection > sectionNum ? P.gold : (currentSection === sectionNum ? P.gold : P.paperRule), transform: "translateY(-50%)" }} />
+                <div style={{ position: "absolute", right: "50%", left: 0, top: "50%", height: 1, background: currentSection > sectionNum ? "#2563eb" : (currentSection === sectionNum ? "#2563eb" : "rgba(255,255,255,0.07)"), transform: "translateY(-50%)" }} />
               )}
               {i < titles.length - 1 && (
-                <div style={{ position: "absolute", left: "50%", right: 0, top: "50%", height: 1, background: isCompleted ? P.gold : P.paperRule, transform: "translateY(-50%)" }} />
+                <div style={{ position: "absolute", left: "50%", right: 0, top: "50%", height: 1, background: isCompleted ? "#2563eb" : "rgba(255,255,255,0.07)", transform: "translateY(-50%)" }} />
               )}
               <svg width="10" height="10" viewBox="0 0 10 10" style={{ flexShrink: 0, display: "block", position: "relative", zIndex: 1 }}>
                 <polygon points="5,0 10,5 5,10 0,5"
-                  fill={isCompleted || isActive ? P.gold : "transparent"}
-                  stroke={isCompleted || isActive ? P.gold : P.goldLight}
+                  fill={isCompleted || isActive ? "#2563eb" : "transparent"}
+                  stroke={isCompleted || isActive ? "#2563eb" : P.muted}
                   strokeWidth="1.5" />
               </svg>
             </div>
@@ -930,18 +971,18 @@ function DiamondStepper({ current, total }) {
           const sectionNum = i + 1;
           const isActive = currentSection === sectionNum;
           return (
-            <div key={i} style={{ fontSize: isMobile ? 10 : 11, fontWeight: 700, letterSpacing: isMobile ? "0.08em" : "0.06em", textTransform: "uppercase", color: isActive ? P.ink : P.inkFaint, fontFamily: FONT, textAlign: "center", ...(isMobile ? { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } : {}), padding: "0 2px" }}>
+            <div key={i} style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: isActive ? "#ffffff" : "rgba(255,255,255,0.5)", fontFamily: FONT, textAlign: "center", ...(isMobile ? { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } : {}), padding: "0 2px" }}>
               {title}
             </div>
           );
         })}
       </div>
       {/* Progress bar */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12 }}>
-        <div style={{ flex: 1, height: 4, background: "#D6CEBF", position: "relative", borderRadius: 2 }}>
-          <div style={{ position: "absolute", top: 0, left: 0, height: "100%", background: scoreColor(Math.round(((current + 1) / total) * 100)), width: `${Math.round(((current + 1) / total) * 100)}%`, transition: "width 0.3s ease, background 0.3s ease", borderRadius: 2 }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, paddingTop: 20, paddingBottom: 20 }}>
+        <div style={{ flex: 1, height: 2, background: "rgba(255,255,255,0.07)", position: "relative", borderRadius: 2 }}>
+          <div style={{ position: "absolute", top: 0, left: 0, height: "100%", background: "#2563eb", width: `${Math.round(((current + 1) / total) * 100)}%`, transition: "width 0.3s ease", borderRadius: 2 }} />
         </div>
-        <span style={{ fontFamily: MONO, fontSize: 12, color: P.inkFaint, letterSpacing: "0.04em", flexShrink: 0 }}>
+        <span style={{ fontFamily: FONT, fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.5)", letterSpacing: "0.04em", flexShrink: 0 }}>
           {Math.round(((current + 1) / total) * 100)}%
         </span>
       </div>
@@ -949,81 +990,99 @@ function DiamondStepper({ current, total }) {
   );
 }
 
-
-function LogoMark({ size = "default", showName = true, light = false }) {
-  const h = size === "large" ? 32 : 22;
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: size === "large" ? 12 : 8 }}>
-      <img src={ANVIL_URL} alt="Telchar AI" style={{ height: h }} />
-      {showName && (
-        <span style={{ fontFamily: FONT, fontWeight: 700, fontSize: size === "large" ? 24 : 15, color: light ? P.ink : "#fff", letterSpacing: "0.08em", textTransform: "uppercase" }}>TELCHAR AI</span>
-      )}
-    </div>
-  );
+// ============================================================
+// LOGO MARK (inline diamond + wordmark)
+// ============================================================
+function LogoMark({ size = "default" }) {
+  const h = size === "large" ? 28 : 18;
+  return <img src="/white_decal.svg" alt="Telchar AI" style={{ height: h, width: "auto", display: "block" }} />;
 }
 
+// ============================================================
+// LANDING PAGE
+// ============================================================
 function LandingPage({ onStart }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: P.navy, display: "flex", flexDirection: "column" }}>
-      {/* Nav bar */}
-      <div style={{ height: 56, display: "flex", alignItems: "center", padding: "0 24px", borderBottom: `1px solid ${P.navyDim}` }}>
-        <LogoMark />
-      </div>
-
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
-        <div style={{ maxWidth: 700, textAlign: "center", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
-
-          <h1 style={{ fontFamily: FONT, fontSize: "clamp(28px, 5vw, 44px)", fontWeight: 700, color: "#fff", lineHeight: 1.3, marginBottom: 20 }}>
+    <PageShell>
+      <NavBar onStart={onStart} />
+      <div style={{ paddingTop: 120, paddingBottom: 80, padding: "120px 20px 80px" }}>
+        <div style={{
+          maxWidth: 640, margin: "0 auto", textAlign: "center",
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateY(0)" : "translateY(20px)",
+          transition: "all 0.8s ease",
+        }}>
+          {/* Eyebrow */}
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.blue2, marginBottom: 16, fontFamily: FONT }}>
             AI Readiness Assessment
+          </div>
+
+          {/* H1 */}
+          <h1 style={{ fontFamily: FONT, fontSize: "clamp(36px,7vw,56px)", fontWeight: 300, letterSpacing: "-0.03em", color: "#ffffff", lineHeight: 1.15, marginBottom: 20 }}>
+            Find out where AI can{" "}
+            <span style={{ fontFamily: SERIF, fontStyle: "italic", color: "rgba(255,255,255,0.35)" }}>
+              make the biggest impact
+            </span>
           </h1>
 
-          <p style={{ fontFamily: FONT, fontSize: "clamp(16px, 2.5vw, 20px)", color: "#E6EEF8", lineHeight: 1.7, marginBottom: 12, maxWidth: 580, marginLeft: "auto", marginRight: "auto" }}>
-            Find out where AI can make the biggest impact on your business. Answer a few questions about how you operate today and get a personalized scorecard with specific recommendations.
+          {/* Sub paragraph */}
+          <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, lineHeight: 1.7, marginBottom: 12, maxWidth: 460, marginLeft: "auto", marginRight: "auto" }}>
+            Answer a few questions about how you operate today and get a personalized scorecard with specific recommendations.
           </p>
 
-          <div style={{ maxWidth: 560, marginLeft: "auto", marginRight: "auto", marginBottom: 36, padding: "20px 24px", background: P.navyFaint, borderLeft: `3px solid ${P.gold}` }}>
-            <p style={{ fontFamily: FONT, fontSize: 15, color: "#E6EEF8", lineHeight: 1.65, margin: 0 }}>
-              Most AI assessments are built for enterprise companies with massive budgets and dedicated IT teams. This one is built for you. We help small and mid-size businesses cut through the noise, separate real value from hype, and find the AI opportunities that actually make sense for your operation.
+          {/* Glass highlight block */}
+          <div style={{ ...GLASS_CARD, maxWidth: 520, marginLeft: "auto", marginRight: "auto", marginBottom: 36, padding: "20px 28px", textAlign: "left" }}>
+            <p style={{ fontFamily: FONT, fontSize: 14, fontWeight: 300, color: "rgba(255,255,255,0.7)", lineHeight: 1.7, margin: 0 }}>
+              Most AI assessments are built for enterprise companies with massive budgets and dedicated IT teams. This one is built for you. We help small and mid-size businesses cut through the noise and find the AI opportunities that actually make sense for your operation.
             </p>
           </div>
 
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "#9BB1C7", marginBottom: 32, fontFamily: FONT }}>
+          {/* Meta row */}
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.muted, marginBottom: 32, fontFamily: FONT }}>
             Adaptive questions &middot; About 5 minutes &middot; Free &middot; Confidential
           </div>
 
-          <button onClick={onStart} style={{ fontFamily: FONT, width: "100%", maxWidth: 320, height: 44, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", background: P.gold, color: "#fff", border: "none", cursor: "pointer", margin: "24px auto", transition: "all 0.2s ease" }}
-            onMouseOver={(e) => { e.target.style.background = P.goldLight; }}
-            onMouseOut={(e) => { e.target.style.background = P.gold; }}
+          {/* CTA */}
+          <button onClick={onStart} style={{ ...CTA.style, letterSpacing: "0.10em" }}
+            onMouseOver={e => e.currentTarget.style.background = P.blue2}
+            onMouseOut={e => e.currentTarget.style.background = "#2563eb"}
           >
             Start Your Assessment
           </button>
 
+          {/* Stats row */}
           <div style={{ marginTop: 40, display: "flex", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
             {[{ num: "5", text: "AI Categories Scored" }, { num: "100%", text: "Confidential" }].map((item, i) => (
               <div key={i} style={{ textAlign: "center", display: "flex", alignItems: "center", gap: 8 }}>
-                <svg width="10" height="10" viewBox="0 0 10 10"><polygon points="5,0 10,5 5,10 0,5" fill={P.navy} stroke={P.goldLight} strokeWidth="1.5" /></svg>
+                <svg width="10" height="10" viewBox="0 0 10 10">
+                  <polygon points="5,0 10,5 5,10 0,5" fill="transparent" stroke={P.blue2} strokeWidth="1.5" />
+                </svg>
                 <div>
-                  <span style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, color: P.gold }}>{item.num}</span>
-                  <span style={{ fontFamily: FONT, fontSize: 12, color: "#E6EEF8", marginLeft: 6 }}>{item.text}</span>
+                  <span style={{ fontFamily: FONT, fontSize: 16, fontWeight: 300, color: P.blue }}>{item.num}</span>
+                  <span style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: "rgba(255,255,255,0.7)", marginLeft: 6 }}>{item.text}</span>
                 </div>
               </div>
             ))}
           </div>
 
-          <div style={{ marginTop: 40, padding: "16px 24px", borderTop: `1px solid ${P.navyDim}` }}>
-            <p style={{ fontFamily: FONT, fontSize: 12, color: "#6A8CA8", lineHeight: 1.6, margin: 0 }}>
+          {/* Disclaimer */}
+          <div style={{ marginTop: 40, padding: "16px 24px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.6, margin: 0 }}>
               Your responses are confidential. We do not sell, share, or use your data for any purpose beyond delivering your assessment and improving our services.
             </p>
           </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }
 
+// ============================================================
+// ASSESSMENT FLOW
+// ============================================================
 function AssessmentFlow({ onComplete }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -1040,10 +1099,7 @@ function AssessmentFlow({ onComplete }) {
   const isLastQuestion = currentIndex === QUESTIONS.length - 1;
 
   const clearTimers = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
   };
 
   const validate = () => {
@@ -1067,11 +1123,7 @@ function AssessmentFlow({ onComplete }) {
     clearTimers();
     setAdvancing(false);
     setFadeState("out");
-    timerRef.current = setTimeout(() => {
-      setCurrentIndex(newIndex);
-      setFadeState("in");
-      timerRef.current = null;
-    }, 250);
+    timerRef.current = setTimeout(() => { setCurrentIndex(newIndex); setFadeState("in"); timerRef.current = null; }, 250);
   };
 
   const findNextIndex = (fromIndex, currentAnswers) => {
@@ -1095,19 +1147,13 @@ function AssessmentFlow({ onComplete }) {
   };
 
   const handleNext = () => {
-    if (!validate()) {
-      setError(getErrorMessage());
-      return;
-    }
+    if (!validate()) { setError(getErrorMessage()); return; }
     setError("");
     if (question.id === "industry" && currentAnswer === "Other") setAnswers((prev) => ({ ...prev, industry: `Other: ${otherText}` }));
     const updatedAnswers = { ...answers };
     if (QUESTIONS[currentIndex].id === "industry" && answers.industry === "Other") updatedAnswers.industry = `Other: ${otherText}`;
     const nextIdx = findNextIndex(currentIndex, updatedAnswers);
-    if (nextIdx === null) {
-      onComplete(updatedAnswers);
-      return;
-    }
+    if (nextIdx === null) { onComplete(updatedAnswers); return; }
     animateTo(nextIdx);
   };
 
@@ -1119,11 +1165,7 @@ function AssessmentFlow({ onComplete }) {
     const prevIdx = findPrevIndex(currentIndex, answers);
     if (prevIdx === null) return;
     setFadeState("out");
-    timerRef.current = setTimeout(() => {
-      setCurrentIndex(prevIdx);
-      setFadeState("in");
-      timerRef.current = null;
-    }, 200);
+    timerRef.current = setTimeout(() => { setCurrentIndex(prevIdx); setFadeState("in"); timerRef.current = null; }, 200);
   };
 
   const handleSelectOption = (option) => {
@@ -1134,11 +1176,7 @@ function AssessmentFlow({ onComplete }) {
       setAdvancing(true);
       timerRef.current = setTimeout(() => {
         const nextIdx = findNextIndex(currentIndex, updatedAnswers);
-        if (nextIdx === null) {
-          onComplete(updatedAnswers);
-        } else {
-          animateTo(nextIdx);
-        }
+        if (nextIdx === null) { onComplete(updatedAnswers); } else { animateTo(nextIdx); }
       }, 350);
     }
   };
@@ -1150,165 +1188,218 @@ function AssessmentFlow({ onComplete }) {
       setAnswers((prev) => ({ ...prev, [question.id]: current.filter((o) => o !== option) }));
     } else {
       const max = question.maxSelect || Infinity;
-      if (current.length >= max) {
-        setError(`Select up to ${max} priorities.`);
-        return;
-      }
+      if (current.length >= max) { setError(`Select up to ${max} priorities.`); return; }
       setAnswers((prev) => ({ ...prev, [question.id]: [...current, option] }));
     }
   };
 
   const handleKeyPress = (e) => { if (e.key === "Enter" && question.type !== "textarea") handleNext(); };
-
   const showContinueButton = question.type === "text" || question.type === "email" || question.type === "textarea" || question.type === "multiselect" || (question.hasOther && currentAnswer === "Other");
 
+  // Shared input style
+  const inputStyle = {
+    width: "100%", padding: "14px 16px",
+    background: "rgba(255,255,255,0.06)",
+    border: `1px solid ${error ? P.red : "rgba(255,255,255,0.12)"}`,
+    borderRadius: 8, color: "#ffffff",
+    fontSize: 15, fontFamily: FONT,
+    outline: "none", boxSizing: "border-box",
+    transition: "border-color 0.2s",
+  };
+
   return (
-    <div style={{ minHeight: "100vh", background: P.paper, display: "flex", flexDirection: "column" }} onKeyDown={handleKeyPress}>
-      {/* Navy header bar */}
-      <div style={{ height: 56, background: P.navy, display: "flex", alignItems: "center", padding: "0 24px", borderBottom: `1px solid ${P.navyDim}` }}>
-        <LogoMark />
-      </div>
+    <PageShell>
+      <NavBar />
+      <div style={{ paddingTop: 64 }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", padding: "32px 20px 60px" }} onKeyDown={handleKeyPress}>
+          <div style={{ width: "100%", maxWidth: 640 }}>
+            <DiamondStepper current={currentIndex} total={QUESTIONS.length} />
 
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", padding: "32px 20px 40px" }}>
-        <div style={{ width: "100%", maxWidth: 640 }}>
+            <div style={{ marginTop: 40 }}>
+              {/* Gate header */}
+              {question.isGate && question.id === "contact_name" && (
+                <>
+                  <div style={{ fontFamily: FONT, fontSize: 20, fontWeight: 500, color: P.white, marginBottom: 4, lineHeight: 1.3 }}>
+                    You're almost done.
+                  </div>
+                  <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 24, lineHeight: 1.5 }}>
+                    Where should we send your full scorecard?
+                  </p>
+                </>
+              )}
 
-          <DiamondStepper current={currentIndex} total={QUESTIONS.length} />
-          <div style={{ height: 1, background: P.paperRule, marginBottom: 28 }} />
+              {/* Section label */}
+              {question.sectionTitle && !question.isGate && (
+                <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: P.blue2, marginBottom: 8, fontFamily: FONT }}>
+                  Section {question.section}: {question.sectionTitle}
+                </div>
+              )}
 
-          {question.isGate && question.id === "contact_name" && (
-            <div style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, color: P.ink, marginBottom: 4, lineHeight: 1.3 }}>
-              You're almost done.
-            </div>
-          )}
-          {question.isGate && question.id === "contact_name" && (
-            <p style={{ fontFamily: FONT, fontSize: 15, color: P.inkLight, marginBottom: 24, lineHeight: 1.5 }}>
-              Where should we send your full scorecard?
-            </p>
-          )}
+              {/* Question card */}
+              <div style={{ ...GLASS_CARD, padding: "40px 40px 32px", marginBottom: 0 }}>
+                <div style={{ opacity: fadeState === "in" ? 1 : 0, transform: fadeState === "in" ? "translateY(0)" : "translateY(8px)", transition: "all 0.25s ease" }}>
+                  <h2 style={{ fontFamily: FONT, fontSize: "clamp(22px,4vw,32px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 8 }}>
+                    {question.label}
+                  </h2>
+                  <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginBottom: 24, letterSpacing: "0.01em" }}>
+                    Your AI readiness score appears instantly after the final question.
+                  </p>
 
-          {question.sectionTitle && !question.isGate && (
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 14, fontFamily: FONT }}>
-              Section {question.section}: {question.sectionTitle}
-            </div>
-          )}
-
-          <div style={{ opacity: fadeState === "in" ? 1 : 0, transform: fadeState === "in" ? "translateY(0)" : "translateY(8px)", transition: "all 0.25s ease" }}>
-            <h2 style={{ fontFamily: FONT, fontSize: "clamp(20px, 3vw, 24px)", fontWeight: 600, color: P.ink, lineHeight: 1.3, marginBottom: 10 }}>
-              {question.label}
-            </h2>
-            <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkLight, marginBottom: 28, letterSpacing: "0.01em" }}>
-              Your AI readiness score appears instantly after the final question.
-            </p>
-
-            {(question.type === "text" || question.type === "email") && (
-              <div style={{ position: "relative", width: "100%" }}>
-                <input type={question.type === "email" ? "text" : question.type} value={currentAnswer || ""} onChange={(e) => { setError(""); const val = e.target.value; setAnswers((prev) => ({ ...prev, [question.id]: val })); if (question.type === "email" && val.includes("@") && !val.includes("@.") && val.split("@")[1] !== undefined && !val.split("@")[1].includes(".")) { setShowEmailSuggestions(true); } else { setShowEmailSuggestions(false); } }} placeholder={question.placeholder} autoFocus autoComplete="off"
-                  style={{ width: "100%", padding: "14px 18px", fontSize: 17, fontFamily: FONT, background: P.paperShade, border: `1px solid ${error ? P.red : P.paperRule}`, color: P.ink, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
-                  onFocus={(e) => { if (!error) e.target.style.borderColor = P.gold; }}
-                  onBlur={(e) => { if (!error) e.target.style.borderColor = P.paperRule; setTimeout(() => setShowEmailSuggestions(false), 200); }}
-                  onKeyDown={(e) => { if (e.key === "Enter" && question.type !== "textarea") handleNext(); }}
-                />
-                {question.type === "email" && showEmailSuggestions && currentAnswer && currentAnswer.includes("@") && (() => {
-                  const prefix = currentAnswer.split("@")[0];
-                  const typed = currentAnswer.split("@")[1] || "";
-                  const filtered = emailDomains.filter(d => d.startsWith(typed.toLowerCase()));
-                  if (filtered.length === 0) return null;
-                  return (
-                    <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10, background: "#fff", border: `1px solid ${P.paperRule}`, marginTop: 2, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }}>
-                      {filtered.map((domain) => (
-                        <button key={domain} onMouseDown={(e) => { e.preventDefault(); setAnswers((prev) => ({ ...prev, [question.id]: `${prefix}@${domain}` })); setShowEmailSuggestions(false); }}
-                          style={{ width: "100%", padding: "12px 18px", fontSize: 15, fontFamily: FONT, background: "transparent", border: "none", color: P.ink, cursor: "pointer", textAlign: "left", display: "block" }}
-                          onMouseOver={(e) => { e.target.style.background = P.paperShade; }}
-                          onMouseOut={(e) => { e.target.style.background = "transparent"; }}
-                        >
-                          {prefix}@{domain}
-                        </button>
-                      ))}
+                  {/* Text / Email input */}
+                  {(question.type === "text" || question.type === "email") && (
+                    <div style={{ position: "relative", width: "100%" }}>
+                      <input
+                        type={question.type === "email" ? "text" : question.type}
+                        value={currentAnswer || ""}
+                        onChange={(e) => {
+                          setError("");
+                          const val = e.target.value;
+                          setAnswers((prev) => ({ ...prev, [question.id]: val }));
+                          if (question.type === "email" && val.includes("@") && !val.includes("@.") && val.split("@")[1] !== undefined && !val.split("@")[1].includes(".")) {
+                            setShowEmailSuggestions(true);
+                          } else { setShowEmailSuggestions(false); }
+                        }}
+                        placeholder={question.placeholder}
+                        autoFocus autoComplete="off"
+                        style={inputStyle}
+                        onFocus={(e) => { if (!error) e.target.style.borderColor = P.blue; }}
+                        onBlur={(e) => { if (!error) e.target.style.borderColor = "rgba(255,255,255,0.12)"; setTimeout(() => setShowEmailSuggestions(false), 200); }}
+                        onKeyDown={(e) => { if (e.key === "Enter") handleNext(); }}
+                      />
+                      {question.type === "email" && showEmailSuggestions && currentAnswer && currentAnswer.includes("@") && (() => {
+                        const prefix = currentAnswer.split("@")[0];
+                        const typed = currentAnswer.split("@")[1] || "";
+                        const filtered = emailDomains.filter(d => d.startsWith(typed.toLowerCase()));
+                        if (filtered.length === 0) return null;
+                        return (
+                          <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10, background: "#0d1628", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, marginTop: 2, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }}>
+                            {filtered.map((domain) => (
+                              <button key={domain}
+                                onMouseDown={(e) => { e.preventDefault(); setAnswers((prev) => ({ ...prev, [question.id]: `${prefix}@${domain}` })); setShowEmailSuggestions(false); }}
+                                style={{ width: "100%", padding: "12px 16px", fontSize: 14, fontFamily: FONT, background: "transparent", border: "none", color: P.white, cursor: "pointer", textAlign: "left", display: "block", fontWeight: 400 }}
+                                onMouseOver={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
+                                onMouseOut={e => e.currentTarget.style.background = "transparent"}
+                              >
+                                {prefix}@{domain}
+                              </button>
+                            ))}
+                          </div>
+                        );
+                      })()}
                     </div>
-                  );
-                })()}
-              </div>
-            )}
+                  )}
 
-            {question.type === "textarea" && (
-              <textarea value={currentAnswer || ""} onChange={(e) => { setError(""); setAnswers((prev) => ({ ...prev, [question.id]: e.target.value })); }} placeholder={question.placeholder} rows={4}
-                style={{ width: "100%", padding: "14px 18px", fontSize: 17, fontFamily: FONT, background: P.paperShade, border: `1px solid ${P.paperRule}`, color: P.ink, outline: "none", resize: "vertical", boxSizing: "border-box" }}
-                onFocus={(e) => (e.target.style.borderColor = P.gold)}
-                onBlur={(e) => (e.target.style.borderColor = P.paperRule)}
-              />
-            )}
+                  {/* Textarea */}
+                  {question.type === "textarea" && (
+                    <textarea
+                      value={currentAnswer || ""}
+                      onChange={(e) => { setError(""); setAnswers((prev) => ({ ...prev, [question.id]: e.target.value })); }}
+                      placeholder={question.placeholder} rows={4}
+                      style={{ ...inputStyle, resize: "vertical" }}
+                      onFocus={e => e.target.style.borderColor = P.blue}
+                      onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.12)"}
+                    />
+                  )}
 
-            {question.type === "select" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {question.options.map((option, idx) => {
-                  const isSelected = currentAnswer === option;
-                  return (
-                    <button key={idx} onClick={() => handleSelectOption(option)} disabled={advancing}
-                      style={{ width: "100%", padding: "14px 18px", fontSize: 16, fontFamily: FONT, background: isSelected ? P.gold + "22" : "transparent", border: `1px solid ${isSelected ? P.gold : P.paperRule}`, color: isSelected ? P.ink : P.inkMid, cursor: advancing ? "default" : "pointer", textAlign: "left", transition: "all 0.15s ease", opacity: advancing && !isSelected ? 0.5 : 1 }}
-                      onMouseOver={(e) => { if (!isSelected && !advancing) { e.target.style.borderColor = P.inkFaint; e.target.style.background = P.paperShade; } }}
-                      onMouseOut={(e) => { if (!isSelected) { e.target.style.borderColor = P.paperRule; e.target.style.background = "transparent"; } }}
-                    >
-                      {option}
+                  {/* Select options */}
+                  {question.type === "select" && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {question.options.map((option, idx) => {
+                        const isSelected = currentAnswer === option;
+                        return (
+                          <button key={idx} onClick={() => handleSelectOption(option)} disabled={advancing}
+                            style={{
+                              width: "100%", padding: "14px 20px",
+                              fontSize: 14, fontFamily: FONT, fontWeight: 400,
+                              background: isSelected ? "rgba(37,99,235,0.15)" : "rgba(255,255,255,0.04)",
+                              border: isSelected ? "2px solid rgba(37,99,235,0.4)" : "1px solid rgba(255,255,255,0.09)",
+                              borderRadius: 10, color: isSelected ? "#ffffff" : "rgba(255,255,255,0.8)",
+                              cursor: advancing ? "default" : "pointer",
+                              textAlign: "left", transition: "all 0.15s ease",
+                              opacity: advancing && !isSelected ? 0.5 : 1,
+                              display: "flex", alignItems: "center", justifyContent: "space-between",
+                            }}
+                            onMouseOver={(e) => { if (!isSelected && !advancing) { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; } }}
+                            onMouseOut={(e) => { if (!isSelected) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"; } }}
+                          >
+                            <span>{option}</span>
+                            {isSelected && <span style={{ color: "#2563eb", fontSize: 10 }}>&#9670;</span>}
+                          </button>
+                        );
+                      })}
+                      {question.hasOther && currentAnswer === "Other" && (
+                        <input type="text" value={otherText} onChange={(e) => setOtherText(e.target.value)} placeholder="Please specify your industry" autoFocus
+                          style={{ ...inputStyle, marginTop: 4, borderColor: P.blue }}
+                        />
+                      )}
+                    </div>
+                  )}
+
+                  {/* Multiselect */}
+                  {question.type === "multiselect" && (
+                    <div>
+                      <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, marginBottom: 12, marginTop: 0 }}>{question.helperText || "Select all that apply"}</p>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {question.options.map((option, idx) => {
+                          const selected = Array.isArray(currentAnswer) && currentAnswer.includes(option);
+                          return (
+                            <button key={idx} onClick={() => handleMultiSelect(option)}
+                              style={{
+                                width: "100%", padding: "14px 20px",
+                                fontSize: 14, fontFamily: FONT, fontWeight: 400,
+                                background: selected ? "rgba(37,99,235,0.15)" : "rgba(255,255,255,0.04)",
+                                border: selected ? "2px solid rgba(37,99,235,0.4)" : "1px solid rgba(255,255,255,0.09)",
+                                borderRadius: 10, color: selected ? "#ffffff" : "rgba(255,255,255,0.8)",
+                                cursor: "pointer", textAlign: "left", transition: "all 0.15s ease",
+                                display: "flex", alignItems: "center", gap: 12,
+                              }}
+                              onMouseOver={(e) => { if (!selected) { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; } }}
+                              onMouseOut={(e) => { if (!selected) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"; } }}
+                            >
+                              <span style={{ width: 16, height: 16, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                <svg width="10" height="10" viewBox="0 0 10 10">
+                                  <polygon points="5,0 10,5 5,10 0,5" fill={selected ? "#2563eb" : "transparent"} stroke={selected ? "#2563eb" : P.muted} strokeWidth="1.5" />
+                                </svg>
+                              </span>
+                              {option}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {error && <p style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: P.red, marginTop: 12 }}>{error}</p>}
+
+                  {/* Nav buttons */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 32, gap: 16 }}>
+                    <button onClick={handleBack} disabled={currentIndex === 0}
+                      style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, padding: "10px 20px", background: "transparent", border: "none", color: currentIndex === 0 ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.4)", cursor: currentIndex === 0 ? "default" : "pointer", transition: "all 0.15s ease" }}>
+                      Back
                     </button>
-                  );
-                })}
-                {question.hasOther && currentAnswer === "Other" && (
-                  <input type="text" value={otherText} onChange={(e) => setOtherText(e.target.value)} placeholder="Please specify your industry" autoFocus
-                    style={{ width: "100%", padding: "14px 18px", fontSize: 16, fontFamily: FONT, background: P.paperShade, border: `1px solid ${P.gold}`, color: P.ink, outline: "none", marginTop: 4, boxSizing: "border-box" }}
-                  />
-                )}
-              </div>
-            )}
-
-            {question.type === "multiselect" && (
-              <div>
-                <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkLight, marginBottom: 12, marginTop: 0 }}>{question.helperText || "Select all that apply"}</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {question.options.map((option, idx) => {
-                    const selected = Array.isArray(currentAnswer) && currentAnswer.includes(option);
-                    return (
-                      <button key={idx} onClick={() => handleMultiSelect(option)}
-                        style={{ width: "100%", padding: "14px 18px", fontSize: 16, fontFamily: FONT, background: selected ? P.gold + "22" : "transparent", border: `1px solid ${selected ? P.gold : P.paperRule}`, color: selected ? P.ink : P.inkMid, cursor: "pointer", textAlign: "left", transition: "all 0.15s ease", display: "flex", alignItems: "center", gap: 12 }}
-                        onMouseOver={(e) => { if (!selected) { e.currentTarget.style.borderColor = P.inkFaint; e.currentTarget.style.background = P.paperShade; } }}
-                        onMouseOut={(e) => { if (!selected) { e.currentTarget.style.borderColor = P.paperRule; e.currentTarget.style.background = "transparent"; } }}
+                    {showContinueButton && (
+                      <button onClick={handleNext}
+                        style={{ ...CTA.style, minWidth: 200, margin: 0, letterSpacing: "0.10em" }}
+                        onMouseOver={e => e.currentTarget.style.background = P.blue2}
+                        onMouseOut={e => e.currentTarget.style.background = "#2563eb"}
                       >
-                        <span style={{ width: 16, height: 16, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                          <svg width="10" height="10" viewBox="0 0 10 10">
-                            <polygon points="5,0 10,5 5,10 0,5" fill={selected ? P.gold : "transparent"} stroke={selected ? P.gold : P.goldLight} strokeWidth="1.5" />
-                          </svg>
-                        </span>
-                        {option}
+                        {isLastQuestion ? "See My Results" : "Continue"}
                       </button>
-                    );
-                  })}
+                    )}
+                  </div>
                 </div>
               </div>
-            )}
-
-            {error && <p style={{ fontFamily: FONT, fontSize: 15, color: P.red, marginTop: 12 }}>{error}</p>}
-
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 32, gap: 16 }}>
-              <button onClick={handleBack} disabled={currentIndex === 0}
-                style={{ fontFamily: FONT, fontSize: 13, fontWeight: 500, padding: "10px 20px", background: "transparent", border: "none", color: currentIndex === 0 ? P.inkFaint : P.inkLight, cursor: currentIndex === 0 ? "default" : "pointer", textDecoration: "underline", textUnderlineOffset: "3px", transition: "all 0.15s ease" }}>
-                Back
-              </button>
-              {showContinueButton && (
-                <button onClick={handleNext}
-                  style={{ fontFamily: FONT, width: "100%", maxWidth: 320, height: 44, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", background: P.gold, border: "none", color: "#fff", cursor: "pointer", transition: "all 0.15s ease" }}
-                  onMouseOver={(e) => { e.target.style.background = P.goldLight; }}
-                  onMouseOut={(e) => { e.target.style.background = P.gold; }}
-                >
-                  {isLastQuestion ? "See My Results" : "Continue"}
-                </button>
-              )}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }
 
+// ============================================================
+// QUICK WINS CHART
+// ============================================================
 function QuickWinsChart({ quickWins, companyName }) {
   const [selected, setSelected] = useState(null);
 
@@ -1321,70 +1412,75 @@ function QuickWinsChart({ quickWins, companyName }) {
 
   return (
     <div style={{ marginBottom: 48 }}>
-      <h2 style={{ fontFamily: FONT, fontSize: 24, fontWeight: 700, color: P.ink, lineHeight: 1.3, marginBottom: 8 }}>{companyName ? `Where ${companyName} Should Start` : "Where to Start"}</h2>
-      <p style={{ fontFamily: FONT, fontSize: 15, color: P.inkLight, marginBottom: 24, lineHeight: 1.5 }}>Ranked by impact. Click any row for details.</p>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: "0 14px", alignItems: "center" }}>
+      <h2 style={{ fontFamily: FONT, fontSize: "clamp(20px,3vw,28px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 8 }}>
+        {companyName ? `Where ${companyName} Should Start` : "Where to Start"}
+      </h2>
+      <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 24, lineHeight: 1.5 }}>Ranked by impact. Click any row for details.</p>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
         {items.map((win, i) => (
-          <Fragment key={i}>
-            <div onClick={() => setSelected(selected === i ? null : i)} style={{ cursor: "pointer", padding: "16px 0", borderBottom: `1px solid ${P.paperRule}`, display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                <svg width="10" height="10" viewBox="0 0 10 10" style={{ flexShrink: 0 }}>
-                  <polygon points="5,0 10,5 5,10 0,5" fill={P.gold} stroke={P.gold} strokeWidth="1.5" />
-                </svg>
-                <div style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, color: P.ink, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{win.title}</div>
+          <div key={i}>
+            <div onClick={() => setSelected(selected === i ? null : i)}
+              style={{ cursor: "pointer", padding: "16px 0", borderBottom: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", gap: 12 }}>
+              <svg width="10" height="10" viewBox="0 0 10 10" style={{ flexShrink: 0 }}>
+                <polygon points="5,0 10,5 5,10 0,5" fill="#2563eb" stroke="#2563eb" strokeWidth="1.5" />
+              </svg>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: FONT, fontSize: 15, fontWeight: 500, color: P.white, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{win.title}</div>
+                <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, marginTop: 2 }}>{win.category}</div>
+              </div>
+              <span style={{ fontFamily: FONT, fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff", background: "rgba(255,255,255,0.1)", padding: "4px 10px", borderRadius: 4, whiteSpace: "nowrap", flexShrink: 0 }}>#{i + 1} Priority</span>
             </div>
-            <div onClick={() => setSelected(selected === i ? null : i)} style={{ cursor: "pointer", padding: "16px 0", borderBottom: `1px solid ${P.paperRule}`, display: "flex", alignItems: "center" }}>
-              <span style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff", background: P.inkMid, padding: "3px 8px", whiteSpace: "nowrap" }}>#{i + 1} Priority</span>
-            </div>
-            <div onClick={() => setSelected(selected === i ? null : i)} style={{ cursor: "pointer", padding: "16px 0", borderBottom: `1px solid ${P.paperRule}`, fontFamily: FONT, fontSize: 13, color: P.inkFaint, whiteSpace: "nowrap", minWidth: 100, textAlign: "right" }}>{win.category}</div>
-          </Fragment>
+            {selected === i && (
+              <div style={{ ...GLASS_CARD, marginTop: 4, marginBottom: 4, padding: "20px 24px", borderLeft: "3px solid #2563eb", position: "relative" }}>
+                <button onClick={() => setSelected(null)} style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: P.muted, fontSize: 18, cursor: "pointer", lineHeight: 1 }}>{"\u2715"}</button>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.muted, marginBottom: 6, fontFamily: FONT }}>{items[selected].category}</div>
+                <div style={{ fontFamily: FONT, fontSize: 18, fontWeight: 500, color: P.white, lineHeight: 1.3, marginBottom: 4, paddingRight: 28 }}>{items[selected].title}</div>
+                <div style={{ fontFamily: FONT, fontSize: 11, fontWeight: 600, color: P.dim, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 12 }}>#{selected + 1} Priority</div>
+                <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 300, color: P.dim, lineHeight: 1.7 }}>{items[selected].desc}</div>
+              </div>
+            )}
+          </div>
         ))}
       </div>
-
-      {selected !== null && (
-        <div style={{ marginTop: 12, background: P.paperShade, borderLeft: `3px solid ${P.gold}`, padding: "20px 24px", position: "relative" }}>
-          <button onClick={() => setSelected(null)} style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: P.inkFaint, fontSize: 20, cursor: "pointer", fontFamily: FONT, lineHeight: 1 }}>{"\u2715"}</button>
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 6, fontFamily: FONT }}>{items[selected].category}</div>
-          <div style={{ fontFamily: FONT, fontSize: 20, fontWeight: 700, color: P.ink, lineHeight: 1.3, marginBottom: 4, paddingRight: 28 }}>{items[selected].title}</div>
-          <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 600, color: P.inkMid, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 12 }}>#{selected + 1} Priority</div>
-          <div style={{ fontFamily: FONT, fontSize: 15, color: P.inkMid, lineHeight: 1.7 }}>{items[selected].desc}</div>
-        </div>
-      )}
     </div>
   );
 }
 
+// ============================================================
+// REPORT SECTION
+// ============================================================
 function ReportSection({ section, defaultOpen = false, locked = false, freeInsight = false, onUpgrade }) {
   const [open, setOpen] = useState(defaultOpen);
 
-  const handleClick = () => {
-    if (locked) return;
-    setOpen(!open);
-  };
+  const handleClick = () => { if (locked) return; setOpen(!open); };
 
   return (
-    <div style={{ borderBottom: `1px solid ${P.paperRule}`, overflow: "hidden", transition: "all 0.2s ease" }}>
-      <div onClick={handleClick} style={{ padding: "18px 0", cursor: locked ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-        <div style={{ flex: 1, minWidth: 0, paddingLeft: locked ? 16 : 0 }}>
+    <div style={{ ...GLASS_CARD, marginBottom: 8, overflow: "hidden", transition: "all 0.2s ease" }}>
+      <div onClick={handleClick} style={{ padding: "18px 24px", cursor: locked ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkFaint, fontFamily: FONT }}>{section.category}</span>
-            {section.isHighImpact && !locked && <span style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, color: "#fff", background: P.green, padding: "2px 8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Highest Impact</span>}
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.muted, fontFamily: FONT }}>{section.category}</span>
+            {section.isHighImpact && !locked && (
+              <span style={{ fontFamily: FONT, fontSize: 10, fontWeight: 600, color: "#fff", background: P.green, padding: "2px 8px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>Highest Impact</span>
+            )}
           </div>
-          <div style={{ fontFamily: FONT, fontSize: 16, fontWeight: 600, color: P.ink }}>{section.title}</div>
-          {!locked && <div style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, marginTop: 2 }}>Your answer: {section.answer}</div>}
-          {locked && <div style={{ fontFamily: MONO, fontSize: 12, color: P.inkFaint, marginTop: 2, letterSpacing: "0.04em" }}>Score: {section.categoryScore}/100</div>}
+          <div style={{ fontFamily: FONT, fontSize: 15, fontWeight: 500, color: P.white }}>{section.title}</div>
+          {!locked && <div style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 2 }}>Your answer: {section.answer}</div>}
+          {locked && <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, marginTop: 2, letterSpacing: "0.04em" }}>Score: {section.categoryScore}/100</div>}
         </div>
         {!locked && (
-          <div style={{ fontFamily: FONT, fontSize: 20, color: P.inkFaint, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease", flexShrink: 0 }}>
+          <div style={{ fontFamily: FONT, fontSize: 18, color: P.muted, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease", flexShrink: 0 }}>
             {"\u25BE"}
           </div>
         )}
         {locked && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, minWidth: 140 }}>
-            <svg width="12" height="12" viewBox="0 0 12 12" style={{ opacity: 0.4 }}><path d="M9 5V4a3 3 0 00-6 0v1H2v7h8V5H9zM4 4a2 2 0 014 0v1H4V4z" fill={P.inkLight}/></svg>
+            <svg width="12" height="12" viewBox="0 0 12 12" style={{ opacity: 0.4 }}><path d="M9 5V4a3 3 0 00-6 0v1H2v7h8V5H9zM4 4a2 2 0 014 0v1H4V4z" fill={P.dim}/></svg>
             <button onClick={onUpgrade}
-              style={{ fontFamily: FONT, width: "100%", maxWidth: 320, height: 44, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", background: "transparent", color: P.gold, border: `1px solid ${P.gold}`, cursor: "pointer", transition: "all 0.2s ease", whiteSpace: "nowrap" }}
-              onMouseOver={(e) => { e.target.style.background = P.gold + "0A"; }}
-              onMouseOut={(e) => { e.target.style.background = "transparent"; }}
+              style={{ ...CTA.ghost, whiteSpace: "nowrap", margin: 0, padding: "8px 16px", fontSize: 12 }}
+              onMouseOver={e => e.currentTarget.style.borderColor = P.blue}
+              onMouseOut={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"}
             >
               Unlock
             </button>
@@ -1392,18 +1488,18 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
         )}
       </div>
       {open && !locked && (
-        <div style={{ padding: "0 0 24px", borderTop: `1px solid ${P.paperRule}` }}>
+        <div style={{ padding: "0 24px 24px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <div style={{ paddingTop: 20, marginBottom: freeInsight ? 0 : 16 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 6, fontFamily: FONT }}>What This Tells Us</div>
-            <div style={{ fontFamily: FONT, fontSize: 15, color: P.inkMid, lineHeight: 1.65 }}>{section.interpretation}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.muted, marginBottom: 6, fontFamily: FONT }}>What This Tells Us</div>
+            <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 300, color: P.dim, lineHeight: 1.65 }}>{section.interpretation}</div>
           </div>
           {freeInsight && (
-            <div style={{ marginTop: 16, padding: "20px 24px", background: P.paperShade, borderLeft: `3px solid ${P.gold}` }}>
-              <div style={{ fontFamily: FONT, fontSize: 13, color: P.inkLight, marginBottom: 8 }}>Detailed execution steps and tool recommendations available in the full report.</div>
+            <div style={{ marginTop: 16, padding: "20px 24px", background: "rgba(37,99,235,0.06)", borderLeft: "3px solid #2563eb", borderRadius: 4 }}>
+              <div style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginBottom: 8 }}>Detailed execution steps and tool recommendations available in the full report.</div>
               <button onClick={onUpgrade}
-                style={{ fontFamily: FONT, width: "100%", maxWidth: 320, height: 44, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", background: "transparent", color: P.gold, border: `1px solid ${P.gold}`, cursor: "pointer", margin: "24px auto", transition: "all 0.2s ease" }}
-                onMouseOver={(e) => { e.target.style.background = P.gold + "0A"; }}
-                onMouseOut={(e) => { e.target.style.background = "transparent"; }}
+                style={{ ...CTA.ghost, margin: "12px auto 0", fontSize: 12, padding: "10px 20px" }}
+                onMouseOver={e => e.currentTarget.style.borderColor = P.blue}
+                onMouseOut={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"}
               >
                 Unlock Full Report
               </button>
@@ -1412,12 +1508,12 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
           {!freeInsight && (
             <>
               <div style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 6, fontFamily: FONT }}>What Leading Companies Are Doing</div>
-                <div style={{ fontFamily: FONT, fontSize: 15, color: P.inkMid, lineHeight: 1.65 }}>{section.benchmark}</div>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.muted, marginBottom: 6, fontFamily: FONT }}>What Leading Companies Are Doing</div>
+                <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 300, color: P.dim, lineHeight: 1.65 }}>{section.benchmark}</div>
               </div>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 6, fontFamily: FONT }}>Your Opportunity</div>
-                <div style={{ fontFamily: FONT, fontSize: 15, color: P.inkMid, lineHeight: 1.65 }}>{section.opportunity}</div>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.muted, marginBottom: 6, fontFamily: FONT }}>Your Opportunity</div>
+                <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 300, color: P.dim, lineHeight: 1.65 }}>{section.opportunity}</div>
               </div>
             </>
           )}
@@ -1427,7 +1523,11 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
   );
 }
 
+// ============================================================
+// RESULTS PAGE
+// ============================================================
 function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, onAdvancedCheckout }) {
+  const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [advancedLoading, setAdvancedLoading] = useState(false);
@@ -1448,209 +1548,224 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
 
   const handleCheckout = async () => {
     setCheckoutLoading(true);
-    try {
-      if (onCheckout) await onCheckout();
-    } catch (err) {
-      console.error("Checkout error:", err);
-      setCheckoutLoading(false);
-    }
+    try { if (onCheckout) await onCheckout(); } catch (err) { console.error("Checkout error:", err); setCheckoutLoading(false); }
   };
 
   const handleAdvancedCheckout = async () => {
     setAdvancedLoading(true);
-    try {
-      if (onAdvancedCheckout) await onAdvancedCheckout();
-    } catch (err) {
-      console.error("Advanced checkout error:", err);
-      setAdvancedLoading(false);
-    }
+    try { if (onAdvancedCheckout) await onAdvancedCheckout(); } catch (err) { console.error("Advanced checkout error:", err); setAdvancedLoading(false); }
   };
 
   const getScoreLabel = scoreTier;
-
   const categoryOrder = ["operations", "sales", "data", "content", "technology"];
 
   return (
-    <div style={{ minHeight: "100vh", background: P.paper }}>
-      {/* Navy header */}
-      <div style={{ background: P.navy, padding: "32px 20px 40px", textAlign: "center" }}>
-        <div style={{ maxWidth: 1160, margin: "0 auto" }}>
-          <div style={{ marginBottom: 16, display: "flex", justifyContent: "center" }}>
-            <LogoMark />
-          </div>
-          <h1 style={{ fontFamily: FONT, fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: "#fff", lineHeight: 1.3, marginBottom: 8 }}>Telchar AI Readiness Index<sup style={{ fontSize: "0.45em", verticalAlign: "super", opacity: 0.7 }}>{"\u2122"}</sup></h1>
-          <p style={{ fontFamily: FONT, fontSize: 16, color: "#B8C2CC" }}>{answers.company_name}{answers.industry ? ` \u00B7 ${answers.industry}` : ""}</p>
-        </div>
-      </div>
+    <PageShell>
+      {/* Fixed nav */}
+      <NavBar />
 
-      {/* Paper body */}
-      <div style={{ padding: "40px 0 60px", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "all 0.6s ease" }}>
-        <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 32px" }}>
-
-          {/* Overall score panel */}
-          <div style={{ background: P.paperShade, padding: "24px 32px 28px", textAlign: "center", marginBottom: 32, border: `1px solid ${P.paperRule}` }}>
-            <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 16 }}>AI READINESS SCORE</div>
-            <ScoreDisplay score={scores.overall} isOverall />
-            <div style={{ fontFamily: FONT, fontSize: 24, fontWeight: 700, color: P.ink, lineHeight: 1.3, marginTop: 12 }}>{getScoreLabel(scores.overall)}</div>
-            <p style={{ fontFamily: FONT, fontSize: 16, color: P.inkLight, marginTop: 12, maxWidth: 560, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
-              {(() => {
-                const cn = answers.company_name || "your business";
-                const adminNote = (answers.admin_hours === "15 to 30 hours" || answers.admin_hours === "30+ hours") ? " At your company size, this likely represents meaningful payroll allocated to repetitive work." : "";
-                if (scores.overall < 40) return `Based on how ${cn} operates today, there is significant opportunity to reduce cost and recover capacity through AI. Most operations are running on manual effort, which means the upside is substantial.${adminNote}`;
-                if (scores.overall < 65) return `${cn} has systems in place, but there are clear areas where AI can reduce cost, save time, and improve how you operate day to day.${adminNote}`;
-                if (scores.overall < 85) return `${cn} has solid foundations. There are targeted areas where AI can optimize what is already working and unlock the next level of efficiency.${adminNote}`;
-                return `${cn} is well ahead of the curve. Fine-tuned AI integrations can help you scale and maintain your competitive edge.`;
-              })()}
+      <div style={{ paddingTop: 64 }}>
+        {/* Hero header */}
+        <div style={{ padding: "48px 20px 40px", textAlign: "center" }}>
+          <div style={{ maxWidth: 980, margin: "0 auto" }}>
+            <div style={{ marginBottom: 16, display: "flex", justifyContent: "center" }}>
+              <LogoMark size="large" />
+            </div>
+            <h1 style={{ fontFamily: FONT, fontSize: "clamp(24px,4vw,36px)", fontWeight: 300, letterSpacing: "-0.02em", color: "#fff", lineHeight: 1.3, marginBottom: 8 }}>
+              Telchar AI Readiness Index<sup style={{ fontSize: "0.45em", verticalAlign: "super", opacity: 0.7 }}>{"\u2122"}</sup>
+            </h1>
+            <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 400, color: P.dim }}>
+              {answers.company_name}{answers.industry ? ` \u00B7 ${answers.industry}` : ""}
             </p>
           </div>
+        </div>
 
-          {/* Divider */}
-          <div style={{ borderTop: `1px solid ${P.paperRule}`, margin: "64px 0" }} />
+        {/* Body */}
+        <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "all 0.6s ease", paddingBottom: 60 }}>
+          <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px" }}>
 
-          {/* Category scores grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, marginBottom: 0 }}>
-            {categoryOrder.map((key, idx) => {
-              const cat = scores.categories[key];
-              if (!cat) return null;
-              return (
-                <div key={key} style={{ background: P.paperShade, padding: "20px 12px 16px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkFaint, marginBottom: 4 }}>Category Score</div>
-                  <ScoreDisplay score={cat.score} label={cat.label} />
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Divider */}
-          <div style={{ borderTop: `1px solid ${P.paperRule}`, margin: "64px 0" }} />
-
-          <QuickWinsChart quickWins={quickWins} companyName={answers.company_name} />
-
-          {/* Report sections */}
-          <div style={{ marginBottom: 48 }}>
-            <h2 style={{ fontFamily: FONT, fontSize: 24, fontWeight: 700, color: P.ink, lineHeight: 1.3, marginBottom: 8 }}>{answers.company_name ? `${answers.company_name}: AI Readiness Report` : "AI Readiness Report"}</h2>
-            <p style={{ fontFamily: FONT, fontSize: 15, color: P.inkLight, marginBottom: 20, lineHeight: 1.5 }}>{isPro ? "Full breakdown ranked by impact. Your weakest areas appear first." : "Your top 2 priority areas ranked by impact. Unlock detailed execution steps and full action plan."}</p>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {generatePDFContent(answers, scores, quickWins).map((section, i) => (
-                <ReportSection key={i} section={section} defaultOpen={isPro ? i < 5 : false} locked={isPro ? false : i >= 2} freeInsight={!isPro && i < 2} onUpgrade={scrollToPricing} />
-              ))}
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div style={{ borderTop: `1px solid ${P.paperRule}`, margin: "64px 0" }} />
-
-          {/* Paywall / pricing */}
-          {!isPro && (
-            <div ref={pricingRef} style={{ background: P.paperShade, padding: "40px 32px", textAlign: "center", marginBottom: 32, borderTop: `1px solid ${pricingGlow ? P.gold : P.paperRule}`, borderRight: `1px solid ${pricingGlow ? P.gold : P.paperRule}`, borderBottom: `1px solid ${pricingGlow ? P.gold : P.paperRule}`, borderLeft: `3px solid ${P.gold}`, transition: "border-color 0.6s ease" }}>
-              <h3 style={{ fontFamily: FONT, fontSize: 24, fontWeight: 700, color: P.ink, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>You have clear opportunity. Choose how far you want to take it.</h3>
-              <p style={{ fontFamily: FONT, fontSize: 15, color: P.inkLight, marginBottom: 28, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>The free score shows where you stand. The next step determines how fast you move.</p>
-
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkLight, marginBottom: 14, fontFamily: FONT }}>Recommended for businesses ready to implement</div>
-              <button onClick={handleAdvancedCheckout} disabled={advancedLoading}
-                style={{ fontFamily: FONT, width: "100%", maxWidth: 320, height: 44, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", background: advancedLoading ? P.inkFaint : P.gold, color: "#fff", border: "none", cursor: advancedLoading ? "default" : "pointer", margin: "24px auto", transition: "all 0.2s ease" }}
-                onMouseOver={(e) => { if (!advancedLoading) { e.target.style.background = P.goldLight; } }}
-                onMouseOut={(e) => { if (!advancedLoading) { e.target.style.background = P.gold; } }}
-              >
-                {advancedLoading ? "Redirecting..." : "Get the 90-Day Execution Plan – $150"}
-              </button>
-              <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkLight, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Everything in the full report plus a structured 90-day roadmap with sequencing, KPIs, ownership guidance, and implementation pacing.</p>
-              <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginTop: 8 }}>Without a structured roadmap, most teams delay action and lose momentum.</p>
-              <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginTop: 6, fontStyle: "italic", maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>This roadmap is built from your assessment responses. More detailed and accurate inputs produce a stronger plan.</p>
-              <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, marginTop: 4 }}>Designed for execution. Not external research or bespoke consulting.</p>
-              <p style={{ marginTop: 10 }}><span onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample 90-day roadmap</span></p>
-
-              <div style={{ marginTop: 28, paddingTop: 24, borderTop: `1px solid ${P.paperRule}` }}>
-                <button onClick={handleCheckout} disabled={checkoutLoading}
-                  style={{ fontFamily: FONT, width: "100%", maxWidth: 320, height: 44, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", background: "transparent", color: checkoutLoading ? P.inkFaint : P.gold, border: `1px solid ${checkoutLoading ? P.paperRule : P.gold}`, cursor: checkoutLoading ? "default" : "pointer", margin: "24px auto", transition: "all 0.2s ease" }}
-                  onMouseOver={(e) => { if (!checkoutLoading) { e.target.style.background = P.navy + "0A"; } }}
-                  onMouseOut={(e) => { if (!checkoutLoading) { e.target.style.background = "transparent"; } }}
-                >
-                  {checkoutLoading ? "Redirecting..." : "Unlock Full Report – $50"}
-                </button>
-                <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, marginTop: 10 }}>Detailed action steps and tool guidance you can execute immediately.</p>
-                <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginTop: 4 }}>For teams who prefer to determine sequencing internally.</p>
-                <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginTop: 6, fontStyle: "italic" }}>The quality of your report depends on the accuracy of the information provided in your assessment.</p>
-                <p style={{ marginTop: 8 }}><span onClick={() => navigate("/report?tier=report&demo=true")} style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample full report</span></p>
+            {/* Overall score panel */}
+            <div style={{ ...GLASS_CARD, padding: "32px 32px 36px", textAlign: "center", marginBottom: 32 }}>
+              <div style={{ fontFamily: FONT, fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.muted, marginBottom: 16 }}>AI READINESS SCORE</div>
+              <ScoreDisplay score={scores.overall} isOverall />
+              <div style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginTop: 12, letterSpacing: "-0.01em" }}>
+                {getScoreLabel(scores.overall)}
               </div>
-
-              <div style={{ marginTop: 24, paddingTop: 16, borderTop: `1px solid ${P.paperRule}` }}>
-                <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, lineHeight: 1.5 }}>Full Report = What to do &nbsp;&nbsp;&middot;&nbsp;&nbsp; Advanced Plan = What to do, and in what order</p>
-              </div>
-
-              <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, marginTop: 16 }}>Secure checkout powered by Stripe.</p>
+              <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginTop: 12, maxWidth: 560, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
+                {(() => {
+                  const cn = answers.company_name || "your business";
+                  const adminNote = (answers.admin_hours === "15 to 30 hours" || answers.admin_hours === "30+ hours") ? " At your company size, this likely represents meaningful payroll allocated to repetitive work." : "";
+                  if (scores.overall < 40) return `Based on how ${cn} operates today, there is significant opportunity to reduce cost and recover capacity through AI. Most operations are running on manual effort, which means the upside is substantial.${adminNote}`;
+                  if (scores.overall < 65) return `${cn} has systems in place, but there are clear areas where AI can reduce cost, save time, and improve how you operate day to day.${adminNote}`;
+                  if (scores.overall < 85) return `${cn} has solid foundations. There are targeted areas where AI can optimize what is already working and unlock the next level of efficiency.${adminNote}`;
+                  return `${cn} is well ahead of the curve. Fine-tuned AI integrations can help you scale and maintain your competitive edge.`;
+                })()}
+              </p>
             </div>
-          )}
 
-          {isPro && !isAdvanced && (
-            <div style={{ background: P.paperShade, padding: "40px 32px", textAlign: "center", borderTop: `1px solid ${P.paperRule}`, borderRight: `1px solid ${P.paperRule}`, borderBottom: `1px solid ${P.paperRule}`, borderLeft: `3px solid ${P.green}`, marginBottom: 32 }}>
-              <h3 style={{ fontFamily: FONT, fontSize: 24, fontWeight: 700, color: P.ink, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Pro Report Unlocked</h3>
-              <p style={{ fontFamily: FONT, fontSize: 15, color: P.inkLight, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your full AI Readiness Report with execution detail is available above.</p>
-              <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginBottom: 24, fontStyle: "italic" }}>This report is generated from your assessment responses. It does not include external company research.</p>
-              <div style={{ paddingTop: 16, borderTop: `1px solid ${P.paperRule}` }}>
-                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: P.inkLight, marginBottom: 14, fontFamily: FONT }}>Recommended for businesses ready to implement</div>
+            {/* Divider */}
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", margin: "48px 0" }} />
+
+            {/* Category scores grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16, marginBottom: 0 }}>
+              {categoryOrder.map((key) => {
+                const cat = scores.categories[key];
+                if (!cat) return null;
+                return (
+                  <div key={key} style={{ ...GLASS_CARD, padding: "20px 16px 16px", textAlign: "center" }}>
+                    <div style={{ fontFamily: FONT, fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.muted, marginBottom: 4 }}>Category Score</div>
+                    <ScoreDisplay score={cat.score} label={cat.label} />
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Divider */}
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", margin: "48px 0" }} />
+
+            <QuickWinsChart quickWins={quickWins} companyName={answers.company_name} />
+
+            {/* Report sections */}
+            <div style={{ marginBottom: 48 }}>
+              <h2 style={{ fontFamily: FONT, fontSize: "clamp(20px,3vw,28px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 8 }}>
+                {answers.company_name ? `${answers.company_name}: AI Readiness Report` : "AI Readiness Report"}
+              </h2>
+              <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 20, lineHeight: 1.5 }}>
+                {isPro ? "Full breakdown ranked by impact. Your weakest areas appear first." : "Your top 2 priority areas ranked by impact. Unlock detailed execution steps and full action plan."}
+              </p>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {generatePDFContent(answers, scores, quickWins).map((section, i) => (
+                  <ReportSection key={i} section={section} defaultOpen={isPro ? i < 5 : false} locked={isPro ? false : i >= 2} freeInsight={!isPro && i < 2} onUpgrade={scrollToPricing} />
+                ))}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", margin: "48px 0" }} />
+
+            {/* Paywall / pricing */}
+            {!isPro && (
+              <div ref={pricingRef} style={{ ...GLASS_CARD, padding: "40px 32px", textAlign: "center", marginBottom: 32, borderLeft: pricingGlow ? "3px solid #2563eb" : "3px solid rgba(37,99,235,0.3)", transition: "border-color 0.6s ease" }}>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>
+                  You have clear opportunity. Choose how far you want to take it.
+                </h3>
+                <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 28, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
+                  The free score shows where you stand. The next step determines how fast you move.
+                </p>
+
+                <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.dim, marginBottom: 14, fontFamily: FONT }}>Recommended for businesses ready to implement</div>
                 <button onClick={handleAdvancedCheckout} disabled={advancedLoading}
-                  style={{ fontFamily: FONT, width: "100%", maxWidth: 320, height: 44, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", background: advancedLoading ? P.inkFaint : P.gold, color: "#fff", border: "none", cursor: advancedLoading ? "default" : "pointer", margin: "24px auto", transition: "all 0.2s ease" }}
-                  onMouseOver={(e) => { if (!advancedLoading) { e.target.style.background = P.goldLight; } }}
-                  onMouseOut={(e) => { if (!advancedLoading) { e.target.style.background = P.gold; } }}
+                  style={{ ...CTA.style, background: advancedLoading ? P.muted : "#2563eb", cursor: advancedLoading ? "default" : "pointer", letterSpacing: "0.10em" }}
+                  onMouseOver={e => { if (!advancedLoading) e.currentTarget.style.background = P.blue2; }}
+                  onMouseOut={e => { if (!advancedLoading) e.currentTarget.style.background = "#2563eb"; }}
                 >
-                  {advancedLoading ? "Redirecting..." : "Get the 90-Day Execution Plan – $150"}
+                  {advancedLoading ? "Redirecting..." : "Get the 90-Day Execution Plan \u2013 $150"}
                 </button>
-                <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkLight, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Everything in the full report plus a structured 90-day roadmap with sequencing, KPIs, ownership guidance, and implementation pacing.</p>
-                <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginTop: 8 }}>Without a structured roadmap, most teams delay action and lose momentum.</p>
+                <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Everything in the full report plus a structured 90-day roadmap with sequencing, KPIs, ownership guidance, and implementation pacing.</p>
+                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 8 }}>Without a structured roadmap, most teams delay action and lose momentum.</p>
+                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 6, fontStyle: "italic", maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>This roadmap is built from your assessment responses. More detailed and accurate inputs produce a stronger plan.</p>
+                <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 4 }}>Designed for execution. Not external research or bespoke consulting.</p>
+                <p style={{ marginTop: 10 }}>
+                  <span onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample 90-day roadmap</span>
+                </p>
+
+                <div style={{ marginTop: 28, paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+                  <button onClick={handleCheckout} disabled={checkoutLoading}
+                    style={{ ...CTA.ghost, color: checkoutLoading ? P.muted : P.blue, borderColor: checkoutLoading ? "rgba(255,255,255,0.07)" : P.blue, cursor: checkoutLoading ? "default" : "pointer", letterSpacing: "0.10em" }}
+                    onMouseOver={e => { if (!checkoutLoading) e.currentTarget.style.background = "rgba(37,99,235,0.06)"; }}
+                    onMouseOut={e => { if (!checkoutLoading) e.currentTarget.style.background = "transparent"; }}
+                  >
+                    {checkoutLoading ? "Redirecting..." : "Unlock Full Report \u2013 $50"}
+                  </button>
+                  <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 10 }}>Detailed action steps and tool guidance you can execute immediately.</p>
+                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 4 }}>For teams who prefer to determine sequencing internally.</p>
+                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 6, fontStyle: "italic" }}>The quality of your report depends on the accuracy of the information provided in your assessment.</p>
+                  <p style={{ marginTop: 8 }}>
+                    <span onClick={() => navigate("/report?tier=report&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample full report</span>
+                  </p>
+                </div>
+
+                <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>Full Report = What to do &nbsp;&nbsp;&middot;&nbsp;&nbsp; Advanced Plan = What to do, and in what order</p>
+                </div>
+                <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 16 }}>Secure checkout powered by Stripe.</p>
               </div>
-            </div>
-          )}
+            )}
 
-          {isAdvanced && (
-            <div style={{ background: P.paperShade, padding: "40px 32px", textAlign: "center", borderTop: `1px solid ${P.paperRule}`, borderRight: `1px solid ${P.paperRule}`, borderBottom: `1px solid ${P.paperRule}`, borderLeft: `3px solid ${P.green}`, marginBottom: 32 }}>
-              <h3 style={{ fontFamily: FONT, fontSize: 24, fontWeight: 700, color: P.ink, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Advanced Plan Unlocked</h3>
-              <p style={{ fontFamily: FONT, fontSize: 15, color: P.inkLight, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your complete AI Readiness Report with 90-day roadmap and implementation guidance is available above.</p>
-              <p style={{ fontFamily: FONT, fontSize: 12, color: P.inkFaint, marginBottom: 16, fontStyle: "italic", maxWidth: 460, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>This plan is built from your self-reported inputs and does not include external company research or bespoke competitive analysis.</p>
-              <p style={{ fontFamily: FONT, fontSize: 13, color: P.inkFaint, lineHeight: 1.5 }}>Limited consulting engagements are available by application for businesses that require hands-on implementation support.</p>
-            </div>
-          )}
+            {isPro && !isAdvanced && (
+              <div style={{ ...GLASS_CARD, padding: "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Pro Report Unlocked</h3>
+                <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your full AI Readiness Report with execution detail is available above.</p>
+                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 24, fontStyle: "italic" }}>This report is generated from your assessment responses. It does not include external company research.</p>
+                <div style={{ paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.dim, marginBottom: 14, fontFamily: FONT }}>Recommended for businesses ready to implement</div>
+                  <button onClick={handleAdvancedCheckout} disabled={advancedLoading}
+                    style={{ ...CTA.style, background: advancedLoading ? P.muted : "#2563eb", cursor: advancedLoading ? "default" : "pointer", letterSpacing: "0.10em" }}
+                    onMouseOver={e => { if (!advancedLoading) e.currentTarget.style.background = P.blue2; }}
+                    onMouseOut={e => { if (!advancedLoading) e.currentTarget.style.background = "#2563eb"; }}
+                  >
+                    {advancedLoading ? "Redirecting..." : "Get the 90-Day Execution Plan \u2013 $150"}
+                  </button>
+                  <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Everything in the full report plus a structured 90-day roadmap with sequencing, KPIs, ownership guidance, and implementation pacing.</p>
+                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 8 }}>Without a structured roadmap, most teams delay action and lose momentum.</p>
+                </div>
+              </div>
+            )}
 
-          {/* Implementation support */}
-          <div style={{ borderTop: `1px solid ${P.paperRule}`, marginTop: 16, paddingTop: 32, marginBottom: 32, textAlign: "center" }}>
-            <h3 style={{ fontFamily: FONT, fontSize: 20, fontWeight: 700, color: P.ink, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Need direct implementation support?</h3>
-            <p style={{ fontFamily: FONT, fontSize: 15, color: P.inkLight, lineHeight: 1.65, maxWidth: 500, marginLeft: "auto", marginRight: "auto", marginBottom: 6 }}>For businesses ready to move beyond planning into disciplined execution, hands-on advisory support is available.</p>
-            <p style={{ fontFamily: FONT, fontSize: 15, color: P.inkLight, lineHeight: 1.65, maxWidth: 500, marginLeft: "auto", marginRight: "auto", marginBottom: 16 }}>These engagements are structured and execution-focused. Not every business will be the right fit, and that is intentional. The goal is alignment, clarity, and measurable progress.</p>
-            <span onClick={() => { alert("In production: routes to implementation support page."); }} style={{ fontFamily: FONT, fontSize: 15, color: P.inkMid, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>Learn about implementation support</span>
+            {isAdvanced && (
+              <div style={{ ...GLASS_CARD, padding: "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Advanced Plan Unlocked</h3>
+                <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your complete AI Readiness Report with 90-day roadmap and implementation guidance is available above.</p>
+                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 16, fontStyle: "italic", maxWidth: 460, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>This plan is built from your self-reported inputs and does not include external company research or bespoke competitive analysis.</p>
+                <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>Limited consulting engagements are available by application for businesses that require hands-on implementation support.</p>
+              </div>
+            )}
+
+            {/* Implementation support */}
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", marginTop: 16, paddingTop: 32, marginBottom: 32, textAlign: "center" }}>
+              <h3 style={{ fontFamily: FONT, fontSize: 20, fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Need direct implementation support?</h3>
+              <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, lineHeight: 1.65, maxWidth: 500, marginLeft: "auto", marginRight: "auto", marginBottom: 6 }}>For businesses ready to move beyond planning into disciplined execution, hands-on advisory support is available.</p>
+              <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, lineHeight: 1.65, maxWidth: 500, marginLeft: "auto", marginRight: "auto", marginBottom: 16 }}>These engagements are structured and execution-focused. Not every business will be the right fit, and that is intentional. The goal is alignment, clarity, and measurable progress.</p>
+              <span onClick={() => { alert("In production: routes to implementation support page."); }} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 400, color: P.dim, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>Learn about implementation support</span>
+            </div>
+
           </div>
+        </div>
 
+        {/* Footer */}
+        <div style={{ background: "rgba(8,15,30,0.6)", borderTop: "1px solid rgba(255,255,255,0.07)", padding: "32px 20px" }}>
+          <div style={{ maxWidth: 980, margin: "0 auto", textAlign: "center" }}>
+            <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, lineHeight: 1.6 }}>
+              Your responses are confidential. We do not sell, share, or use your data for any purpose beyond delivering your assessment.
+            </p>
+            <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "16px auto", maxWidth: 300 }} />
+            <p style={{ fontFamily: FONT, fontSize: 11, fontWeight: 400, color: P.dim, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+              The Telchar AI Readiness Index{"\u2122"} &middot; Scoring methodology proprietary to Telchar AI
+            </p>
+            <p style={{ marginTop: 12 }}>
+              <span onClick={() => { alert("In production: routes to implementation support page."); }} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>Learn about implementation support</span>
+            </p>
+            <div style={{ marginTop: 20 }}>
+              <LogoMark />
+            </div>
+          </div>
         </div>
       </div>
-      {/* Navy footer band */}
-      <div style={{ background: P.navy, padding: "32px 20px", marginTop: 0 }}>
-        <div style={{ maxWidth: 1160, margin: "0 auto", textAlign: "center" }}>
-          <p style={{ fontFamily: FONT, fontSize: 13, color: "#6A8CA8", lineHeight: 1.6 }}>
-            Your responses are confidential. We do not sell, share, or use your data for any purpose beyond delivering your assessment.
-          </p>
-          <div style={{ height: 1, background: P.navyDim, margin: "16px auto", maxWidth: 300 }} />
-          <p style={{ fontFamily: MONO, fontSize: 12, color: "#9BB1C7", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            The Telchar AI Readiness Index{"\u2122"} &middot; Scoring methodology proprietary to Telchar AI
-          </p>
-          <p style={{ marginTop: 12 }}><span onClick={() => { alert("In production: routes to implementation support page."); }} style={{ fontFamily: FONT, fontSize: 12, color: "#6A8CA8", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>Learn about implementation support</span></p>
-          <div style={{ marginTop: 16 }}>
-            <LogoMark size="default" />
-          </div>
-        </div>
-      </div>
-    </div>
+    </PageShell>
   );
 }
 
+// ============================================================
+// APP SHELL
+// ============================================================
 export default function TelcharAssessment() {
   const navigate = useNavigate();
   const [page, setPage] = useState("landing");
   const [answers, setAnswers] = useState(null);
   const [scores, setScores] = useState(null);
 
-  // Always open at true top of page on mount
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  // Warn before leaving during assessment
   useEffect(() => {
     if (page !== "assessment") return;
     const handleBeforeUnload = (e) => {
@@ -1660,23 +1775,20 @@ export default function TelcharAssessment() {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [page]);
+
   const [quickWins, setQuickWins] = useState(null);
   const [leadQuality, setLeadQuality] = useState(null);
   const [tier, setTier] = useState("free");
 
-  // Check for payment redirect and restore state on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get("payment");
     const sessionId = params.get("session_id");
     const paidTier = params.get("tier");
 
-    // Check sessionStorage for persisted tier
     try {
       const stored = sessionStorage.getItem("telchar_report_tier");
-      if (stored === "pro" || stored === "advanced") {
-        setTier(stored);
-      }
+      if (stored === "pro" || stored === "advanced") { setTier(stored); }
     } catch (e) { /* sessionStorage unavailable */ }
 
     if (paymentStatus === "success" && sessionId) {
@@ -1691,7 +1803,6 @@ export default function TelcharAssessment() {
       window.history.replaceState({}, "", window.location.pathname);
     }
 
-    // Restore assessment data from sessionStorage if returning from Stripe
     try {
       const saved = sessionStorage.getItem("telchar_assessment_data");
       if (saved) {
@@ -1731,27 +1842,31 @@ export default function TelcharAssessment() {
     window.scrollTo(0, 0);
   };
 
-  // TODO: Re-enable Stripe checkout when going live. For now, bypass to report preview.
-  const handleCheckout = () => {
-    navigate("/report?tier=report");
-  };
-
-  const handleAdvancedCheckout = () => {
-    navigate("/report?tier=plan");
-  };
+  const handleCheckout = () => { navigate("/report?tier=report"); };
+  const handleAdvancedCheckout = () => { navigate("/report?tier=plan"); };
 
   return (
     <>
       <style>{`
         @import url('${GOOGLE_FONTS_URL}');
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: ${P.paper}; }
-        ::selection { background: ${P.gold}40; }
-        input::placeholder, textarea::placeholder { color: ${P.inkFaint}; }
+        body { background: #080f1e; }
+        ::selection { background: rgba(37,99,235,0.25); }
+        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.28); }
+        select { color-scheme: dark; }
       `}</style>
       {page === "landing" && <LandingPage onStart={() => setPage("assessment")} />}
       {page === "assessment" && <AssessmentFlow onComplete={handleComplete} />}
-      {page === "results" && answers && scores && <ResultsPage answers={answers} scores={scores} quickWins={quickWins} tier={tier} onCheckout={handleCheckout} onAdvancedCheckout={handleAdvancedCheckout} />}
+      {page === "results" && answers && scores && (
+        <ResultsPage
+          answers={answers}
+          scores={scores}
+          quickWins={quickWins}
+          tier={tier}
+          onCheckout={handleCheckout}
+          onAdvancedCheckout={handleAdvancedCheckout}
+        />
+      )}
     </>
   );
 }

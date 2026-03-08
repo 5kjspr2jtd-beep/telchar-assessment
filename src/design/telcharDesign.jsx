@@ -1,69 +1,69 @@
-// ── Telchar Design System — Single Source of Truth ──────────────────────────
+// ── Telchar Design System v3 — Single Source of Truth ────────────────────────
 // Shared across TelcharLandingPage, TelcharAssessment, ROICalculator, TelcharReport.
 // Do not duplicate these values in consuming files.
 
 import React from "react";
 
-// ── Color system ────────────────────────────────────────────────────────────
+// ── Color system (v3: dark navy + electric blue) ─────────────────────────────
 export const TELCHAR = {
-  paper:      "#F5F0E8",
-  paperShade: "#EDE6D6",
-  paperRule:  "#CEC4B2",
-  navy:       "#0F1923",
-  navyText:   "#D8DEE9",
-  navyMeta:   "#B8C2CC",
-  navyDim:    "#253848",
-  navyFaint:  "#162438",
-  gold:       "#C9A84C",
-  goldLight:  "#D4BA6A",
-  goldFaint:  "#E7D9B1",
-  ink:        "#1A1714",
-  inkMid:     "#3C3530",
-  inkLight:   "#6A6055",
-  inkFaint:   "#6A6055",   // minimum contrast on tan — never lighter
-  green:      "#4E7C45",
-  amber:      "#B8912A",
-  red:        "#8A2A2A",
+  // ── v3 primary tokens ──
+  navy:       "#080f1e",
+  navy2:      "#0d1628",
+  navy3:      "#111e38",
+  navylt:     "#162240",
+  blue:       "#2563eb",
+  blue2:      "#4a80f5",
+  blueglow:   "rgba(37,99,235,0.15)",
+  bluebrd:    "rgba(37,99,235,0.25)",
+  white:      "#ffffff",
+  offwhite:   "#f5f6fa",
+  dim:        "rgba(255,255,255,0.5)",
+  muted:      "rgba(255,255,255,0.28)",
+  linedark:   "rgba(255,255,255,0.07)",
+  linelight:  "rgba(10,15,30,0.07)",
+
+  // ── Score colors (v3: vibrant) ──
+  green:      "#22c55e",
+  amber:      "#f59e0b",
+  red:        "#ef4444",
 };
 
-// ── Text color hierarchy (semantic aliases) ─────────────────────────────────
+// ── Text color hierarchy (v3: white on dark) ─────────────────────────────────
 export const TEXT = {
-  primary:   "#1A1714",
-  secondary: "#3C3530",
-  muted:     "#6A6055",
+  primary:   "#ffffff",
+  secondary: "rgba(255,255,255,0.5)",
+  muted:     "rgba(255,255,255,0.28)",
 };
 
-// ── Navy-background text hierarchy ──────────────────────────────────────────
-export const NAVY_TEXT = {
-  primary:   "#D8DEE9",
-  secondary: "#B8C2CC",
+// ── Light-section text (for offwhite backgrounds) ────────────────────────────
+export const LIGHT_TEXT = {
+  primary:   "#0a0f1e",
+  secondary: "rgba(10,15,30,0.55)",
+  muted:     "rgba(10,15,30,0.35)",
 };
 
-// ── Typography ──────────────────────────────────────────────────────────────
-export const FONT = "'IBM Plex Sans', sans-serif";
-export const MONO = "'IBM Plex Mono', monospace";
+// ── Typography (v3: DM Sans + Instrument Serif) ──────────────────────────────
+export const FONT = "'DM Sans', system-ui, sans-serif";
+export const SERIF = "'Instrument Serif', Georgia, serif";
 export const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap";
+  "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap";
 
-// Allowed font sizes: 12, 13, 15, 16, 20, 24, 32
-// No text anywhere may be smaller than 12px.
+// ── Type scale (v3) ──────────────────────────────────────────────────────────
 export const TYPE = {
-  micro:     12,   // labels, metadata, captions
+  micro:     10,   // labels, eyebrows
   label:     13,   // section labels, secondary info
-  smallBody: 15,   // secondary body text
-  body:      16,   // primary body text
+  smallBody: 14,   // secondary body text
+  body:      15,   // primary body text
   subhead:   20,   // subsection headers
-  section:   24,   // section headers
-  headline:  32,   // major headlines / hero
+  section:   24,   // section headers (pages may override with clamp)
+  headline:  32,   // major headlines (pages may override with clamp)
 };
 
-// ── Score color system ──────────────────────────────────────────────────────
+// ── Score color system (v3: vibrant three-tier) ──────────────────────────────
 export function scoreColor(s) {
-  if (s < 25) return "#A23A3A";
-  if (s < 45) return "#D26A2C";
-  if (s < 60) return "#E0B93B";
-  if (s < 75) return "#7C8E3A";
-  return "#4E7C45";
+  if (s >= 70) return "#22c55e";
+  if (s >= 50) return "#f59e0b";
+  return "#ef4444";
 }
 
 export function scoreTier(s) {
@@ -74,72 +74,77 @@ export function scoreTier(s) {
   return "Strong";
 }
 
-// ── Layout constants ────────────────────────────────────────────────────────
+// ── Layout constants ─────────────────────────────────────────────────────────
 export const LAYOUT = {
   maxWidth: 980,
   padding: "0 32px",
   sectionSpacing: 64,
 };
 
-// ── CTA Button standards ────────────────────────────────────────────────────
+// ── CTA Button standards (v3: blue primary + ghost) ──────────────────────────
 export const CTA = {
   width: 320,
   height: 44,
   style: {
-    fontFamily: "'IBM Plex Sans', sans-serif",
+    fontFamily: "'DM Sans', system-ui, sans-serif",
     fontSize: 13,
     fontWeight: 600,
-    letterSpacing: "0.10em",
+    letterSpacing: "0.03em",
     textTransform: "uppercase",
     width: 320,
     height: 44,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "#C9A84C",
-    color: "#fff",
+    background: "#2563eb",
+    color: "#ffffff",
     border: "none",
+    borderRadius: 8,
     cursor: "pointer",
     transition: "all 0.15s ease",
     margin: "24px auto",
   },
-  secondary: {
-    fontFamily: "'IBM Plex Sans', sans-serif",
+  ghost: {
+    fontFamily: "'DM Sans', system-ui, sans-serif",
     fontSize: 13,
     fontWeight: 600,
-    letterSpacing: "0.10em",
+    letterSpacing: "0.03em",
     textTransform: "uppercase",
-    width: 320,
-    height: 44,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     background: "transparent",
-    color: "#C9A84C",
-    border: "1px solid #C9A84C",
+    color: "rgba(255,255,255,0.5)",
+    border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: 8,
+    padding: "15px 28px",
     cursor: "pointer",
     transition: "all 0.15s ease",
     margin: "24px auto",
   },
 };
 
-// ── Selected option card standard ───────────────────────────────────────────
+// ── Selected option card standard (v3: dark glass) ───────────────────────────
 export const OPTION_CARD = {
   selected: {
-    background: "#E7D9B1",
-    border: "2px solid #C9A84C",
-    fontWeight: 600,
+    background: "rgba(37,99,235,0.15)",
+    border: "2px solid rgba(37,99,235,0.4)",
+    color: "#ffffff",
+    fontWeight: 500,
+    borderRadius: 12,
   },
   unselected: {
-    background: "transparent",
-    border: "1px solid #D6CCB8",
+    background: "rgba(255,255,255,0.04)",
+    border: "1px solid rgba(255,255,255,0.09)",
+    color: "rgba(255,255,255,0.5)",
     fontWeight: 400,
+    borderRadius: 12,
   },
 };
 
-// ── UI Primitives ───────────────────────────────────────────────────────────
+// ── UI Primitives ────────────────────────────────────────────────────────────
 
-export function Diamond({ size = 8, fill = TELCHAR.navy, stroke = TELCHAR.goldLight, sw = 1.5, style = {} }) {
+export function Diamond({ size = 8, fill = "#2563eb", stroke = "#4a80f5", sw = 1.5, style = {} }) {
   return (
     <svg width={size} height={size} viewBox="0 0 10 10" style={{ display: "block", flexShrink: 0, ...style }}>
       <polygon points="5,0 10,5 5,10 0,5" fill={fill} stroke={stroke} strokeWidth={sw} />
@@ -148,11 +153,11 @@ export function Diamond({ size = 8, fill = TELCHAR.navy, stroke = TELCHAR.goldLi
 }
 
 export function Rule({ diamond = false, weight = 1, color, style = {} }) {
-  const c = color || TELCHAR.paperRule;
+  const c = color || "rgba(255,255,255,0.07)";
   if (diamond) return (
     <div style={{ display: "flex", alignItems: "center", gap: 12, ...style }}>
       <div style={{ flex: 1, height: weight, background: c }} />
-      <Diamond size={8} fill={TELCHAR.goldLight} stroke="none" sw={0} />
+      <Diamond size={8} fill="#4a80f5" stroke="none" sw={0} />
       <div style={{ flex: 1, height: weight, background: c }} />
     </div>
   );
@@ -162,9 +167,9 @@ export function Rule({ diamond = false, weight = 1, color, style = {} }) {
 export function SecLabel({ children, color, style = {} }) {
   return (
     <div style={{
-      fontFamily: FONT, fontSize: TYPE.micro, fontWeight: 700,
+      fontFamily: FONT, fontSize: TYPE.micro, fontWeight: 600,
       letterSpacing: "0.22em", textTransform: "uppercase",
-      color: color || TELCHAR.inkLight, marginBottom: 14, ...style,
+      color: color || "rgba(255,255,255,0.5)", marginBottom: 14, ...style,
     }}>{children}</div>
   );
 }
