@@ -50,15 +50,17 @@ function AppPage({ children }) {
           <img src="/white_decal.svg" alt="Telchar AI" style={{ height: 18, width: "auto", display: "block" }} />
         </div>
         {/* Right: Application title + Confidential */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <span style={{
+        <div style={{ display: "flex", alignItems: "center", gap: mobile ? 0 : 20, overflow: "hidden" }}>
+          {!mobile && <span style={{
             fontFamily: FONT, fontSize: 12,
             letterSpacing: "0.22em", textTransform: "uppercase",
             color: "rgba(255,255,255,0.4)",
-          }}>Implementation Support Application</span>
+            whiteSpace: "nowrap",
+          }}>Implementation Support Application</span>}
           <span style={{
             fontFamily: FONT, fontSize: 12,
             color: "rgba(255,255,255,0.4)",
+            whiteSpace: "nowrap",
           }}>Confidential</span>
         </div>
       </div>

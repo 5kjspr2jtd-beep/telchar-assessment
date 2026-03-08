@@ -848,7 +848,7 @@ function NavBar({ onStart }) {
     <div style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 300,
       display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: "0 36px", height: 64,
+      padding: "0 16px", height: 64,
       background: "rgba(8,15,30,0.85)",
       backdropFilter: "blur(20px)",
       borderBottom: "1px solid rgba(255,255,255,0.07)",
@@ -1083,7 +1083,14 @@ function LandingPage({ onStart }) {
 // ============================================================
 // ASSESSMENT FLOW
 // ============================================================
+function useIsMobile(bp = 640) {
+  const [m, setM] = useState(typeof window !== "undefined" ? window.innerWidth < bp : false);
+  useEffect(() => { const h = () => setM(window.innerWidth < bp); window.addEventListener("resize", h); return () => window.removeEventListener("resize", h); }, [bp]);
+  return m;
+}
+
 function AssessmentFlow({ onComplete }) {
+  const mobile = useIsMobile();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [otherText, setOtherText] = useState("");
@@ -1236,7 +1243,7 @@ function AssessmentFlow({ onComplete }) {
               )}
 
               {/* Question card */}
-              <div style={{ ...GLASS_CARD, padding: "40px 40px 32px", marginBottom: 0 }}>
+              <div style={{ ...GLASS_CARD, padding: mobile ? "24px 16px 20px" : "40px 40px 32px", marginBottom: 0 }}>
                 <div style={{ opacity: fadeState === "in" ? 1 : 0, transform: fadeState === "in" ? "translateY(0)" : "translateY(8px)", transition: "all 0.25s ease" }}>
                   <h2 style={{ fontFamily: FONT, fontSize: "clamp(22px,4vw,32px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 8 }}>
                     {question.label}
@@ -1528,6 +1535,7 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
 // ============================================================
 function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, onAdvancedCheckout }) {
   const navigate = useNavigate();
+  const mobile = useIsMobile();
   const [visible, setVisible] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [advancedLoading, setAdvancedLoading] = useState(false);
@@ -1585,7 +1593,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
           <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px" }}>
 
             {/* Overall score panel */}
-            <div style={{ ...GLASS_CARD, padding: "32px 32px 36px", textAlign: "center", marginBottom: 32 }}>
+            <div style={{ ...GLASS_CARD, padding: mobile ? "24px 16px 28px" : "32px 32px 36px", textAlign: "center", marginBottom: 32 }}>
               <div style={{ fontFamily: FONT, fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.muted, marginBottom: 16 }}>AI READINESS SCORE</div>
               <ScoreDisplay score={scores.overall} isOverall />
               <div style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginTop: 12, letterSpacing: "-0.01em" }}>
@@ -1645,7 +1653,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
 
             {/* Paywall / pricing */}
             {!isPro && (
-              <div ref={pricingRef} style={{ ...GLASS_CARD, padding: "40px 32px", textAlign: "center", marginBottom: 32, borderLeft: pricingGlow ? "3px solid #2563eb" : "3px solid rgba(37,99,235,0.3)", transition: "border-color 0.6s ease" }}>
+              <div ref={pricingRef} style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", marginBottom: 32, borderLeft: pricingGlow ? "3px solid #2563eb" : "3px solid rgba(37,99,235,0.3)", transition: "border-color 0.6s ease" }}>
                 <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>
                   You have clear opportunity. Choose how far you want to take it.
                 </h3>
@@ -1693,7 +1701,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
             )}
 
             {isPro && !isAdvanced && (
-              <div style={{ ...GLASS_CARD, padding: "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
+              <div style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
                 <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Pro Report Unlocked</h3>
                 <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your full AI Readiness Report with execution detail is available above.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 24, fontStyle: "italic" }}>This report is generated from your assessment responses. It does not include external company research.</p>
@@ -1713,7 +1721,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
             )}
 
             {isAdvanced && (
-              <div style={{ ...GLASS_CARD, padding: "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
+              <div style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
                 <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Advanced Plan Unlocked</h3>
                 <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your complete AI Readiness Report with 90-day roadmap and implementation guidance is available above.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 16, fontStyle: "italic", maxWidth: 460, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>This plan is built from your self-reported inputs and does not include external company research or bespoke competitive analysis.</p>

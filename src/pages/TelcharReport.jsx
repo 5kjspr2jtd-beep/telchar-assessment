@@ -361,9 +361,10 @@ function ReportPage({ children, pg, total, sectionTitle }) {
         backgroundSize: "60px 60px"
       }} />
 
-      {/* Top nav bar */}
+      {/* Top nav bar — hidden on mobile since App shell nav handles navigation */}
+      {!mobile && (
       <div style={{
-        position: "sticky", top: 0, zIndex: 100,
+        position: "sticky", top: 52, zIndex: 90,
         background: "rgba(8,15,30,0.9)", backdropFilter: "blur(20px)",
         borderBottom: "1px solid rgba(255,255,255,0.07)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -386,6 +387,7 @@ function ReportPage({ children, pg, total, sectionTitle }) {
         {/* Right: empty (tier tabs + counter handled in App shell) */}
         <div/>
       </div>
+      )}
 
       {/* Content area */}
       <div style={{ flex:1, padding:mobile?"28px 20px":"48px 48px 0", position:"relative", zIndex:10 }}>
@@ -400,11 +402,11 @@ function ReportPage({ children, pg, total, sectionTitle }) {
         borderTop: "1px solid rgba(255,255,255,0.07)",
         height: 40,
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 28px",
+        padding: mobile ? "0 12px" : "0 28px",
         position: "relative", zIndex: 10,
       }}>
-        <span style={{ fontFamily:FONT, fontSize:11, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, fontWeight:400 }}>TELCHAR AI · CONFIDENTIAL</span>
-        <span style={{ fontFamily:FONT, fontSize:12, color:P.dim }}>Page {pg} of {total}</span>
+        <span style={{ fontFamily:FONT, fontSize:mobile?9:11, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, fontWeight:400 }}>TELCHAR AI · CONFIDENTIAL</span>
+        <span style={{ fontFamily:FONT, fontSize:12, color:P.dim }}>{pg}/{total}</span>
       </div>
     </div>
   );
@@ -482,7 +484,7 @@ function PageCover({ pg, total, onNext }) {
         <div style={{ fontFamily:FONT, fontSize:15, fontWeight:300, color:P.dim, marginBottom:40 }}>{IND}</div>
 
         {/* Score number */}
-        <div style={{ fontFamily:FONT, fontSize:"clamp(96px,18vw,140px)", fontWeight:300, color:scoreCol, lineHeight:0.9, letterSpacing:"-0.05em", marginBottom:12 }}>
+        <div style={{ fontFamily:FONT, fontSize:mobile?"clamp(72px,16vw,96px)":"clamp(96px,18vw,140px)", fontWeight:300, color:scoreCol, lineHeight:0.9, letterSpacing:"-0.05em", marginBottom:12 }}>
           {SCORES.overall}
         </div>
 
@@ -510,16 +512,17 @@ function PageCover({ pg, total, onNext }) {
         </p>
 
         {/* 3-column metadata */}
-        <div style={{ display:"flex", gap:0, marginBottom:40 }}>
+        <div style={{ display:"flex", gap:0, marginBottom:40, flexWrap: mobile ? "wrap" : "nowrap", justifyContent:"center" }}>
           {[["Assessment date", DATE],["Framework","v2.4 · Five Category"],["Classification","Confidential"]].map(([k,v],i)=>(
             <div key={k} style={{
-              paddingLeft: i>0 ? 28 : 0,
-              paddingRight: i<2 ? 28 : 0,
-              borderRight: i<2 ? "1px solid rgba(255,255,255,0.07)" : "none",
+              paddingLeft: mobile ? 12 : (i>0 ? 28 : 0),
+              paddingRight: mobile ? 12 : (i<2 ? 28 : 0),
+              borderRight: (!mobile && i<2) ? "1px solid rgba(255,255,255,0.07)" : "none",
               textAlign: "center",
+              ...(mobile ? { flex:"0 0 auto", marginBottom:8 } : {}),
             }}>
               <div style={{ fontFamily:FONT, fontSize:9, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:6 }}>{k}</div>
-              <div style={{ fontFamily:FONT, fontSize:13, fontWeight:500, color:P.white }}>{v}</div>
+              <div style={{ fontFamily:FONT, fontSize:mobile?12:13, fontWeight:500, color:P.white }}>{v}</div>
             </div>
           ))}
         </div>
@@ -538,11 +541,11 @@ function PageCover({ pg, total, onNext }) {
         borderTop: "1px solid rgba(255,255,255,0.07)",
         height: 40,
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 28px",
+        padding: mobile ? "0 12px" : "0 28px",
         position: "relative", zIndex: 10,
       }}>
-        <span style={{ fontFamily:FONT, fontSize:11, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted }}>TELCHAR AI · CONFIDENTIAL</span>
-        <span style={{ fontFamily:FONT, fontSize:12, color:P.dim }}>Page {pg} of {total}</span>
+        <span style={{ fontFamily:FONT, fontSize:mobile?9:11, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted }}>TELCHAR AI · CONFIDENTIAL</span>
+        <span style={{ fontFamily:FONT, fontSize:12, color:P.dim }}>{pg}/{total}</span>
       </div>
     </div>
   );
@@ -570,7 +573,7 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
         {/* Left: score */}
         <div style={{ marginBottom:desktop?0:32 }}>
           <SecLabel>Overall Score</SecLabel>
-          <div style={{ fontFamily:FONT, fontSize:mobile?72:96, fontWeight:300, color:scoreColor(SCORES.overall), lineHeight:0.88, letterSpacing:"-0.05em", marginBottom:10 }}>{animated}</div>
+          <div style={{ fontFamily:FONT, fontSize:mobile?56:96, fontWeight:300, color:scoreColor(SCORES.overall), lineHeight:1, letterSpacing:"-0.05em", marginBottom:10 }}>{animated}</div>
           <div style={{ fontFamily:FONT, fontSize:13, fontWeight:700, letterSpacing:"0.3em", textTransform:"uppercase", color:scoreColor(SCORES.overall), display:"inline-block", marginBottom:24 }}>{scoreTier(SCORES.overall)}</div>
           <div style={{ borderTop:`1px solid ${P.linedark}` }}>
             {[["Industry",IND],["Categories","5 of 5 scored"],["SMB benchmark",`${BENCHMARK} / 100`]].map(([k,v])=>(
@@ -595,11 +598,11 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
             padding: "20px 24px",
             marginBottom: 28,
           }}>
-            <div style={{ display:"flex" }}>
+            <div style={{ display:"flex", flexWrap: mobile ? "wrap" : "nowrap", gap: mobile ? "12px 0" : 0 }}>
               {[["YOUR SCORE",SCORES.overall,scoreColor(SCORES.overall)],["SMB AVERAGE",BENCHMARK,"#ffffff"],["DELTA",(delta>=0?"+":"")+delta,delta>=0?"#22c55e":"#ef4444"]].map(([label,val,col],i)=>(
-                <div key={label} style={{ paddingRight:i<2?20:0, paddingLeft:i>0?20:0, borderRight:i<2?`1px solid ${P.linedark}`:"none" }}>
+                <div key={label} style={{ paddingRight: mobile ? 16 : (i<2?20:0), paddingLeft: mobile ? (i>0?16:0) : (i>0?20:0), borderRight: (!mobile && i<2) ? `1px solid ${P.linedark}` : "none", ...(mobile ? { flex: "1 0 auto" } : {}) }}>
                   <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", color:"rgba(255,255,255,0.5)", marginBottom:4 }}>{label}</div>
-                  <div style={{ fontFamily:FONT, fontSize:36, fontWeight:300, color:col, lineHeight:1 }}>{val}</div>
+                  <div style={{ fontFamily:FONT, fontSize: mobile ? 28 : 36, fontWeight:300, color:col, lineHeight:1 }}>{val}</div>
                 </div>
               ))}
             </div>
@@ -1270,14 +1273,15 @@ export default function App({ initialTier = "free", demo = false }) {
           {/* Bottom navigation */}
           <div style={{
             display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "24px 36px",
+            padding: navMobile ? "16px 12px" : "24px 36px",
             background: "rgba(8,15,30,0.9)",
             borderTop: "1px solid rgba(255,255,255,0.07)",
             backdropFilter: "blur(20px)",
+            gap: 8,
           }}>
-            <span onClick={cur>0?prev:undefined} style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:P.dim, cursor:cur>0?"pointer":"default", visibility:cur===0?"hidden":"visible" }}>{"\u2190"} Previous section</span>
-            <span style={{ fontFamily:FONT, fontSize:12, color:P.muted }}>Page {cur+1} of {pages.length}</span>
-            <span onClick={cur<pages.length-1?next:undefined} style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:P.dim, cursor:cur<pages.length-1?"pointer":"default", visibility:cur===pages.length-1?"hidden":"visible" }}>Next section {"\u2192"}</span>
+            <span onClick={cur>0?prev:undefined} style={{ fontFamily:FONT, fontSize:navMobile?12:13, fontWeight:300, color:P.dim, cursor:cur>0?"pointer":"default", visibility:cur===0?"hidden":"visible", flexShrink:0 }}>{"\u2190"} {navMobile?"Prev":"Previous section"}</span>
+            <span style={{ fontFamily:FONT, fontSize:12, color:P.muted, flexShrink:0 }}>{cur+1}/{pages.length}</span>
+            <span onClick={cur<pages.length-1?next:undefined} style={{ fontFamily:FONT, fontSize:navMobile?12:13, fontWeight:300, color:P.dim, cursor:cur<pages.length-1?"pointer":"default", visibility:cur===pages.length-1?"hidden":"visible", flexShrink:0 }}>{navMobile?"Next":"Next section"} {"\u2192"}</span>
           </div>
         </div>
       </div>
