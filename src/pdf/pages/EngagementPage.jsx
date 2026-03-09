@@ -94,7 +94,7 @@ export default function EngagementPage({ data }) {
           color: C.dimWhite, marginBottom: 16,
           textAlign: "center",
         }}>
-          telchar-assessment.vercel.app/apply
+          www.telcharai.com/apply
         </Text>
 
         {/* Fine print */}

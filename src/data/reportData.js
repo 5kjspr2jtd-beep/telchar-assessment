@@ -56,7 +56,7 @@ export function getSectionVisibility(tier) {
 // ── Site URLs ──────────────────────────────────────────────────
 // Single source of truth for external-facing URLs.
 // Update SITE_BASE when the custom domain is configured.
-export const SITE_BASE = "https://telchar-assessment.vercel.app";
+export const SITE_BASE = "https://www.telcharai.com";
 export const APPLY_URL = `${SITE_BASE}/apply`;
 
 // ── Report disclaimers and notes ─────────────────────────────
