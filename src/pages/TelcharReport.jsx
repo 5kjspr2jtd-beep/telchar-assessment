@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, TEXT, LIGHT_TEXT, TYPE, CTA, scoreColor, scoreTier, Diamond, Rule, SecLabel } from "../design/telcharDesign";
 
@@ -1190,6 +1190,90 @@ export default function App({ initialTier = "free", demo = false }) {
   const prev = () => { setCur(c=>Math.max(0,c-1)); window.scrollTo(0,0); };
   const next = () => { setCur(c=>Math.min(pages.length-1,c+1)); window.scrollTo(0,0); };
 
+  // ── PDF download ─────────────────────────────────────────────
+  const [pdfBusy, setPdfBusy] = useState(false);
+  // Queue-based page capture: when pdfQueue has page indices, we capture them one by one
+  const [pdfQueue, setPdfQueue] = useState(null); // null=idle, {pages:[…], captured:[…], origCur, pdf}
+  const pdfRunningRef = useRef(false);
+
+  // Effect: when pdfQueue is active and cur matches the next page to capture, grab it
+  useEffect(() => {
+    if (!pdfQueue || pdfRunningRef.current) return;
+    const { pageIndices, captured, origCur } = pdfQueue;
+
+    // All pages captured? → save PDF and reset
+    if (captured.length === pageIndices.length) {
+      (async () => {
+        try {
+          const { jsPDF } = await import("jspdf");
+          const pdf = new jsPDF({ unit:"mm", format:"a4", orientation:"portrait" });
+          const pdfW = pdf.internal.pageSize.getWidth();
+
+          for (let i = 0; i < captured.length; i++) {
+            if (i > 0) pdf.addPage();
+            const canvas = captured[i];
+            const imgData = canvas.toDataURL("image/jpeg", 0.92);
+            const imgH = (canvas.height * pdfW) / canvas.width;
+            pdf.addImage(imgData, "JPEG", 0, 0, pdfW, imgH);
+          }
+
+          const safeName = CO.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "-");
+          pdf.save(`Telchar-Report-${safeName}.pdf`);
+        } catch (err) {
+          console.error("PDF save failed:", err);
+        } finally {
+          setCur(origCur);
+          setPdfQueue(null);
+          setPdfBusy(false);
+          window.scrollTo(0, 0);
+        }
+      })();
+      return;
+    }
+
+    // Navigate to the next page to capture
+    const nextIdx = pageIndices[captured.length];
+    if (cur !== nextIdx) {
+      setCur(nextIdx);
+      return; // wait for re-render
+    }
+
+    // Current page matches — capture it
+    pdfRunningRef.current = true;
+    (async () => {
+      try {
+        await new Promise(r => setTimeout(r, 400)); // let paint settle
+        const el = document.querySelector("[data-pdf-target]");
+        if (!el) throw new Error("No [data-pdf-target]");
+
+        const { default: html2canvas } = await import("html2canvas");
+        const rect = el.getBoundingClientRect();
+        const canvas = await html2canvas(el, {
+          scale: 2, useCORS: true, backgroundColor: "#080f1e",
+          logging: false, width: rect.width, height: rect.height,
+        });
+
+        setPdfQueue(prev => ({
+          ...prev,
+          captured: [...prev.captured, canvas],
+        }));
+      } catch (err) {
+        console.error("PDF capture failed on page " + nextIdx + ":", err);
+        setPdfQueue(null);
+        setPdfBusy(false);
+      } finally {
+        pdfRunningRef.current = false;
+      }
+    })();
+  }, [pdfQueue, cur]);
+
+  const handleDownloadPDF = () => {
+    if (pdfBusy) return;
+    setPdfBusy(true);
+    const pageIndices = pages.map((_, i) => i);
+    setPdfQueue({ pageIndices, captured: [], origCur: cur });
+  };
+
   return (
     <div style={{ minHeight:"100vh", background:"#080f1e", fontFamily:FONT, overflowX:"clip", width:"100%" }}>
       <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -1198,6 +1282,7 @@ export default function App({ initialTier = "free", demo = false }) {
         *{box-sizing:border-box;margin:0;padding:0;}
         html,body{overflow-x:clip;max-width:100vw;background:#080f1e;}
         button{font-family:inherit;}
+        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
       `}</style>
 
       {/* Navigation bar */}
@@ -1263,11 +1348,43 @@ export default function App({ initialTier = "free", demo = false }) {
           opacity: cur===pages.length-1 ? 0.25 : 1,
           flexShrink: 0, display:"flex", alignItems:"center",
         }}>›</button>
+
+        {/* Divider */}
+        <div style={{ width:1, height:14, background:"rgba(255,255,255,0.12)", flexShrink:0 }}/>
+
+        {/* Download PDF */}
+        <button onClick={handleDownloadPDF} disabled={pdfBusy} title="Download PDF" style={{
+          background: pdfBusy ? "rgba(37,99,235,0.15)" : "rgba(37,99,235,0.2)",
+          border: "1px solid rgba(37,99,235,0.4)",
+          borderRadius: 5,
+          padding: navMobile ? "5px 8px" : "5px 12px",
+          color: "#fff",
+          cursor: pdfBusy ? "wait" : "pointer",
+          fontSize: 12,
+          fontWeight: 500,
+          fontFamily: FONT,
+          letterSpacing: "0.06em",
+          display: "flex", alignItems: "center", gap: 5,
+          flexShrink: 0,
+          opacity: pdfBusy ? 0.6 : 1,
+          transition: "opacity 0.2s",
+        }}>
+          {pdfBusy ? (
+            <span style={{ display:"inline-block", width:14, height:14, border:"2px solid rgba(255,255,255,0.3)", borderTopColor:"#fff", borderRadius:"50%", animation:"spin 0.8s linear infinite" }}/>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          )}
+          {navMobile ? "" : (pdfBusy ? "Generating…" : "PDF")}
+        </button>
       </div>
 
       {/* Report page */}
       <div style={{ display:"flex", justifyContent:"center", overflowX:"hidden" }}>
-        <div style={{ width:"100%", maxWidth:1100 }}>
+        <div data-pdf-target style={{ width:"100%", maxWidth:1100 }}>
           {page.node}
           {/* Bottom navigation */}
           <div style={{
@@ -1284,6 +1401,7 @@ export default function App({ initialTier = "free", demo = false }) {
           </div>
         </div>
       </div>
+
     </div>
   );
 }
