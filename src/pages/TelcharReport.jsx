@@ -962,88 +962,20 @@ export default function App({ initialTier = "free", demo = false }) {
   const prev = () => { setCur(c=>Math.max(0,c-1)); window.scrollTo(0,0); };
   const next = () => { setCur(c=>Math.min(pages.length-1,c+1)); window.scrollTo(0,0); };
 
-  // ── PDF download ─────────────────────────────────────────────
+  // ── PDF download (native @react-pdf/renderer) ───────────────
   const [pdfBusy, setPdfBusy] = useState(false);
-  // Queue-based page capture: when pdfQueue has page indices, we capture them one by one
-  const [pdfQueue, setPdfQueue] = useState(null); // null=idle, {pages:[…], captured:[…], origCur, pdf}
-  const pdfRunningRef = useRef(false);
 
-  // Effect: when pdfQueue is active and cur matches the next page to capture, grab it
-  useEffect(() => {
-    if (!pdfQueue || pdfRunningRef.current) return;
-    const { pageIndices, captured, origCur } = pdfQueue;
-
-    // All pages captured? → save PDF and reset
-    if (captured.length === pageIndices.length) {
-      (async () => {
-        try {
-          const { jsPDF } = await import("jspdf");
-          const pdf = new jsPDF({ unit:"mm", format:"a4", orientation:"portrait" });
-          const pdfW = pdf.internal.pageSize.getWidth();
-
-          for (let i = 0; i < captured.length; i++) {
-            if (i > 0) pdf.addPage();
-            const canvas = captured[i];
-            const imgData = canvas.toDataURL("image/jpeg", 0.92);
-            const imgH = (canvas.height * pdfW) / canvas.width;
-            pdf.addImage(imgData, "JPEG", 0, 0, pdfW, imgH);
-          }
-
-          const safeName = CO.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "-");
-          pdf.save(`Telchar-Report-${safeName}.pdf`);
-        } catch (err) {
-          console.error("PDF save failed:", err);
-        } finally {
-          setCur(origCur);
-          setPdfQueue(null);
-          setPdfBusy(false);
-          window.scrollTo(0, 0);
-        }
-      })();
-      return;
-    }
-
-    // Navigate to the next page to capture
-    const nextIdx = pageIndices[captured.length];
-    if (cur !== nextIdx) {
-      setCur(nextIdx);
-      return; // wait for re-render
-    }
-
-    // Current page matches — capture it
-    pdfRunningRef.current = true;
-    (async () => {
-      try {
-        await new Promise(r => setTimeout(r, 400)); // let paint settle
-        const el = document.querySelector("[data-pdf-target]");
-        if (!el) throw new Error("No [data-pdf-target]");
-
-        const { default: html2canvas } = await import("html2canvas");
-        const rect = el.getBoundingClientRect();
-        const canvas = await html2canvas(el, {
-          scale: 2, useCORS: true, backgroundColor: "#080f1e",
-          logging: false, width: rect.width, height: rect.height,
-        });
-
-        setPdfQueue(prev => ({
-          ...prev,
-          captured: [...prev.captured, canvas],
-        }));
-      } catch (err) {
-        console.error("PDF capture failed on page " + nextIdx + ":", err);
-        setPdfQueue(null);
-        setPdfBusy(false);
-      } finally {
-        pdfRunningRef.current = false;
-      }
-    })();
-  }, [pdfQueue, cur]);
-
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     if (pdfBusy) return;
     setPdfBusy(true);
-    const pageIndices = pages.map((_, i) => i);
-    setPdfQueue({ pageIndices, captured: [], origCur: cur });
+    try {
+      const { generatePdf } = await import("../pdf/generatePdf.jsx");
+      await generatePdf({ tier, demo });
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      setPdfBusy(false);
+    }
   };
 
   return (
@@ -1153,32 +1085,6 @@ export default function App({ initialTier = "free", demo = false }) {
           {navMobile ? "" : (pdfBusy ? "Generating…" : "PDF")}
         </button>
 
-        {/* DEV-ONLY: New PDF renderer proof set trigger — remove after acceptance */}
-        {demo && (
-          <button onClick={async () => {
-            try {
-              const { generatePdf } = await import("../pdf/generatePdf.jsx");
-              const result = await generatePdf({ tier, demo });
-              console.log("PDF proof set result:", result);
-            } catch (err) {
-              console.error("PDF proof set failed:", err);
-            }
-          }} style={{
-            background: "rgba(34,197,94,0.2)",
-            border: "1px solid rgba(34,197,94,0.4)",
-            borderRadius: 5,
-            padding: "5px 12px",
-            color: "#22c55e",
-            cursor: "pointer",
-            fontSize: 11,
-            fontWeight: 600,
-            fontFamily: FONT,
-            letterSpacing: "0.06em",
-            flexShrink: 0,
-          }}>
-            PDF v2
-          </button>
-        )}
       </div>
 
       {/* Report page */}
