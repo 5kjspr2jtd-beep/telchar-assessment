@@ -142,10 +142,10 @@ const STACK = {
       { label:"See templates built for your tools", url:getMakeTemplateUrl() },
     ],
     startHere:[
-      { label:"Create a Make account", url:"https://www.make.com/en/register" },
-      { label:"Beginner tutorial", url:"https://www.make.com/en/help/getting-started" },
-      { label:"How Make works", url:"https://www.make.com/en/how-it-works" },
-      { label:"QuickBooks integration", url:"https://www.make.com/en/integrations/quickbooks" },
+      { label:"What is Make? (official explainer)", url:"https://help.make.com/what-is-make" },
+      { label:"Learn the basics", url:"https://help.make.com/learn-the-basics" },
+      { label:"Create a free account", url:"https://www.make.com/en/register" },
+      ...(CLIENT_TOOLS.includes("QuickBooks") ? [{ label:"QuickBooks integration", url:"https://www.make.com/en/integrations/quickbooks" }] : []),
     ]
   },
   claude: {
@@ -167,10 +167,9 @@ const STACK = {
       { label:"How to add Claude as a step in Make", url:"https://www.make.com/en/integrations/anthropic-claude" },
     ],
     startHere:[
-      { label:"Claude product page", url:"https://claude.ai" },
-      { label:"Claude documentation", url:"https://docs.anthropic.com/claude/docs/introduction" },
-      { label:"Prompt examples", url:"https://docs.anthropic.com/claude/docs/prompt-examples" },
-      { label:"Getting started / API", url:"https://docs.anthropic.com/claude/reference/getting-started" },
+      { label:"Try Claude — free, no account needed", url:"https://claude.ai" },
+      { label:"What Claude can do", url:"https://claude.com/product/overview" },
+      { label:"How to add Claude as a step in Make", url:"https://www.make.com/en/integrations/anthropic-claude" },
     ]
   },
   cowork: {
