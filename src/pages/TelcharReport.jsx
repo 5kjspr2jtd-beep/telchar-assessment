@@ -17,9 +17,9 @@ const BENCHMARK = BENCHMARK_CONST;
 
 
 // ── Tier gates ───────────────────────────────────────────────
-// FREE:    Cover + Score Summary + Quick Wins (1 win) + CTA
-// STARTER: + all 5 Category pages + all 3 Quick Wins + Estimated Impact
-// FULL:    + 90-Day Roadmap + Risk + Data Infra + Engagement
+// FREE: Cover + Score Summary + Quick Wins (1 win) + CTA
+// FULL: + all Quick Wins + Impact + 30-Day Action Plan + 5 Categories
+//       + 90-Day Roadmap + Risk + Data Infra + Engagement
 
 // ── Count-up animation ───────────────────────────────────────
 function useCount(target, delay=0) {
@@ -194,10 +194,7 @@ function ReportPage({ children, pg, total, sectionTitle }) {
 }
 
 // ── Paywall block ─────────────────────────────────────────────
-function Paywall({ tier, onUpgrade }) {
-  const cfg = tier === "free"
-    ? { label:"Starter Report — $50", desc:"Unlock detailed category analysis with improvement guidance and benchmarks for all five dimensions." }
-    : { label:"Full Scorecard — $150", desc:"Unlock your 90-day implementation roadmap, risk analysis, data infrastructure plan, and engagement pathway." };
+function Paywall({ onUpgrade }) {
   return (
     <div style={{
       background: "rgba(37,99,235,0.08)",
@@ -206,13 +203,13 @@ function Paywall({ tier, onUpgrade }) {
       padding: "24px 28px",
       marginTop: 32,
     }}>
-      <div style={{ fontFamily:FONT, fontSize:11, color:P.blue2, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:10 }}>{cfg.label}</div>
-      <p style={{ fontFamily:FONT, fontSize:13, color:P.dim, fontWeight:300, lineHeight:1.7, margin:"0 0 14px" }}>{cfg.desc}</p>
+      <div style={{ fontFamily:FONT, fontSize:11, color:P.blue2, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:10 }}>Full Report — $150</div>
+      <p style={{ fontFamily:FONT, fontSize:13, color:P.dim, fontWeight:300, lineHeight:1.7, margin:"0 0 14px" }}>Unlock all priority improvements, 30-day action plan, category analysis, implementation roadmap, risk analysis, and tool recommendations.</p>
       <button onClick={onUpgrade} style={{
         fontFamily:FONT, width:280, height:48, display:"flex", alignItems:"center", justifyContent:"center",
         background:"#2563eb", color:"#fff", fontSize:13, fontWeight:600,
         letterSpacing:"0.08em", textTransform:"uppercase", border:"none", cursor:"pointer", borderRadius:8, margin:"0 auto",
-      }}>Unlock Report</button>
+      }}>Unlock Full Report</button>
     </div>
   );
 }
@@ -429,13 +426,13 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
       })}
 
       {/* Paywall for free */}
-      {!demo && tier === "free" && <Paywall tier="free" onUpgrade={onUpgrade}/>}
+      {!demo && tier === "free" && <Paywall onUpgrade={onUpgrade}/>}
     </ReportPage>
   );
 }
 
 // ═══════════════════════════════════════════════════════════
-// PAGE 3 — QUICK WINS (free: 1 win; starter+: all 3)
+// PAGE 3 — QUICK WINS (free: 1 win; full: all 3)
 // ═══════════════════════════════════════════════════════════
 function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
   const w = useWidth();
@@ -514,10 +511,10 @@ function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
         });
       })()}
 
-      {!demo && tier === "free" && <Paywall tier="free" onUpgrade={onUpgrade}/>}
+      {!demo && tier === "free" && <Paywall onUpgrade={()=>upgrade("full")}/>}
 
-      {/* Estimated impact — starter+ */}
-      {(demo || tier !== "free") && (() => {
+      {/* Estimated impact — full only */}
+      {(demo || tier === "full") && (() => {
         const items = [["Manual hours recovered","12 – 18 hrs / week"],["Estimated annual value","$28,000 – $44,000"],["Estimated payback","Under 90 days"]];
         return (
           <div style={{ marginTop:32 }}>
@@ -542,7 +539,6 @@ function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
             <div style={{ marginTop:12, fontFamily:FONT, fontSize:12, fontWeight:300, color:P.muted, lineHeight:1.7 }}>
               Estimates based on SMB automation benchmarks across comparable operational profiles. Actual results depend on implementation scope and workflow complexity.
             </div>
-            {!demo && tier === "starter" && <Paywall tier="starter" onUpgrade={onUpgrade}/>}
           </div>
         );
       })()}
@@ -551,7 +547,122 @@ function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// PAGE 4-8 — CATEGORY DEEP DIVE (starter + full)
+// PAGE 4 — 30-DAY ACTION PLAN (full only)
+// ═══════════════════════════════════════════════════════════
+function PageActionPlan({ pg, total }) {
+  const w = useWidth();
+  const mobile = w < 640;
+
+  // Derive action plan from top 3 wins + their recommended tools
+  const win1 = WINS[0], win2 = WINS[1], win3 = WINS[2];
+
+  const blocks = [
+    {
+      window: "Days 1 – 7", label: "Foundation",
+      accentColor: "#2563eb",
+      objective: `Set up your primary automation platform and scope the first workflow: ${win1?.title || "highest-priority improvement"}.`,
+      actions: [
+        `Create a ${win1?.tool || "Make"} account and connect your core tools (${CLIENT_TOOLS.join(", ")})`,
+        "Audit the manual steps in your highest-priority workflow and document each handoff",
+        "Define what 'done' looks like: expected trigger, output, and success metric",
+        "Run a test scenario end-to-end in a sandbox before going live",
+      ],
+      outcome: "Platform configured, first workflow scoped and tested, team aligned on what changes.",
+      tool: win1?.tool || "Make",
+    },
+    {
+      window: "Days 8 – 14", label: "First Workflow Live",
+      accentColor: "#22c55e",
+      objective: `Deploy your first automation and begin scoping the second priority: ${win2?.title || "next improvement"}.`,
+      actions: [
+        "Move the first workflow from test to production with error handling and alerts",
+        "Brief the team: what is automated, what to watch for, when to escalate",
+        `Begin scoping the second workflow using ${win2?.tool || "Claude + Make"}`,
+        "Track daily performance for the first week — log any failures or edge cases",
+      ],
+      outcome: "One workflow running in production. Second workflow scoped and ready to build.",
+      tool: win2?.tool || "Make + Claude Pro",
+    },
+    {
+      window: "Days 15 – 30", label: "Expand and Measure",
+      accentColor: "#f59e0b",
+      objective: `Deploy the second workflow and begin the third: ${win3?.title || "remaining priority"}. Measure results against baseline.`,
+      actions: [
+        "Build and deploy the second automation with the same test-then-deploy pattern",
+        `Scope and start building the third workflow using ${win3?.tool || "Claude + Make"}`,
+        "Compare actual time savings against the estimated impact from this report",
+        "Document all live workflows: trigger, steps, owner, and error handling",
+      ],
+      outcome: "Two workflows live, third in progress. Measurable time recovery confirmed. Foundation set for the 90-day roadmap.",
+      tool: win3?.tool || "Make + Claude Pro",
+    },
+  ];
+
+  return (
+    <ReportPage pg={pg} total={total} sectionTitle="30-Day Action Plan">
+      <SecLabel>30-Day action plan</SecLabel>
+      <p style={{ fontFamily:FONT, fontSize:mobile?13:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:28 }}>
+        A practical first-month operating plan built from your top three priorities. Each block has a clear objective, concrete actions, and expected outcome. This plan feeds directly into the full 90-day roadmap.
+      </p>
+
+      {blocks.map((block, i) => (
+        <div key={i} style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderLeft: `3px solid ${block.accentColor}`,
+          borderRadius: 12,
+          padding: "20px 24px",
+          marginBottom: 14,
+        }}>
+          {/* Header */}
+          <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+            <div style={{
+              width:32, height:32, borderRadius:8,
+              background: `rgba(${hexToRgb(block.accentColor)},0.12)`,
+              border: `1px solid rgba(${hexToRgb(block.accentColor)},0.35)`,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              fontFamily:FONT, fontSize:11, fontWeight:700, color:block.accentColor,
+            }}>0{i+1}</div>
+            <div>
+              <div style={{ fontFamily:FONT, fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:block.accentColor, marginBottom:2 }}>{block.window}</div>
+              <div style={{ fontFamily:FONT, fontSize:17, fontWeight:500, color:P.white }}>{block.label}</div>
+            </div>
+          </div>
+
+          {/* Objective */}
+          <div style={{ fontFamily:SERIF, fontSize:13, fontStyle:"italic", color:"rgba(255,255,255,0.4)", lineHeight:1.6, marginBottom:14, paddingLeft:44 }}>
+            {block.objective}
+          </div>
+
+          {/* Actions */}
+          <div style={{ paddingLeft:44, marginBottom:14 }}>
+            {block.actions.map((action, j) => (
+              <div key={j} style={{ display:"flex", gap:10, marginBottom:8 }}>
+                <Diamond size={9} fill={block.accentColor} stroke="none" sw={0} style={{ marginTop:3, flexShrink:0 }}/>
+                <span style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:"rgba(255,255,255,0.7)", lineHeight:1.7 }}>{action}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Outcome + Tool */}
+          <div style={{ paddingLeft:44, borderTop:`1px solid ${P.linedark}`, paddingTop:12, display:"flex", gap:24, flexWrap:"wrap" }}>
+            <div style={{ flex:1, minWidth:200 }}>
+              <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.16em", textTransform:"uppercase", color:P.muted, marginBottom:4 }}>Expected Outcome</div>
+              <div style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:"rgba(255,255,255,0.6)", lineHeight:1.6 }}>{block.outcome}</div>
+            </div>
+            <div style={{ minWidth:120 }}>
+              <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.16em", textTransform:"uppercase", color:P.muted, marginBottom:4 }}>Primary Tool</div>
+              <div style={{ fontFamily:FONT, fontSize:13, fontWeight:500, color:P.white }}>{block.tool}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </ReportPage>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE 5-9 — CATEGORY DEEP DIVE (full only)
 // ═══════════════════════════════════════════════════════════
 function PageCategory({ catKey, pg, total }) {
   const cat  = SCORES.cats.find(c=>c.key===catKey);
@@ -930,27 +1041,24 @@ export default function App({ initialTier = "free", demo = false }) {
   // Build page list based on tier
   const buildPages = (t) => {
     const effectiveTier = demo ? "full" : t;
-    const total = effectiveTier==="full" ? 12 : effectiveTier==="starter" ? 8 : 3;
+    const total = effectiveTier==="full" ? 14 : 3;
     const pages = [
       { label:"Cover",              node:<PageCover pg={1} total={total} onNext={()=>{ setCur(1); window.scrollTo(0,0); }}/> },
-      { label:"Score Summary",      node:<PageSummary pg={2} total={total} tier={effectiveTier} onUpgrade={()=>upgrade("starter")} demo={demo}/> },
+      { label:"Score Summary",      node:<PageSummary pg={2} total={total} tier={effectiveTier} onUpgrade={()=>upgrade("full")} demo={demo}/> },
       { label:"Quick Wins",         node:<PageQuickWins pg={3} total={total} tier={effectiveTier} onUpgrade={nt=>upgrade(nt)} demo={demo}/> },
     ];
-    if (effectiveTier==="starter"||effectiveTier==="full") {
-      pages.push(
-        { label:"Operations",       node:<PageCategory catKey="operations" pg={4} total={total}/> },
-        { label:"Sales",            node:<PageCategory catKey="sales"      pg={5} total={total}/> },
-        { label:"Data",             node:<PageCategory catKey="data"       pg={6} total={total}/> },
-        { label:"Content",          node:<PageCategory catKey="content"    pg={7} total={total}/> },
-        { label:"Technology",       node:<PageCategory catKey="technology" pg={8} total={total}/> },
-      );
-    }
     if (effectiveTier==="full") {
       pages.push(
-        { label:"90-Day Roadmap",   node:<PageRoadmap    pg={9}  total={total}/> },
-        { label:"Risk Analysis",    node:<PageRisk       pg={10} total={total}/> },
-        { label:"Data Infra",       node:<PageDataInfra  pg={11} total={total}/> },
-        { label:"Engagement Path",  node:<PageEngagement pg={12} total={total}/> },
+        { label:"30-Day Action Plan", node:<PageActionPlan pg={4} total={total}/> },
+        { label:"Operations",       node:<PageCategory catKey="operations" pg={5} total={total}/> },
+        { label:"Sales",            node:<PageCategory catKey="sales"      pg={6} total={total}/> },
+        { label:"Data",             node:<PageCategory catKey="data"       pg={7} total={total}/> },
+        { label:"Content",          node:<PageCategory catKey="content"    pg={8} total={total}/> },
+        { label:"Technology",       node:<PageCategory catKey="technology" pg={9} total={total}/> },
+        { label:"90-Day Roadmap",   node:<PageRoadmap    pg={10} total={total}/> },
+        { label:"Risk Analysis",    node:<PageRisk       pg={11} total={total}/> },
+        { label:"Data Infra",       node:<PageDataInfra  pg={12} total={total}/> },
+        { label:"Engagement Path",  node:<PageEngagement pg={13} total={total}/> },
       );
     }
     return pages;
@@ -1023,7 +1131,7 @@ export default function App({ initialTier = "free", demo = false }) {
 
         {/* Tier tabs */}
         <div style={{ display:"flex", gap:navMobile?2:3, flexShrink:0 }}>
-          {[["free","Free"],["starter","$50"],["full","$150"]].map(([t,label])=>(
+          {[["free","Free"],["full","$150"]].map(([t,label])=>(
             <button key={t} onClick={()=>upgrade(t)} style={{
               fontFamily:FONT,
               fontSize: 12,

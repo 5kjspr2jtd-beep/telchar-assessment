@@ -1,6 +1,6 @@
 // ── Quick Wins Page (Light) ──────────────────────────────────
 // Priority improvement areas with win cards and estimated impact.
-// Tier-aware: free sees 1 win, starter+ sees all 3 + impact row.
+// Tier-aware: free sees 1 win, full sees all 3 + impact row.
 // Spacing is tuned so 3 cards + impact fit on a single page.
 
 import React from "react";

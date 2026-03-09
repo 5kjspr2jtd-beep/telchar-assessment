@@ -558,7 +558,7 @@ function StepsSection() {
     {
       num: '03',
       title: 'Choose your depth',
-      desc: 'Upgrade to the $50 Starter Report or $150 Full Scorecard if you want deeper analysis.',
+      desc: 'Upgrade to the $150 Full Report if you want deeper analysis, a 30-day action plan, and implementation guidance.',
     },
   ];
 
@@ -817,42 +817,30 @@ function TierSection({ onCTA }) {
   const isMobile = useIsMobile();
   const tiers = [
     {
-      name: 'Snapshot',
+      name: 'Free Assessment',
       price: 'Free',
       priceNote: null,
       featured: true,
       items: [
         'Overall AI Readiness Score',
         'Category breakdown across 5 dimensions',
-        'Your single highest impact action',
-        'On screen results, instant',
+        'Your single highest-impact action',
+        'On-screen results, instant',
       ],
     },
     {
-      name: 'Starter Report',
-      price: '$50',
-      priceNote: 'one time',
-      featured: false,
-      intent: 'Designed for owners ready to implement in the next 30 days.',
-      items: [
-        'Everything in Snapshot',
-        'Prioritized quick wins ranked by impact and effort',
-        'Tool and platform recommendations for each gap',
-        'Downloadable branded PDF',
-      ],
-    },
-    {
-      name: 'Full Scorecard',
+      name: 'Full Report',
       price: '$150',
       priceNote: 'one time',
       featured: false,
-      intent: 'Built for businesses planning structured AI adoption.',
+      intent: 'Built for businesses ready to act on their results.',
       items: [
-        'Everything in Starter Report',
+        'All priority improvements with tool recommendations',
+        '30-day action plan tied to your top priorities',
+        'Deep category analysis across all 5 dimensions',
         'Phased implementation roadmap with timeline',
-        'Risk analysis and readiness gaps by category',
-        'Data infrastructure action plan',
-        'Engagement path to Discovery',
+        'Risk analysis and data infrastructure plan',
+        'Downloadable branded PDF',
       ],
     },
   ];
@@ -878,7 +866,7 @@ function TierSection({ onCTA }) {
               marginBottom: 16,
             }}
           >
-            Choose your depth
+            Two options
           </div>
           <h2
             style={{
@@ -904,14 +892,14 @@ function TierSection({ onCTA }) {
               margin: '14px 0 0',
             }}
           >
-            Adaptive questions. Choose how deep you want the analysis.
+            Start free. Upgrade when you're ready for the full picture.
           </p>
         </div>
 
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
             gap: 16,
             alignItems: 'stretch',
           }}
@@ -1080,8 +1068,8 @@ function TierSection({ onCTA }) {
               margin: 0,
             }}
           >
-            After you complete the free assessment and see your score, you can upgrade to the $50 Starter Report or $150
-            Full Scorecard.
+            After you complete the free assessment and see your score, you can upgrade to the $150 Full Report for deeper
+            analysis, a 30-day action plan, and implementation guidance.
           </p>
         </div>
       </div>

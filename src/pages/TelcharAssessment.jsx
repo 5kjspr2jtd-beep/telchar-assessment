@@ -1683,13 +1683,13 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
                     onMouseOver={e => { if (!checkoutLoading) e.currentTarget.style.background = "rgba(37,99,235,0.06)"; }}
                     onMouseOut={e => { if (!checkoutLoading) e.currentTarget.style.background = "transparent"; }}
                   >
-                    {checkoutLoading ? "Redirecting..." : "Unlock Full Report \u2013 $50"}
+                    {checkoutLoading ? "Redirecting..." : "Unlock Full Report \u2013 $150"}
                   </button>
                   <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 10 }}>Detailed action steps and tool guidance you can execute immediately.</p>
                   <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 4 }}>For teams who prefer to determine sequencing internally.</p>
                   <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 6, fontStyle: "italic" }}>The quality of your report depends on the accuracy of the information provided in your assessment.</p>
                   <p style={{ marginTop: 8 }}>
-                    <span onClick={() => navigate("/report?tier=report&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample full report</span>
+                    <span onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample full report</span>
                   </p>
                 </div>
 

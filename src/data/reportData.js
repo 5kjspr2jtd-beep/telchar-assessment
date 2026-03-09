@@ -28,27 +28,28 @@ export const BENCHMARK_META = {
 };
 
 // ── Tier metadata ────────────────────────────────────────────
+// Two tiers only: Free Assessment + $150 Full Report
 export const TIERS = {
-  free:    { key: "free",    label: "Free Report",    price: null, pageCount: 3,  sections: ["cover", "summary", "quickWins"] },
-  starter: { key: "starter", label: "Starter Report", price: 50,   pageCount: 8,  sections: ["cover", "summary", "quickWins", "categories"] },
-  full:    { key: "full",    label: "Full Scorecard",  price: 150,  pageCount: 12, sections: ["cover", "summary", "quickWins", "categories", "roadmap", "risk", "dataInfra", "engagement"] },
+  free: { key: "free", label: "Free Assessment", price: null, pageCount: 3,  sections: ["cover", "summary", "quickWins"] },
+  full: { key: "full", label: "Full Report",     price: 150,  pageCount: 14, sections: ["cover", "summary", "quickWins", "actionPlan", "categories", "roadmap", "risk", "dataInfra", "engagement"] },
 };
 
 // Map URL tier params to internal tier names
-export const TIER_MAP = { free: "free", report: "starter", plan: "full" };
+export const TIER_MAP = { free: "free", plan: "full", report: "full" };
 
 // ── Section visibility ───────────────────────────────────────
 export function getSectionVisibility(tier) {
-  const t = TIERS[tier] || TIERS.free;
+  const isFull = tier === "full";
   return {
     cover:      true,
     summary:    true,
     quickWins:  true,
-    categories: t.sections.includes("categories"),
-    roadmap:    t.sections.includes("roadmap"),
-    risk:       t.sections.includes("risk"),
-    dataInfra:  t.sections.includes("dataInfra"),
-    engagement: t.sections.includes("engagement"),
+    actionPlan: isFull,
+    categories: isFull,
+    roadmap:    isFull,
+    risk:       isFull,
+    dataInfra:  isFull,
+    engagement: isFull,
   };
 }
 
