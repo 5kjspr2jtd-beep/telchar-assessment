@@ -169,7 +169,7 @@ function HeroSection({ onCTA }) {
                     transition: 'color 0.15s ease',
                   }}
                 >
-                  Assessment
+                  Diagnostic
                 </Link>
                 <Link
                   to="/report?demo=true"
@@ -186,7 +186,7 @@ function HeroSection({ onCTA }) {
                   Reports
                 </Link>
                 <a
-                  href="#who"
+                  href="#about"
                   style={{
                     fontFamily: FONT,
                     fontSize: 12,
@@ -260,7 +260,7 @@ function HeroSection({ onCTA }) {
                 color: P.dim,
               }}
             >
-              AI Consulting · 5 to 100 Employees
+              AI Advisory · 5 to 100 Employees
             </span>
           </div>
 
@@ -275,8 +275,8 @@ function HeroSection({ onCTA }) {
               letterSpacing: '-0.03em',
             }}
           >
-            Know where your business stands{' '}
-            <em style={{ fontFamily: SERIF, fontStyle: 'italic', color: 'rgba(255,255,255,0.45)' }}>with AI</em>
+            Find the gaps that are costing you{' '}
+            <em style={{ fontFamily: SERIF, fontStyle: 'italic', color: 'rgba(255,255,255,0.45)' }}>time and money</em>
           </h1>
 
           <p
@@ -290,7 +290,7 @@ function HeroSection({ onCTA }) {
               lineHeight: 1.7,
             }}
           >
-            Built by Telchar AI using enterprise-tested AI methodology adapted for small businesses. About 5 minutes. Free results on screen.
+            A practical AI readiness diagnostic for small business owners and executives. Five minutes, real results on screen, no sales call required.
           </p>
 
           {/* Actions */}
@@ -316,7 +316,7 @@ function HeroSection({ onCTA }) {
                 transition: 'all 0.2s ease',
               }}
             >
-              Start Free Assessment
+              Start Free Diagnostic
             </button>
             <Link
               to="/report?tier=plan&demo=true"
@@ -504,7 +504,7 @@ function HeroSection({ onCTA }) {
         >
           {[
             { num: '5', sup: '', desc: 'Categories scored' },
-            { num: '3', sup: '', desc: 'Report tiers to match your depth' },
+            { num: '2', sup: '', desc: 'Report options to match your depth' },
             { num: '~5', sup: '', desc: 'Minutes to complete' },
           ].map((stat, i) => (
             <div key={i}>
@@ -549,16 +549,16 @@ function HeroSection({ onCTA }) {
 function StepsSection() {
   const isMobile = useIsMobile();
   const steps = [
-    { num: '01', title: 'Answer adaptive questions', desc: 'About 5 minutes. No preparation needed.' },
+    { num: '01', title: 'Answer a few focused questions', desc: 'About 5 minutes. No preparation needed.' },
     {
       num: '02',
-      title: 'See your AI readiness score',
-      desc: 'Get your overall score, category breakdown, and your single highest impact action immediately on screen.',
+      title: 'Get your readiness results',
+      desc: 'Your overall score, category breakdown, maturity tier, and top starting point — on screen immediately, free.',
     },
     {
       num: '03',
-      title: 'Choose your depth',
-      desc: 'Upgrade to the $150 Full Report if you want deeper analysis, a 30-day action plan, and implementation guidance.',
+      title: 'Unlock the full plan',
+      desc: 'Upgrade to the $150 AI Action Plan for priority improvements, a 30-day action plan, 90-day roadmap, category analysis, risk guidance, and a downloadable PDF.',
     },
   ];
 
@@ -687,12 +687,12 @@ function ProofSection({ onCTA }) {
       desc: 'Operations, Sales & CX, Data Visibility, Content & Knowledge, and Technology Readiness.',
     },
     {
-      title: 'Prioritized action items',
-      desc: 'Your highest-impact actions ranked by effort and return, so you know exactly where to start.',
+      title: 'Priority improvements with tools',
+      desc: 'Your highest-impact actions with specific tool recommendations, cost estimates, and timelines.',
     },
     {
-      title: 'Implementation roadmap',
-      desc: 'Phased plan with timelines, tool recommendations, risk analysis, and data infrastructure guidance.',
+      title: '30-day action plan and 90-day roadmap',
+      desc: 'A structured first-month plan plus a phased 90-day implementation sequence with risk and infrastructure guidance.',
     },
   ];
 
@@ -802,7 +802,7 @@ function ProofSection({ onCTA }) {
               transition: 'all 0.2s ease',
             }}
           >
-            Start Free Assessment
+            Start Free Diagnostic
           </button>
         </div>
       </div>
@@ -817,30 +817,31 @@ function TierSection({ onCTA }) {
   const isMobile = useIsMobile();
   const tiers = [
     {
-      name: 'Free Assessment',
+      name: 'Free AI Readiness Diagnostic',
       price: 'Free',
       priceNote: null,
       featured: true,
       items: [
         'Overall AI Readiness Score',
         'Category breakdown across 5 dimensions',
-        'Your single highest-impact action',
+        'Maturity tier and score interpretation',
+        'Your top starting point',
         'On-screen results, instant',
       ],
     },
     {
-      name: 'Full Report',
+      name: 'AI Action Plan',
       price: '$150',
       priceNote: 'one time',
       featured: false,
-      intent: 'Built for businesses ready to act on their results.',
+      intent: 'Built for small business owners and executives ready to act.',
       items: [
-        'All priority improvements with tool recommendations',
+        'Three priority improvements with tool recommendations',
         '30-day action plan tied to your top priorities',
+        '90-day implementation roadmap',
         'Deep category analysis across all 5 dimensions',
-        'Phased implementation roadmap with timeline',
-        'Risk analysis and data infrastructure plan',
-        'Downloadable branded PDF',
+        'Risk analysis and data infrastructure guidance',
+        'Downloadable branded PDF report',
       ],
     },
   ];
@@ -879,7 +880,7 @@ function TierSection({ onCTA }) {
               letterSpacing: '-0.035em',
             }}
           >
-            Every assessment starts free
+            Every diagnostic starts free
           </h2>
           <p
             style={{
@@ -892,7 +893,7 @@ function TierSection({ onCTA }) {
               margin: '14px 0 0',
             }}
           >
-            Start free. Upgrade when you're ready for the full picture.
+            Start free. Upgrade to the AI Action Plan when you're ready to act.
           </p>
         </div>
 
@@ -1030,7 +1031,7 @@ function TierSection({ onCTA }) {
                     transition: 'all 0.2s ease',
                   }}
                 >
-                  Start Free Assessment
+                  Start Free Diagnostic
                 </button>
               )}
             </div>
@@ -1068,8 +1069,8 @@ function TierSection({ onCTA }) {
               margin: 0,
             }}
           >
-            After you complete the free assessment and see your score, you can upgrade to the $150 Full Report for deeper
-            analysis, a 30-day action plan, and implementation guidance.
+            After you complete the free diagnostic and see your results on screen, you can upgrade to the $150 AI Action Plan for
+            priority improvements, a 30-day action plan, 90-day roadmap, and a downloadable PDF report.
           </p>
         </div>
       </div>
@@ -1272,7 +1273,7 @@ function WhoSection() {
               letterSpacing: '-0.035em',
             }}
           >
-            Built for business owners who run real operations
+            Built for small business owners and executives
           </h2>
         </div>
 
@@ -1371,6 +1372,259 @@ function WhoSection() {
 }
 
 // ════════════════════════════════════════════════════════════════
+// REPORT PREVIEW (trust-building inline previews)
+// ════════════════════════════════════════════════════════════════
+function ReportPreviewSection() {
+  const isMobile = useIsMobile();
+  const previews = [
+    {
+      label: 'Score Summary',
+      desc: 'Overall score, category breakdown across five dimensions, SMB benchmark comparison, and maturity interpretation.',
+    },
+    {
+      label: '30-Day Action Plan + 90-Day Roadmap',
+      desc: 'A structured first-month plan with weekly milestones, plus a phased 90-day implementation sequence.',
+    },
+    {
+      label: 'Category Analysis',
+      desc: 'Deep analysis for each dimension with tool recommendations, risk guidance, and implementation sequence.',
+    },
+  ];
+
+  return (
+    <section
+      style={{
+        background: P.navy,
+        color: P.white,
+        padding: isMobile ? '56px 20px' : '96px 36px',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(37,99,235,0.12) 0%, transparent 60%)'
+      }} />
+      <div style={{ maxWidth: 980, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? 36 : 56 }}>
+          <div style={{
+            fontFamily: FONT, fontSize: 12, fontWeight: 600, letterSpacing: '0.22em',
+            textTransform: 'uppercase', color: P.blue2, marginBottom: 16,
+          }}>
+            Inside the report
+          </div>
+          <h2 style={{
+            fontFamily: FONT, fontSize: 'clamp(36px, 7vw, 56px)', fontWeight: 300,
+            color: P.white, marginTop: 0, lineHeight: 1.2, letterSpacing: '-0.035em',
+          }}>
+            What the AI Action Plan{' '}
+            <em style={{ fontFamily: SERIF, fontStyle: 'italic', color: 'rgba(255,255,255,0.45)' }}>includes</em>
+          </h2>
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+          gap: 16,
+        }}>
+          {previews.map((p, i) => (
+            <div key={i} style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.09)',
+              borderRadius: 14,
+              padding: 28,
+            }}>
+              <div style={{
+                fontFamily: FONT, fontSize: 11, fontWeight: 600, letterSpacing: '0.18em',
+                textTransform: 'uppercase', color: P.blue2, marginBottom: 12,
+              }}>
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <div style={{
+                fontFamily: FONT, fontSize: 17, fontWeight: 500, color: P.white,
+                marginBottom: 10, lineHeight: 1.3,
+              }}>
+                {p.label}
+              </div>
+              <p style={{
+                fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim,
+                lineHeight: 1.7, margin: 0,
+              }}>
+                {p.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: 36 }}>
+          <Link
+            to="/report?tier=plan&demo=true"
+            style={{
+              fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim,
+              textDecoration: 'none', letterSpacing: '0.02em',
+            }}
+          >
+            View full sample report →
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════
+// ABOUT / CREDIBILITY (anonymous, short)
+// ════════════════════════════════════════════════════════════════
+function AboutSection() {
+  const isMobile = useIsMobile();
+  return (
+    <section
+      id="about"
+      style={{
+        background: P.offwhite,
+        color: LIGHT_TEXT.primary,
+        padding: isMobile ? '56px 20px' : '96px 36px',
+      }}
+    >
+      <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
+        <div style={{
+          fontFamily: FONT, fontSize: 12, fontWeight: 600, letterSpacing: '0.22em',
+          textTransform: 'uppercase', color: P.blue, marginBottom: 16,
+        }}>
+          About Telchar AI
+        </div>
+        <p style={{
+          fontFamily: FONT, fontSize: 15, fontWeight: 300, color: LIGHT_TEXT.secondary,
+          lineHeight: 1.8, margin: '0 0 16px',
+        }}>
+          Built by a senior management consultant with experience helping companies improve operations, technology, and execution.
+        </p>
+        <p style={{
+          fontFamily: FONT, fontSize: 15, fontWeight: 300, color: LIGHT_TEXT.secondary,
+          lineHeight: 1.8, margin: 0,
+        }}>
+          Telchar AI exists to give small businesses a practical AI plan — without the cost, noise, and wasted effort of figuring it out alone or hiring expensive advisors.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════
+// FAQ SECTION
+// ════════════════════════════════════════════════════════════════
+function FAQItem({ q, a }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{
+      borderBottom: `1px solid ${P.linelight}`,
+      padding: '18px 0',
+    }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          width: '100%', textAlign: 'left', background: 'none', border: 'none',
+          padding: 0, cursor: 'pointer', display: 'flex', justifyContent: 'space-between',
+          alignItems: 'center', gap: 16,
+        }}
+      >
+        <span style={{
+          fontFamily: FONT, fontSize: 14, fontWeight: 500, color: LIGHT_TEXT.primary, lineHeight: 1.5,
+        }}>
+          {q}
+        </span>
+        <span style={{
+          fontFamily: FONT, fontSize: 18, color: LIGHT_TEXT.muted, flexShrink: 0,
+          transform: open ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s ease',
+        }}>
+          +
+        </span>
+      </button>
+      {open && (
+        <p style={{
+          fontFamily: FONT, fontSize: 13, fontWeight: 300, color: LIGHT_TEXT.secondary,
+          lineHeight: 1.8, margin: '12px 0 0', paddingRight: 32,
+        }}>
+          {a}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function FAQSection() {
+  const isMobile = useIsMobile();
+  const faqs = [
+    {
+      q: 'Who is this built for?',
+      a: 'Small business owners and executives running companies with 5 to 100 employees. If you manage a team, have established operations, and want to understand where AI fits before spending money — this is built for you.',
+    },
+    {
+      q: 'What does the free diagnostic give me?',
+      a: 'Your overall AI readiness score, a category breakdown across five dimensions, your maturity tier with interpretation, and your top starting point. Results appear on screen immediately after the last question. No email required to see your score.',
+    },
+    {
+      q: 'What does the AI Action Plan include?',
+      a: 'Three priority improvements with tool recommendations, a 30-day action plan, a 90-day implementation roadmap, deep category analysis across all five dimensions, risk and execution guidance, and a downloadable branded PDF report.',
+    },
+    {
+      q: 'How is this different from asking ChatGPT for an AI plan?',
+      a: 'ChatGPT gives generic answers because it does not know your business. This diagnostic scores your actual operations across five dimensions, benchmarks you against similar companies, and generates prioritized recommendations specific to your industry, team size, and current tools.',
+    },
+    {
+      q: 'Is the report generic?',
+      a: 'No. Every report is generated from your responses. The recommendations, tool suggestions, risk analysis, and action plan are specific to your industry, operations, and priorities. More detailed inputs produce a stronger plan.',
+    },
+    {
+      q: 'Do I need to be technical to use this?',
+      a: 'No. The diagnostic asks about how you operate — scheduling, customer intake, sales process, content creation — not about code or infrastructure. The recommendations are written for business owners, not engineers.',
+    },
+    {
+      q: 'Who should buy the AI Action Plan?',
+      a: 'Business owners who see their free results and want the full deliverable: what to fix, in what order, with what tools, and on what timeline. The AI Action Plan includes a 30-day action plan, 90-day roadmap, and downloadable PDF you can share with your team.',
+    },
+    {
+      q: 'When do I pay?',
+      a: 'After you complete the free diagnostic and see your results on screen. You can upgrade to the $150 AI Action Plan at that point for the full report with action plans, roadmap, and PDF — or walk away with your free results.',
+    },
+  ];
+
+  return (
+    <section
+      style={{
+        background: P.offwhite,
+        color: LIGHT_TEXT.primary,
+        padding: isMobile ? '56px 20px' : '96px 36px',
+      }}
+    >
+      <div style={{ maxWidth: 680, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? 36 : 56 }}>
+          <div style={{
+            fontFamily: FONT, fontSize: 12, fontWeight: 600, letterSpacing: '0.22em',
+            textTransform: 'uppercase', color: P.blue, marginBottom: 16,
+          }}>
+            Common questions
+          </div>
+          <h2 style={{
+            fontFamily: FONT, fontSize: 'clamp(36px, 7vw, 56px)', fontWeight: 300,
+            color: LIGHT_TEXT.primary, marginTop: 0, lineHeight: 1.2, letterSpacing: '-0.035em',
+          }}>
+            Straight answers
+          </h2>
+        </div>
+        <div style={{
+          background: P.white, borderRadius: 14, border: `1px solid ${P.linelight}`,
+          padding: isMobile ? '4px 20px' : '4px 32px',
+        }}>
+          {faqs.map((f, i) => (
+            <FAQItem key={i} q={f.q} a={f.a} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════
 // FINAL CTA (navy section with glow + diamond outline)
 // ════════════════════════════════════════════════════════════════
 function CTASection({ onCTA }) {
@@ -1451,7 +1705,7 @@ function CTASection({ onCTA }) {
             letterSpacing: '-0.035em',
           }}
         >
-          Know where you stand before you spend a dollar on AI
+          Five minutes to clarity before you spend a dollar on AI
         </h2>
         <p
           style={{
@@ -1463,7 +1717,7 @@ function CTASection({ onCTA }) {
             marginBottom: 44,
           }}
         >
-          Adaptive questions. About 5 minutes. Free results on screen. Upgrade to a detailed report if you want more.
+          Focused questions. Real results on screen. Upgrade to the AI Action Plan for priority improvements, action plans, roadmap, and a downloadable PDF.
         </p>
 
         {/* Two buttons: blue primary + ghost */}
@@ -1497,7 +1751,7 @@ function CTASection({ onCTA }) {
               transition: 'all 0.2s ease',
             }}
           >
-            Start Free Assessment
+            Start Free Diagnostic
           </button>
           <Link
             to="/report?tier=plan&demo=true"
@@ -1574,7 +1828,7 @@ function Footer() {
               textDecoration: 'none',
             }}
           >
-            Assessment
+            Diagnostic
           </Link>
           <Link
             to="/report?demo=true"
@@ -1645,8 +1899,11 @@ export default function TelcharLandingPage() {
       <StepsSection />
       <ProofSection onCTA={handleCTA} />
       <TierSection onCTA={handleCTA} />
+      <ReportPreviewSection />
       <ROICalculatorSection />
       <WhoSection />
+      <AboutSection />
+      <FAQSection />
       <CTASection onCTA={handleCTA} />
       <Footer />
     </>
