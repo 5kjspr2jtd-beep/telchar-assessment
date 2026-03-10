@@ -1092,6 +1092,18 @@ function TierSection({ onCTA }) {
             priority improvements, a 30-day action plan, 90-day roadmap, and a downloadable PDF report.
           </p>
         </div>
+
+        <div style={{ textAlign: 'center', marginTop: 28 }}>
+          <Link
+            to="/report?tier=plan&demo=true"
+            style={{
+              fontFamily: FONT, fontSize: 13, fontWeight: 400, color: LIGHT_TEXT.muted,
+              textDecoration: 'none', letterSpacing: '0.02em',
+            }}
+          >
+            View full sample report →
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -1263,11 +1275,11 @@ function WhoSection() {
       style={{
         background: P.offwhite,
         color: LIGHT_TEXT.primary,
-        padding: isMobile ? '56px 20px' : '96px 36px',
+        padding: isMobile ? '48px 20px' : '72px 36px',
       }}
     >
       <div style={{ maxWidth: 980, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: isMobile ? 36 : 56 }}>
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? 28 : 40 }}>
           <div
             style={{
               fontFamily: FONT,
@@ -1575,16 +1587,8 @@ function FAQSection() {
   const isMobile = useIsMobile();
   const faqs = [
     {
-      q: 'Who is this built for?',
-      a: 'Small business owners and executives at companies with 5 to 100 employees dealing with too much manual work, disconnected tools, weak visibility, or wasted time on admin. If you want a clearer plan for where AI can actually improve operations, this is built for you.',
-    },
-    {
       q: 'What does the AI readiness score actually mean?',
       a: 'Your score shows how prepared your business is to use AI where it matters. It reflects how your business runs today, where friction exists, and where the biggest opportunities are across five dimensions: Operations Efficiency, Sales & CX, Data Visibility, Content & Knowledge, and Technology Readiness.',
-    },
-    {
-      q: 'What does the free diagnostic give me?',
-      a: 'Your overall AI readiness score, a breakdown across five dimensions, your maturity tier, and your top starting point. It shows where your business is losing time or creating friction and points you to the first issue worth fixing. Results appear on screen immediately.',
     },
     {
       q: 'What does the AI Action Plan include?',
@@ -1605,10 +1609,6 @@ function FAQSection() {
     {
       q: 'Who should buy the AI Action Plan?',
       a: 'Owners and executives who want more than a score. It gives you a clear plan for what to fix first, what tools fit your business, and how to move forward without getting lost in AI hype.',
-    },
-    {
-      q: 'When do I pay?',
-      a: 'You complete the free diagnostic first and see your results on screen. If you want the full deliverable, click Unlock AI Action Plan after your results. If not, you keep your free results.',
     },
   ];
 
@@ -1741,7 +1741,7 @@ function CTASection({ onCTA }) {
             marginBottom: 44,
           }}
         >
-          Focused questions. Real results on screen. Upgrade to the AI Action Plan for priority improvements, action plans, roadmap, and a downloadable PDF.
+          Focused questions. Real results on screen. No signup, no sales call.
         </p>
 
         {/* Two buttons: blue primary + ghost */}
@@ -1942,9 +1942,7 @@ export default function TelcharLandingPage() {
       `}</style>
       <HeroSection onCTA={handleCTA} />
       <StepsSection />
-      <ProofSection onCTA={handleCTA} />
       <TierSection onCTA={handleCTA} />
-      <ReportPreviewSection />
       <ROICalculatorSection />
       <WhoSection />
       <AboutSection />
