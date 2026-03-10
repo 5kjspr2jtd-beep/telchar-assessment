@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, Diamond, Rule, SecLabel, TYPE, CTA } from "./design/telcharDesign";
+import HamburgerMenu from "./components/HamburgerMenu";
 
 // ── Pluralize helper ──────────────────────────────────────────────────────────
 const pl = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -754,16 +755,17 @@ export default function ROICalculator({ embedded = false }) {
           <NavLogo />
           <div style={{ width: 1, height: 14, background: "rgba(255,255,255,0.12)", marginLeft: 4 }} />
           <span style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim }}>ROI Calculator</span>
+          <span style={{
+            fontFamily: FONT, fontSize: 11, fontWeight: 600,
+            letterSpacing: "0.12em", textTransform: "uppercase",
+            padding: "3px 8px",
+            background: "rgba(255,255,255,0.04)",
+            color: P.dim,
+            border: "1px solid rgba(255,255,255,0.09)",
+            borderRadius: 4,
+          }}>Beta</span>
         </div>
-        <span style={{
-          fontFamily: FONT, fontSize: 11, fontWeight: 600,
-          letterSpacing: "0.12em", textTransform: "uppercase",
-          padding: "3px 8px",
-          background: "rgba(255,255,255,0.04)",
-          color: P.dim,
-          border: "1px solid rgba(255,255,255,0.09)",
-          borderRadius: 4,
-        }}>Beta</span>
+        <HamburgerMenu currentPage="ROI Calculator" />
       </div>
 
       {/* Content area */}

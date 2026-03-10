@@ -198,7 +198,7 @@ function HeroSection({ onCTA }) {
                     transition: 'color 0.15s ease',
                   }}
                 >
-                  Reports
+                  Sample Report
                 </Link>
                 <a
                   href="#about"
@@ -274,8 +274,9 @@ function HeroSection({ onCTA }) {
           >
             <Link to="/assessment" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>Diagnostic</Link>
             <a href="/?page=roi" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>ROI Calculator</a>
-            <Link to="/report?demo=true" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>Reports</Link>
+            <Link to="/report?demo=true" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>Sample Report</Link>
             <a href="#about" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>About</a>
+            <Link to="/apply" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>Advisory Services</Link>
           </div>
         )}
       </nav>
@@ -1537,6 +1538,7 @@ function AboutSection() {
         background: P.offwhite,
         color: LIGHT_TEXT.primary,
         padding: isMobile ? '56px 20px' : '96px 36px',
+        scrollMarginTop: 80,
       }}
     >
       <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>

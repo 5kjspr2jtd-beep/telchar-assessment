@@ -1082,6 +1082,16 @@ export default function App({ initialTier = "free", demo = false }) {
         gap: navMobile ? 6 : 10,
       }}>
 
+        {/* Home link (mobile only — desktop uses clickable logo) */}
+        {navMobile && (
+          <a href="/" style={{
+            fontFamily: FONT, fontSize: 14, color: P.dim,
+            textDecoration: "none", flexShrink: 0,
+            display: "flex", alignItems: "center",
+            padding: "4px 2px",
+          }} title="Back Home">←</a>
+        )}
+
         {/* Prev */}
         <button onClick={prev} disabled={cur===0} style={{
           background:"none", border:"none", padding:"4px 2px",
@@ -1095,7 +1105,9 @@ export default function App({ initialTier = "free", demo = false }) {
         {/* Logo + wordmark */}
         {!navMobile && (
           <>
-            <img src="/white_decal.svg" style={{ height: 18, width: "auto", flexShrink: 0 }} alt="Telchar AI" />
+            <a href="/" style={{ display: "flex", alignItems: "center", flexShrink: 0 }} title="Back Home">
+              <img src="/white_decal.svg" style={{ height: 18, width: "auto" }} alt="Telchar AI" />
+            </a>
             <div style={{ width:1, height:14, background:"rgba(255,255,255,0.12)", flexShrink:0 }}/>
           </>
         )}

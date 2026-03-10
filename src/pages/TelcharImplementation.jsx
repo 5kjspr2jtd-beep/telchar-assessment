@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, Diamond, Rule, SecLabel, TEXT, TYPE, CTA } from "../design/telcharDesign";
+import HamburgerMenu from "../components/HamburgerMenu";
 
 // ============================================================
 // TELCHAR AI — Implementation Support Application
@@ -49,19 +50,15 @@ function AppPage({ children }) {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <img src="/white_decal.svg" alt="Telchar AI" style={{ height: 18, width: "auto", display: "block" }} />
         </div>
-        {/* Right: Application title + Confidential */}
-        <div style={{ display: "flex", alignItems: "center", gap: mobile ? 0 : 20, overflow: "hidden" }}>
+        {/* Right: Application title + hamburger */}
+        <div style={{ display: "flex", alignItems: "center", gap: mobile ? 8 : 20 }}>
           {!mobile && <span style={{
             fontFamily: FONT, fontSize: 12,
             letterSpacing: "0.22em", textTransform: "uppercase",
             color: "rgba(255,255,255,0.4)",
             whiteSpace: "nowrap",
           }}>Implementation Support Application</span>}
-          <span style={{
-            fontFamily: FONT, fontSize: 12,
-            color: "rgba(255,255,255,0.4)",
-            whiteSpace: "nowrap",
-          }}>Confidential</span>
+          <HamburgerMenu currentPage="Advisory Services" navHeight={52} />
         </div>
       </div>
 

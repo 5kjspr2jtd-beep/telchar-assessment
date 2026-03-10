@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { TELCHAR as P, FONT, SERIF, scoreColor, scoreTier, GOOGLE_FONTS_URL, TEXT, TYPE, CTA, OPTION_CARD } from "../design/telcharDesign";
+import HamburgerMenu from "../components/HamburgerMenu";
 
 // ============================================================
 // TELCHAR AI - AI READINESS ASSESSMENT v2
@@ -845,7 +846,7 @@ function PageShell({ children, style = {} }) {
   );
 }
 
-function NavBar({ onStart }) {
+function NavBar() {
   return (
     <div style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 300,
@@ -859,21 +860,8 @@ function NavBar({ onStart }) {
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <img src="/white_decal.svg" alt="Telchar AI" style={{ height: 18, width: "auto", display: "block" }} />
       </div>
-      {/* Right: CTA */}
-      {onStart && (
-        <button onClick={onStart} style={{
-          fontFamily: FONT, fontSize: 12, fontWeight: 600,
-          background: "#2563eb", color: "#fff",
-          padding: "10px 24px", borderRadius: 6,
-          border: "none", cursor: "pointer",
-          transition: "background 0.15s ease",
-        }}
-          onMouseOver={e => e.currentTarget.style.background = P.blue2}
-          onMouseOut={e => e.currentTarget.style.background = "#2563eb"}
-        >
-          Start Free Diagnostic
-        </button>
-      )}
+      {/* Right: hamburger */}
+      <HamburgerMenu currentPage="Diagnostic" />
     </div>
   );
 }
@@ -1009,7 +997,7 @@ function LandingPage({ onStart }) {
 
   return (
     <PageShell>
-      <NavBar onStart={onStart} />
+      <NavBar />
       <div style={{ paddingTop: 120, paddingBottom: 80, padding: "120px 20px 80px" }}>
         <div style={{
           maxWidth: 640, margin: "0 auto", textAlign: "center",
