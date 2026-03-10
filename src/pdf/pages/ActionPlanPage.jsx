@@ -36,7 +36,7 @@ function ActionBlock({ block, index }) {
           backgroundColor: `${accent.color}18`,
           alignItems: "center", justifyContent: "center",
         }}>
-          <Text style={{ fontFamily: FONT, fontSize: 9, fontWeight: 700, color: accent.color }}>
+          <Text style={{ fontFamily: FONT, fontSize: 9, fontWeight: 600, color: accent.color }}>
             0{index + 1}
           </Text>
         </View>

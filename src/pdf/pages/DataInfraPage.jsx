@@ -67,7 +67,7 @@ export default function DataInfraPage({ data }) {
             flexShrink: 0,
           }}>
             <Text style={{
-              fontFamily: FONT, fontSize: 9, fontWeight: 700,
+              fontFamily: FONT, fontSize: 9, fontWeight: 600,
               color: layer.accentColor,
             }}>
               {layer.num}

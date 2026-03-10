@@ -35,7 +35,7 @@ export default function CategoryPage({ catKey, data }) {
           <Text style={{ fontFamily: FONT, fontSize: 40, fontWeight: 300, color: col, lineHeight: 1, letterSpacing: -1 }}>
             {cat.score}
           </Text>
-          <Text style={{ fontFamily: FONT, fontSize: 8, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: col, marginTop: 2 }}>
+          <Text style={{ fontFamily: FONT, fontSize: 8, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: col, marginTop: 2 }}>
             {scoreTier(cat.score)}
           </Text>
         </View>

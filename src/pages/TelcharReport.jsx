@@ -178,13 +178,13 @@ function Paywall({ onUpgrade }) {
       padding: "24px 28px",
       marginTop: 32,
     }}>
-      <div style={{ fontFamily:FONT, fontSize:11, color:P.blue2, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:10 }}>AI Action Plan — $150</div>
-      <p style={{ fontFamily:FONT, fontSize:13, color:P.dim, fontWeight:300, lineHeight:1.7, margin:"0 0 14px" }}>Unlock all priority improvements, 30-day action plan, 90-day roadmap, deep category analysis, risk guidance, tool recommendations, and a downloadable branded PDF.</p>
+      <div style={{ fontFamily:FONT, fontSize:11, color:P.blue2, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:10 }}>AI Action Plan — Early Access</div>
+      <p style={{ fontFamily:FONT, fontSize:13, color:P.dim, fontWeight:300, lineHeight:1.7, margin:"0 0 14px" }}>Preview all priority improvements, 30-day action plan, 90-day roadmap, deep category analysis, risk guidance, tool recommendations, and a downloadable branded PDF.</p>
       <button onClick={onUpgrade} style={{
         fontFamily:FONT, width:280, height:48, display:"flex", alignItems:"center", justifyContent:"center",
         background:"#2563eb", color:"#fff", fontSize:13, fontWeight:600,
         letterSpacing:"0.08em", textTransform:"uppercase", border:"none", cursor:"pointer", borderRadius:8, margin:"0 auto",
-      }}>Unlock AI Action Plan</button>
+      }}>Preview AI Action Plan</button>
     </div>
   );
 }
@@ -1082,7 +1082,7 @@ export default function App({ initialTier = "free", demo = false }) {
 
         {/* Tier tabs */}
         <div style={{ display:"flex", gap:navMobile?2:3, flexShrink:0 }}>
-          {[["free","Free"],["full","$150"]].map(([t,label])=>(
+          {[["free","Free"],["full","Full"]].map(([t,label])=>(
             <button key={t} onClick={()=>upgrade(t)} style={{
               fontFamily:FONT,
               fontSize: 12,

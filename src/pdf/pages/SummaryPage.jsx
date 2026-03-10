@@ -62,7 +62,7 @@ export default function SummaryPage({ data }) {
           </Text>
           <PdfBenchmarkBlock score={scores.overall} benchmark={benchOverall} />
           <Text style={{
-            fontFamily: FONT, fontSize: 7, fontWeight: 300, fontStyle: "italic",
+            fontFamily: FONT, fontSize: 7, fontWeight: 300,
             color: C.mutedDark, lineHeight: 1.6, marginTop: 8,
           }}>
             {"Reference baselines provide comparison context for businesses of similar industry and size. They are not a ceiling on performance or potential value."}
@@ -136,7 +136,7 @@ export default function SummaryPage({ data }) {
               width: 70,
               fontFamily: FONT,
               fontSize: 8,
-              fontWeight: 700,
+              fontWeight: 600,
               letterSpacing: 0.8,
               textTransform: "uppercase",
               color: col,

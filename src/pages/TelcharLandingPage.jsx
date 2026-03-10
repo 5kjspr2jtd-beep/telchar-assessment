@@ -576,8 +576,8 @@ function StepsSection() {
     },
     {
       num: '03',
-      title: 'Unlock the full plan',
-      desc: 'Upgrade to the $150 AI Action Plan for priority improvements, a 30-day action plan, 90-day roadmap, category analysis, risk guidance, and a downloadable PDF.',
+      title: 'Preview the full plan',
+      desc: 'Access the AI Action Plan for priority improvements, a 30-day action plan, 90-day roadmap, category analysis, risk guidance, and a downloadable PDF.',
     },
   ];
 
@@ -850,8 +850,8 @@ function TierSection({ onCTA }) {
     },
     {
       name: 'AI Action Plan',
-      price: '$150',
-      priceNote: 'one time',
+      price: 'Early Access',
+      priceNote: 'free during test',
       featured: false,
       intent: 'Built for small business owners and executives ready to act.',
       items: [
@@ -912,7 +912,7 @@ function TierSection({ onCTA }) {
               margin: '14px 0 0',
             }}
           >
-            Start free. Upgrade to the AI Action Plan when you're ready to act.
+            Start free. Preview the full AI Action Plan when you're ready to go deeper.
           </p>
         </div>
 
@@ -1076,7 +1076,7 @@ function TierSection({ onCTA }) {
               marginBottom: 6,
             }}
           >
-            When do I pay?
+            Is the full plan free right now?
           </p>
           <p
             style={{
@@ -1088,8 +1088,8 @@ function TierSection({ onCTA }) {
               margin: 0,
             }}
           >
-            After you complete the free diagnostic and see your results on screen, you can upgrade to the $150 AI Action Plan for
-            priority improvements, a 30-day action plan, 90-day roadmap, and a downloadable PDF report.
+            Yes. During early access, the full AI Action Plan is available at no cost. Complete the free diagnostic, see your results,
+            and preview the full plan — priority improvements, 30-day action plan, 90-day roadmap, and a downloadable PDF report.
           </p>
         </div>
 
@@ -1607,7 +1607,7 @@ function FAQSection() {
       a: 'No. This is built for business owners and executives, not technical teams. It focuses on how your business runs and turns that into practical recommendations without requiring technical knowledge.',
     },
     {
-      q: 'Who should buy the AI Action Plan?',
+      q: 'Who is the AI Action Plan for?',
       a: 'Owners and executives who want more than a score. It gives you a clear plan for what to fix first, what tools fit your business, and how to move forward without getting lost in AI hype.',
     },
   ];
@@ -1807,7 +1807,7 @@ function CTASection({ onCTA }) {
             letterSpacing: '0.04em',
           }}
         >
-          Free. No login. Upgrade anytime.
+          Free. No login. Full plan available during early access.
         </p>
       </div>
     </section>

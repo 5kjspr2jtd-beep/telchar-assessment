@@ -1479,7 +1479,7 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
               onMouseOver={e => e.currentTarget.style.borderColor = P.blue}
               onMouseOut={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"}
             >
-              Unlock
+              Preview
             </button>
           </div>
         )}
@@ -1498,7 +1498,7 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
                 onMouseOver={e => e.currentTarget.style.borderColor = P.blue}
                 onMouseOut={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"}
               >
-                Unlock AI Action Plan
+                Preview AI Action Plan
               </button>
             </div>
           )}
@@ -1629,7 +1629,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
                 {answers.company_name ? `${answers.company_name}: AI Readiness Report` : "AI Readiness Report"}
               </h2>
               <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 20, lineHeight: 1.5 }}>
-                {isPro ? "Full breakdown ranked by impact. Your weakest areas appear first." : "Your top priority areas ranked by impact. Upgrade to the AI Action Plan for all improvements, action plans, and roadmap."}
+                {isPro ? "Full breakdown ranked by impact. Your weakest areas appear first." : "Your top priority areas ranked by impact. Preview the full AI Action Plan for all improvements, action plans, and roadmap."}
               </p>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {generatePDFContent(answers, scores, quickWins).map((section, i) => (
@@ -1657,7 +1657,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
                   onMouseOver={e => { if (!advancedLoading) e.currentTarget.style.background = P.blue2; }}
                   onMouseOut={e => { if (!advancedLoading) e.currentTarget.style.background = "#2563eb"; }}
                 >
-                  {advancedLoading ? "Redirecting..." : "Unlock AI Action Plan \u2013 $150"}
+                  {advancedLoading ? "Redirecting..." : "Preview Full AI Action Plan"}
                 </button>
                 <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Three priority improvements with tool recommendations, 30-day action plan, 90-day implementation roadmap, deep category analysis, risk and execution guidance, and a downloadable branded PDF.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 8, fontStyle: "italic", maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Generated from your assessment responses. More detailed inputs produce a stronger plan.</p>
@@ -1666,14 +1666,14 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
                 </p>
 
                 <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>Secure checkout powered by Stripe.</p>
+                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>Early access preview — full pricing coming soon.</p>
                 </div>
               </div>
             )}
 
             {isPro && !isAdvanced && (
               <div style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
-                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>AI Action Plan Unlocked</h3>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>AI Action Plan — Preview Access</h3>
                 <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your priority improvements, category analysis, and tool recommendations are available above.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 24, fontStyle: "italic" }}>Generated from your assessment responses. Does not include external company research.</p>
                 <div style={{ paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
@@ -1692,7 +1692,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
 
             {isAdvanced && (
               <div style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
-                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Full AI Action Plan Unlocked</h3>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Full AI Action Plan — Preview Access</h3>
                 <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your complete AI Action Plan — priority improvements, 30-day action plan, 90-day roadmap, category analysis, and implementation guidance — is available above.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 16, fontStyle: "italic", maxWidth: 460, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Generated from your assessment responses. Does not include external company research.</p>
               </div>
@@ -1703,7 +1703,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
               <h3 style={{ fontFamily: FONT, fontSize: 20, fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Need direct implementation support?</h3>
               <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, lineHeight: 1.65, maxWidth: 500, marginLeft: "auto", marginRight: "auto", marginBottom: 6 }}>For businesses ready to move beyond planning into disciplined execution, hands-on advisory support is available.</p>
               <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, lineHeight: 1.65, maxWidth: 500, marginLeft: "auto", marginRight: "auto", marginBottom: 16 }}>These engagements are structured and execution-focused. Not every business will be the right fit, and that is intentional. The goal is alignment, clarity, and measurable progress.</p>
-              <span onClick={() => { alert("In production: routes to implementation support page."); }} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 400, color: P.dim, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>Learn about implementation support</span>
+              <span onClick={() => navigate("/apply")} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 400, color: P.dim, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>Learn about implementation support</span>
             </div>
 
           </div>

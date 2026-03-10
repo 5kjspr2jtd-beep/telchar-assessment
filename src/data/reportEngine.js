@@ -1329,7 +1329,9 @@ function generateCategoryToolRec(catKey, catScore, catBand, signals, clientTools
             "Add Claude chat as a step where the workflow needs to read, summarize, or categorize information",
           ],
           expectedResult: "The 15+ hours of admin work drops significantly because data moves between tools without anyone doing it by hand. Your team stops doing data entry and starts doing the work that actually needs a person.",
-          planFit: { level: "Pro", rationale: "Running multiple automations daily with Claude handling the thinking steps requires a Pro account." },
+          planFit: isLow
+            ? { level: "Free", rationale: "Start free. Build one Make scenario connecting your two most-used tools before paying for anything." }
+            : { level: "Pro", rationale: "Running multiple automations daily with Claude handling the thinking steps requires a Pro account." },
           startHere: [
             { step: "Create a Make account and check which of your tools have ready-made connectors", url: "https://www.make.com/en/register" },
             { step: "Build your first scenario: connect the two tools you copy data between most often", url: "https://www.make.com/en/integrations" },

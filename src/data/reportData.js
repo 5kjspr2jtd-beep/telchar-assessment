@@ -25,7 +25,7 @@ export const CATEGORY_KEYS = ["operations", "sales", "data", "content", "technol
 //   benchmark.overall, benchmark.categories.{key}, benchmark.meta
 
 // ── Tier metadata ────────────────────────────────────────────
-// Two tiers only: Free Diagnostic + $150 AI Action Plan
+// Two tiers only: Free Diagnostic + AI Action Plan (early access — pricing TBD)
 export const TIERS = {
   free: { key: "free", label: "Free Diagnostic", price: null, pageCount: 3,  sections: ["cover", "summary", "quickWins"] },
   full: { key: "full", label: "AI Action Plan",  price: 150,  pageCount: 14, sections: ["cover", "summary", "quickWins", "actionPlan", "categories", "roadmap", "risk", "dataInfra", "engagement"] },
@@ -70,7 +70,7 @@ const DEMO_CO  = "Meridian Roofing Group";
 const DEMO_IND = "Construction / Trades";
 const DEMO_CLIENT_TOOLS = ["QuickBooks", "Gmail", "Google Calendar"];
 const DEMO_SCORES = {
-  overall: 54,
+  overall: 52,
   cats: [
     { key: "operations", label: "Operations Efficiency",          score: 48 },
     { key: "sales",      label: "Sales & Customer Experience",    score: 52 },
@@ -138,7 +138,7 @@ function buildStack(scores, clientTools) {
       ],
       startHere: [
         { label: "Try Claude — free, no account needed", url: "https://claude.ai" },
-        { label: "What Claude can do", url: "https://claude.com/product/overview" },
+        { label: "What Claude can do", url: "https://www.anthropic.com/claude" },
         { label: "How to add Claude as a step in Make", url: "https://www.make.com/en/integrations/anthropic-claude" },
       ]
     },
@@ -176,7 +176,7 @@ function buildStack(scores, clientTools) {
       ],
       resources: [
         { label: "What is Claude Code? (plain-English overview)", url: "https://www.anthropic.com/claude-code" },
-        { label: "Examples of what Claude Code has built", url: "https://code.claude.com" },
+        { label: "Examples of what Claude Code has built", url: "https://www.anthropic.com/claude-code" },
         { label: "Ask Telchar AI if this fits your business", url: "https://www.telcharai.com/apply" },
       ]
     }
@@ -238,7 +238,7 @@ const DEMO_ANSWERS = {
 
 // ── Demo raw scores (for engine category lookups) ──
 const DEMO_RAW_SCORES = {
-  overall: 54,
+  overall: 52,
   categories: {
     operations:  { score: 48, label: "Operations Efficiency" },
     sales:       { score: 52, label: "Sales & Customer Experience" },

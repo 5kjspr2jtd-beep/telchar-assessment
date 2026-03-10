@@ -87,7 +87,7 @@ export default function CoverPage({ data }) {
         <Text style={{
           fontFamily: FONT,
           fontSize: 9,
-          fontWeight: 700,
+          fontWeight: 600,
           letterSpacing: 3,
           textTransform: "uppercase",
           color: col,

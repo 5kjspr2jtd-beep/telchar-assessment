@@ -28,7 +28,7 @@ function PhaseBlock({ phase }) {
           alignItems: "center", justifyContent: "center",
         }}>
           <Text style={{
-            fontFamily: FONT, fontSize: 9, fontWeight: 700,
+            fontFamily: FONT, fontSize: 9, fontWeight: 600,
             color: phase.accentColor,
           }}>
             {phase.phaseNum}

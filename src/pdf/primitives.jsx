@@ -96,7 +96,7 @@ export function PdfScoreBlock({ score, size = TYPE.hero, dark = true }) {
       <Text style={{
         fontFamily: FONT,
         fontSize: TYPE.micro,
-        fontWeight: 700,
+        fontWeight: 600,
         letterSpacing: 2,
         textTransform: "uppercase",
         color: col,
@@ -124,7 +124,7 @@ export function PdfBenchmarkBlock({ score, benchmark, dark = false }) {
       flexDirection: "row",
       backgroundColor: dark ? "#0d1628" : C.cardBg,
       borderWidth: 1,
-      borderColor: dark ? "rgba(37,99,235,0.25)" : C.cardBorder,
+      borderColor: dark ? "#1a2a5e" : C.cardBorder,
       borderLeftWidth: 3,
       borderLeftColor: C.blue,
       borderRadius: SP.cardRadius,

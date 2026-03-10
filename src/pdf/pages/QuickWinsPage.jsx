@@ -33,7 +33,7 @@ function WinCard({ win, index }) {
       {/* Header: number + title + impact badge */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
         <Text style={{
-          fontFamily: FONT, fontSize: 9, fontWeight: 700,
+          fontFamily: FONT, fontSize: 9, fontWeight: 600,
           color: accent.labelColor,
           width: 16, textAlign: "center",
         }}>
