@@ -46,10 +46,11 @@ function useIsMobile(breakpoint = 640) {
 // HERO SCORE CARD PROFILES
 // ════════════════════════════════════════════════════════════════
 const HERO_PROFILES = [
-  { label: "Getting Started", labelColor: "#f59e0b", overall: 32, ops: 28, sales: 35, data: 30, content: 22, tech: 45 },
-  { label: "In Progress",     labelColor: "#3b82f6", overall: 55, ops: 58, sales: 50, data: 62, content: 44, tech: 60 },
-  { label: "AI Ready",        labelColor: "#22c55e", overall: 74, ops: 82, sales: 68, data: 71, content: 60, tech: 85 },
-  { label: "AI Leading",      labelColor: "#8b5cf6", overall: 91, ops: 94, sales: 88, data: 90, content: 87, tech: 95 },
+  { label: "Fragile",     labelColor: "#ef4444", overall: 28, ops: 24, sales: 30, data: 26, content: 20, tech: 38 },
+  { label: "Developing",  labelColor: "#f59e0b", overall: 48, ops: 45, sales: 52, data: 42, content: 40, tech: 58 },
+  { label: "Progressing", labelColor: "#3b82f6", overall: 62, ops: 65, sales: 58, data: 60, content: 55, tech: 72 },
+  { label: "Advancing",   labelColor: "#22c55e", overall: 76, ops: 82, sales: 72, data: 74, content: 68, tech: 84 },
+  { label: "Leading",     labelColor: "#8b5cf6", overall: 91, ops: 94, sales: 88, data: 90, content: 87, tech: 95 },
 ];
 
 function heroBarColor(score) {
@@ -64,7 +65,7 @@ function heroBarColor(score) {
 function HeroSection({ onCTA }) {
   const [visible, setVisible] = useState(false);
   const isMobile = useIsMobile();
-  const [profileIndex, setProfileIndex] = useState(2); // start on "AI Ready"
+  const [profileIndex, setProfileIndex] = useState(2); // start on "Progressing"
   const [cardVisible, setCardVisible] = useState(true);
 
   useEffect(() => {
@@ -1397,7 +1398,7 @@ function ReportPreviewSection() {
   const previews = [
     {
       label: 'Score Summary',
-      desc: 'Overall score, category breakdown across five dimensions, SMB benchmark comparison, and maturity interpretation.',
+      desc: 'Overall score, category breakdown across five dimensions, reference baseline comparison, and maturity interpretation.',
     },
     {
       label: '30-Day Action Plan + 90-Day Roadmap',

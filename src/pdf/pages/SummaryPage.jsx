@@ -65,7 +65,7 @@ export default function SummaryPage({ data }) {
             fontFamily: FONT, fontSize: 7, fontWeight: 300, fontStyle: "italic",
             color: C.mutedDark, lineHeight: 1.6, marginTop: 8,
           }}>
-            {bench?.meta?.note || "Reference baselines represent modeled expectations for businesses of similar industry and size."}
+            {"Reference baselines provide comparison context for businesses of similar industry and size. They are not a ceiling on performance or potential value."}
           </Text>
         </View>
       </View>

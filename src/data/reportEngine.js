@@ -482,14 +482,24 @@ export function generateSummaryNarrative(overall, overallBand, signals, wins, be
     ? `${delta} points above the reference baseline of ${benchmarkOverall}`
     : `${Math.abs(delta)} points below the reference baseline of ${benchmarkOverall}`;
 
+  // Baseline-relative position: below (<-4), near (-4 to +4), above (>+4)
+  const baselinePos = delta < -4 ? "below" : delta > 4 ? "above" : "near";
+
+  // Baseline-relative urgency framing — appended to band intro
+  const baselineFrame = baselinePos === "below"
+    ? " Closing the gap to baseline is the first priority — stabilizing core operations and addressing the specific weaknesses driving the shortfall."
+    : baselinePos === "near"
+      ? " This is a foundational improvement opportunity — tightening existing processes and addressing key gaps will create measurable separation."
+      : " The stronger-than-typical foundation means the business can move faster on implementation. The opportunity is capturing efficiency and margin gains that most competitors are not yet positioned to pursue.";
+
   // What the score means — varies by band
-  const bandIntro = {
+  const bandIntro = ({
     fragile: `A score of ${overall} places ${co} in the Fragile tier, ${deltaText}. Core operational processes are largely manual, with limited system integration and significant automation gaps across multiple categories.`,
     developing: `A score of ${overall} places ${co} in the Developing tier, ${deltaText}. The organization has established basic operational infrastructure but carries identifiable automation gaps that limit efficiency and visibility.`,
     progressing: `A score of ${overall} places ${co} in the Progressing tier, ${deltaText}. Foundational systems are in place and the team has demonstrated willingness to adopt structured tools. The opportunity now is targeted automation in specific workflow gaps.`,
     advancing: `A score of ${overall} places ${co} in the Advancing tier, ${deltaText}. The organization operates with structured systems and has meaningful experience with technology adoption. The focus shifts from foundational setup to optimization and integration.`,
     leading: `A score of ${overall} places ${co} in the Leading tier, ${deltaText}. Operational maturity is high, with integrated systems and active technology adoption. The opportunity is advanced automation, predictive tooling, and competitive differentiation.`,
-  }[overallBand.key] || `A score of ${overall} places ${co} at ${deltaText}.`;
+  }[overallBand.key] || `A score of ${overall} places ${co} at ${deltaText}.`) + baselineFrame;
 
   // What is working — varies by signal profile
   const strengths = [];
@@ -527,11 +537,16 @@ export function generateSummaryNarrative(overall, overallBand, signals, wins, be
       ? ` No single constraint dominates, but cross-system integration gaps and manual handoffs between tools are likely limiting compound efficiency.`
       : ` While no single issue dominates, the cumulative weight of manual processes across categories is constraining throughput and visibility.`;
 
-  // What kind of next move — driven by recommendations
+  // What kind of next move — driven by recommendations + baseline position
   const winNames = wins.map(w => w.title).filter(Boolean);
+  const focusVerb = baselinePos === "above"
+    ? "capitalize on the existing foundation"
+    : baselinePos === "near"
+      ? "create measurable separation"
+      : "close the most impactful gaps";
   const focusText = winNames.length > 0
-    ? ` The recommended starting points — ${winNames.slice(0, 2).join(" and ")} — represent the most direct path to measurable improvement within a structured 90-day window.`
-    : ` The 30-day action plan below outlines the most direct path to measurable improvement based on this profile.`;
+    ? ` The recommended starting points — ${winNames.slice(0, 2).join(" and ")} — are the most direct way to ${focusVerb} within a structured 90-day window.`
+    : ` The 30-day action plan below outlines the most direct way to ${focusVerb} based on this profile.`;
 
   return bandIntro + strengthText + gapText + focusText;
 }
@@ -540,10 +555,12 @@ export function generateSummaryNarrative(overall, overallBand, signals, wins, be
 // For each category: diagnosis, strength, gap, implication, focus.
 // Driven by category band + signals within that category.
 
-function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) {
+function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry, catBenchmark) {
   const analysis = { diagnosis: "", strength: "", gap: "", implication: "", focus: "" };
   const bandKey = catBand.key;
   const ind = industry || "your industry";
+  const catDelta = catScore - (catBenchmark || 51);
+  const aboveBaseline = catDelta > 4;
 
   if (catKey === "operations") {
     // Diagnosis by band
@@ -552,7 +569,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
     } else if (bandKey === "progressing") {
       analysis.diagnosis = "Core operational processes are partially systematized. Some workflows use scheduling or intake tools, but integration between steps still requires manual oversight.";
     } else {
-      analysis.diagnosis = "Operations are well-structured with functional automation in key areas. The focus is on eliminating remaining manual handoffs and improving cross-system integration.";
+      analysis.diagnosis = aboveBaseline
+        ? "Operations are stronger than most businesses of this type and size — but manual handoffs between systems still create friction that compounds with volume. The foundation supports faster optimization than a typical business at this stage."
+        : "Operations are well-structured with functional automation in key areas. The focus is on eliminating remaining manual handoffs and improving cross-system integration.";
     }
     // Strength
     if (signals.schedulingIsAutomated) analysis.strength = "Scheduling is already handled through dedicated software, reducing coordination overhead.";
@@ -572,7 +591,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
     if (signals.schedulingIsManual && signals.intakeIsManual) analysis.focus = "Priority: automate customer intake routing first, then connect scheduling to reduce end-to-end coordination time.";
     else if (signals.intakeIsManual) analysis.focus = "Priority: automate intake categorization and routing so the team focuses on qualified conversations, not triage.";
     else if (signals.schedulingIsManual) analysis.focus = "Priority: consolidate scheduling into a single automated system to eliminate the manual coordination loop.";
-    else analysis.focus = "Priority: connect existing tools through workflow automation to eliminate the remaining manual handoffs between systems.";
+    else analysis.focus = aboveBaseline
+      ? "Priority: leverage the operational foundation to connect existing tools through end-to-end automation — the stronger starting position means faster time to value than most peers."
+      : "Priority: connect existing tools through workflow automation to eliminate the remaining manual handoffs between systems.";
   }
 
   else if (catKey === "sales") {
@@ -581,7 +602,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
     } else if (bandKey === "progressing") {
       analysis.diagnosis = "A basic sales structure exists with some follow-up cadence. The gap is consistent execution and systematic pipeline tracking.";
     } else {
-      analysis.diagnosis = "Sales operations are structured with pipeline stages and systematic follow-up. The opportunity is optimization — targeting close rates, response speed, and customer lifetime value.";
+      analysis.diagnosis = aboveBaseline
+        ? "Sales operations are more structured than most businesses of this type and size. The pipeline works — the upside is optimization: faster response times, higher close rates, and systematic re-engagement of existing contacts for additional revenue."
+        : "Sales operations are structured with pipeline stages and systematic follow-up. The opportunity is optimization — targeting close rates, response speed, and customer lifetime value.";
     }
     if (signals.salesIsStructured || signals.salesIsMature) analysis.strength = "A structured sales pipeline with defined stages provides a solid foundation for targeted optimization.";
     else if (signals.salesIsBasic) analysis.strength = "A basic follow-up process is in place, demonstrating awareness that systematic outreach improves conversion.";
@@ -598,7 +621,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
 
     if (signals.salesIsReactive) analysis.focus = "Priority: build a basic follow-up sequence that triggers automatically when a lead comes in. One workflow can recover a meaningful share of dropped opportunities.";
     else if (signals.narrowAcquisition) analysis.focus = "Priority: diversify acquisition channels. AI-powered content and targeted outreach can open new paths without requiring a dedicated marketing team.";
-    else analysis.focus = "Priority: tighten follow-up timing and add AI-assisted messaging to ensure consistent, timely prospect engagement.";
+    else analysis.focus = aboveBaseline
+      ? "Priority: the pipeline foundation is stronger than most — now add AI-assisted follow-up timing and re-engagement sequences to capture revenue that is currently left on the table."
+      : "Priority: tighten follow-up timing and add AI-assisted messaging to ensure consistent, timely prospect engagement.";
   }
 
   else if (catKey === "data") {
@@ -607,7 +632,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
     } else if (bandKey === "progressing") {
       analysis.diagnosis = "Basic tracking is in place through accounting software or spreadsheets, but the picture is incomplete. Key operational and sales metrics are not consistently visible.";
     } else {
-      analysis.diagnosis = "Data infrastructure supports regular visibility into key metrics. The opportunity is connecting data sources for real-time, cross-functional reporting.";
+      analysis.diagnosis = aboveBaseline
+        ? "Data infrastructure is ahead of most businesses of this type and size. The visibility foundation is in place — the upside is connecting data sources into real-time, cross-functional reporting that turns existing data into margin and efficiency gains."
+        : "Data infrastructure supports regular visibility into key metrics. The opportunity is connecting data sources for real-time, cross-functional reporting.";
     }
     if (signals.tracksWithDashboard) analysis.strength = "Dashboard or BI tooling is in place, providing structured performance visibility beyond manual reporting.";
     else if (signals.tracksWithAccounting) analysis.strength = "Financial data is tracked through accounting software, providing a reliable foundation for business performance visibility.";
@@ -627,7 +654,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
 
     if (signals.noConsistentTracking) analysis.focus = "Priority: establish a basic automated dashboard pulling from your existing tools. Even one view of revenue, pipeline, and open work changes how decisions are made.";
     else if (signals.tracksWithSpreadsheets) analysis.focus = "Priority: migrate from manual spreadsheets to automated reporting. Connect your data sources to a dashboard that updates without human intervention.";
-    else analysis.focus = "Priority: expand beyond financial tracking to include operational and customer metrics in a unified view.";
+    else analysis.focus = aboveBaseline
+      ? "Priority: the data foundation is stronger than typical — now connect sources into a unified dashboard for real-time visibility across revenue, operations, and customer metrics."
+      : "Priority: expand beyond financial tracking to include operational and customer metrics in a unified view.";
   }
 
   else if (catKey === "content") {
@@ -636,7 +665,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
     } else if (bandKey === "progressing") {
       analysis.diagnosis = "Some content practices exist, and knowledge is partially organized. The gap is consistency — both in content output cadence and in knowledge accessibility.";
     } else {
-      analysis.diagnosis = "Content and knowledge systems are organized and actively maintained. The opportunity is scaling output and leveraging AI for faster production cycles.";
+      analysis.diagnosis = aboveBaseline
+        ? "Content and knowledge systems are better organized than most businesses of this type and size. The foundation supports scaling output — leveraging AI for faster production cycles can multiply visibility without adding headcount."
+        : "Content and knowledge systems are organized and actively maintained. The opportunity is scaling output and leveraging AI for faster production cycles.";
     }
     if (signals.knowledgeOrganized) analysis.strength = "Knowledge management is structured, with a wiki or documented system that makes institutional knowledge accessible.";
     else if (signals.contentDedicated) analysis.strength = "Dedicated content capabilities mean the business already invests in consistent external communication.";
@@ -658,7 +689,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
       analysis.implication = signals.wantsExit
         ? "Documented knowledge and organized systems increase business value. Buyers pay more for businesses that do not depend on individual knowledge."
         : "Organized content and knowledge systems reduce onboarding time and ensure consistent communication as the team grows.";
-      analysis.focus = "Priority: connect content workflows to automation — turn job completions into review requests, project photos into social posts, and customer data into personalized follow-ups.";
+      analysis.focus = aboveBaseline
+        ? "Priority: the content foundation is stronger than most — now automate the pipeline: turn job completions into review requests, project photos into social posts, and customer data into personalized follow-ups at scale."
+        : "Priority: connect content workflows to automation — turn job completions into review requests, project photos into social posts, and customer data into personalized follow-ups.";
     }
   }
 
@@ -668,7 +701,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
     } else if (bandKey === "progressing") {
       analysis.diagnosis = "The team has experimented with technology and shows openness. The next step is converting that openness into consistent, structured adoption.";
     } else {
-      analysis.diagnosis = "Technology adoption is strong, with the team actively using AI and digital tools. The focus is on deepening integration and expanding use cases.";
+      analysis.diagnosis = aboveBaseline
+        ? "Technology adoption is ahead of most businesses of this type and size. The team is already comfortable with AI and digital tools — the opportunity is deepening integration and capturing compound efficiency gains that less-prepared competitors cannot yet pursue."
+        : "Technology adoption is strong, with the team actively using AI and digital tools. The focus is on deepening integration and expanding use cases.";
     }
     if (signals.techEarlyAdopter) analysis.strength = "The team adopts technology early, providing a strong foundation for rapid AI implementation.";
     else if (signals.techComfortable) analysis.strength = "General comfort with new technology means adoption friction will be low when the right tools are introduced.";
@@ -688,7 +723,9 @@ function generateCategoryAnalysis(catKey, catScore, catBand, signals, industry) 
     if (signals.aiNone && signals.techResistant) analysis.focus = "Priority: start with a single, visible pain point. Choose a tool that solves a daily frustration in the first week — build trust before expanding.";
     else if (signals.aiNone) analysis.focus = "Priority: introduce one AI tool into one existing workflow. The goal is a first successful experience, not full-scale adoption.";
     else if (signals.aiExperimented) analysis.focus = "Priority: identify 1–2 workflows where AI becomes a permanent part of the process. Move from occasional use to embedded operation.";
-    else analysis.focus = "Priority: connect existing tools through workflow automation to eliminate manual transfer steps and unlock compound efficiency.";
+    else analysis.focus = aboveBaseline
+      ? "Priority: the technology foundation is stronger than most — now connect existing tools through end-to-end workflow automation to unlock the compound efficiency gains that this readiness level makes possible."
+      : "Priority: connect existing tools through workflow automation to eliminate manual transfer steps and unlock compound efficiency.";
   }
 
   return analysis;
@@ -1208,7 +1245,7 @@ export function buildEngineOutput(answers, calculatedScores, clientTools, _legac
   CATEGORY_KEYS.forEach(key => {
     const score = categoryScores[key]?.score ?? 0;
     categoryAnalyses[key] = generateCategoryAnalysis(
-      key, score, categoryBands[key], signals, signals.industry
+      key, score, categoryBands[key], signals, signals.industry, benchmark.categories[key]
     );
   });
 

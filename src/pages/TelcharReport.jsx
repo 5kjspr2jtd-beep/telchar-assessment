@@ -14,7 +14,7 @@ import HamburgerMenu from "../components/HamburgerMenu";
 // Page components read these module-level variables directly.
 // They are set once per render cycle in the App component via getReportData().
 let CO, IND, CLIENT_TOOLS, SCORES, WINS, STACK, DATE, BENCH, SUMMARY_NARRATIVE, CATEGORY_ANALYSES, ACTION_PLAN, RISKS, ROADMAP;
-const BENCHMARK_NOTE = "Reference baselines represent modeled expectations for businesses of similar industry and size, informed by published research, recognized maturity frameworks, and practitioner analysis. Baselines are refined over time as more assessment data is collected.";
+const BENCHMARK_NOTE = "Reference baselines provide comparison context for businesses of similar industry and size. They are not a ceiling on performance or potential value.";
 
 
 // ── Tier gates ───────────────────────────────────────────────
