@@ -1165,7 +1165,7 @@ export default function App({ initialTier = "free", demo = false }) {
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
           )}
-          {navMobile ? "" : (pdfBusy ? "Generating…" : "PDF")}
+          {navMobile ? (pdfBusy ? "…" : "") : (pdfBusy ? "Generating…" : "PDF")}
         </button>
 
         {/* Divider + Hamburger nav */}

@@ -44,7 +44,7 @@ function AppPage({ children }) {
         height: 52, flexShrink: 0,
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: mobile ? "0 20px" : "0 36px",
-        position: "relative", zIndex: 1,
+        position: "relative", zIndex: 10,
       }}>
         {/* Left: Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

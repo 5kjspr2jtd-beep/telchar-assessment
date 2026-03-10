@@ -1917,6 +1917,14 @@ export default function TelcharLandingPage() {
   const navigate = useNavigate();
   const handleCTA = () => navigate('/assessment');
 
+  // Scroll to #about on mount when arriving from another page
+  useEffect(() => {
+    if (window.location.hash === "#about") {
+      const el = document.getElementById("about");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <>
       <style>{`
