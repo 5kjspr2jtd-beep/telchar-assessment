@@ -57,7 +57,7 @@ function AppPage({ children }) {
             letterSpacing: "0.22em", textTransform: "uppercase",
             color: "rgba(255,255,255,0.4)",
             whiteSpace: "nowrap",
-          }}>Implementation Support Application</span>}
+          }}>Advisory Services Application</span>}
           <HamburgerMenu currentPage="Advisory Services" navHeight={52} />
         </div>
       </div>
@@ -818,13 +818,13 @@ export default function TelcharImplementation() {
             {/* ── INTRO ── */}
           {step === 0 && (
             <div style={{ maxWidth: 680, margin: "0 auto" }}>
-              <SecLabel color={P.blue2}>Implementation Support</SecLabel>
+              <SecLabel color={P.blue2}>Advisory Services</SecLabel>
               <h1 style={{
                 fontFamily: FONT, fontSize: "clamp(28px,5vw,40px)",
                 fontWeight: 300, color: TEXT.primary, margin: "0 0 24px 0",
                 lineHeight: 1.2,
               }}>
-                Apply for Implementation Support
+                Apply for Advisory Services
               </h1>
               <Rule diamond style={{ marginBottom: 32 }} />
 

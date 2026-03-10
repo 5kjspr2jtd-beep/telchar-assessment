@@ -923,8 +923,8 @@ function ScoreDisplay({ score, label, isOverall = false }) {
 // DIAMOND STEPPER
 // ============================================================
 function DiamondStepper({ current, total }) {
-  const SECTION_TITLES = ["Your Business", "Daily Operations", "Goals and Direction", "Systems and Visibility", "Technology", "Your Report"];
-  const SECTION_TITLES_SHORT = ["Business", "Operations", "Goals", "Systems", "Technology", "Report"];
+  const SECTION_TITLES = ["Your Business", "Daily Operations", "Goals and Direction", "Systems and Visibility", "Technology"];
+  const SECTION_TITLES_SHORT = ["Business", "Operations", "Goals", "Systems", "Technology"];
   const currentQuestion = QUESTIONS[current];
   const currentSection = currentQuestion ? currentQuestion.section : 1;
   const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 640 : false);
@@ -946,7 +946,7 @@ function DiamondStepper({ current, total }) {
               {i < titles.length - 1 && (
                 <div style={{ position: "absolute", left: "50%", right: 0, top: "50%", height: 1, background: isCompleted ? "#2563eb" : "rgba(255,255,255,0.07)", transform: "translateY(-50%)" }} />
               )}
-              <svg width="10" height="10" viewBox="0 0 10 10" style={{ flexShrink: 0, display: "block", position: "relative", zIndex: 1 }}>
+              <svg width="12" height="12" viewBox="-1 -1 12 12" style={{ flexShrink: 0, display: "block", position: "relative", zIndex: 1 }}>
                 <polygon points="5,0 10,5 5,10 0,5"
                   fill={isCompleted || isActive ? "#2563eb" : "transparent"}
                   stroke={isCompleted || isActive ? "#2563eb" : P.muted}
@@ -961,7 +961,7 @@ function DiamondStepper({ current, total }) {
           const sectionNum = i + 1;
           const isActive = currentSection === sectionNum;
           return (
-            <div key={i} style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: isActive ? "#ffffff" : "rgba(255,255,255,0.5)", fontFamily: FONT, textAlign: "center", ...(isMobile ? { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } : {}), padding: "0 2px" }}>
+            <div key={i} style={{ fontSize: isMobile ? 10 : 13, fontWeight: 600, letterSpacing: isMobile ? "0.04em" : "0.08em", textTransform: "uppercase", color: isActive ? "#ffffff" : "rgba(255,255,255,0.5)", fontFamily: FONT, textAlign: "center", ...(isMobile ? { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } : {}), padding: "0 2px" }}>
               {title}
             </div>
           );
@@ -1720,7 +1720,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
               The Telchar AI Readiness Index{"\u2122"} &middot; Scoring methodology proprietary to Telchar AI
             </p>
             <p style={{ marginTop: 12 }}>
-              <span onClick={() => { alert("In production: routes to implementation support page."); }} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>Learn about implementation support</span>
+              <a href="/apply" style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, textDecoration: "underline", textUnderlineOffset: "3px" }}>Learn about implementation support</a>
             </p>
             <div style={{ marginTop: 20 }}>
               <LogoMark />

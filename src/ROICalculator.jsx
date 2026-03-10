@@ -345,7 +345,7 @@ export default function ROICalculator({ embedded = false }) {
           {!mob && <Rule diamond style={{ marginTop: 40, marginBottom: 28 }} />}
           {mob && <div style={{ height: 28 }} />}
 
-          <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 0, lineHeight: 1.5 }}>No email required. No data stored. Results update live.</p>
+          <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 0, lineHeight: 1.5, textAlign: "center" }}>No email required. No data stored. Results update live.</p>
         </div>
       )}
 

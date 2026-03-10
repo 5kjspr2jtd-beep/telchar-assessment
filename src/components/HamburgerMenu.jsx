@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { TELCHAR as P, FONT } from "../design/telcharDesign";
 
@@ -15,23 +15,37 @@ const linkStyle = {
   fontFamily: FONT,
   fontSize: 13,
   fontWeight: 400,
-  color: P.dim,
+  color: "rgba(255,255,255,0.7)",
   letterSpacing: "0.04em",
   textDecoration: "none",
+  display: "block",
+  padding: "4px 0",
+  transition: "color 0.15s ease",
 };
 
 const mutedStyle = {
   ...linkStyle,
-  opacity: 0.35,
+  opacity: 0.3,
   pointerEvents: "none",
   cursor: "default",
 };
 
-export default function HamburgerMenu({ currentPage, navHeight = 64 }) {
+export default function HamburgerMenu({ currentPage }) {
   const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div ref={menuRef} style={{ position: "relative" }}>
       {/* Hamburger button */}
       <button
         onClick={() => setOpen(!open)}
@@ -52,21 +66,23 @@ export default function HamburgerMenu({ currentPage, navHeight = 64 }) {
         <span style={{ display: "block", width: 20, height: 2, background: P.dim, borderRadius: 1, transition: "all 0.2s ease", transform: open ? "rotate(-45deg) translate(3px, -3px)" : "none" }} />
       </button>
 
-      {/* Dropdown */}
+      {/* Dropdown — anchored to top-right of button */}
       {open && (
         <div
           style={{
-            position: "fixed",
-            top: navHeight,
-            left: 0,
-            right: 0,
-            background: "rgb(8,15,30)",
-            borderTop: "1px solid rgba(255,255,255,0.07)",
-            padding: "16px 20px",
+            position: "absolute",
+            top: "calc(100% + 10px)",
+            right: -8,
+            minWidth: 200,
+            background: "rgb(18,26,44)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 10,
+            padding: "14px 20px",
             display: "flex",
             flexDirection: "column",
-            gap: 14,
-            zIndex: 999,
+            gap: 10,
+            zIndex: 9999,
+            boxShadow: "0 8px 32px rgba(0,0,0,0.45)",
           }}
         >
           {MENU_ITEMS.map((item) => {

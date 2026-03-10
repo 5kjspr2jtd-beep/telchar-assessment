@@ -16,6 +16,7 @@ import {
   OPTION_CARD,
 } from '../design/telcharDesign';
 import ROICalculator from '../ROICalculator';
+import HamburgerMenu from '../components/HamburgerMenu';
 
 // ─────────────────────────────────────────────────────────────
 // TELCHAR AI · Landing Page
@@ -63,7 +64,6 @@ function heroBarColor(score) {
 function HeroSection({ onCTA }) {
   const [visible, setVisible] = useState(false);
   const isMobile = useIsMobile();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [profileIndex, setProfileIndex] = useState(2); // start on "AI Ready"
   const [cardVisible, setCardVisible] = useState(true);
 
@@ -237,48 +237,11 @@ function HeroSection({ onCTA }) {
             >
               Start Free
             </button>
-            {isMobile && (
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                aria-label="Menu"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 6,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  gap: 4,
-                }}
-              >
-                <span style={{ display: 'block', width: 20, height: 2, background: P.dim, borderRadius: 1, transition: 'all 0.2s ease', transform: menuOpen ? 'rotate(45deg) translate(3px, 3px)' : 'none' }} />
-                <span style={{ display: 'block', width: 20, height: 2, background: P.dim, borderRadius: 1, transition: 'all 0.2s ease', opacity: menuOpen ? 0 : 1 }} />
-                <span style={{ display: 'block', width: 20, height: 2, background: P.dim, borderRadius: 1, transition: 'all 0.2s ease', transform: menuOpen ? 'rotate(-45deg) translate(3px, -3px)' : 'none' }} />
-              </button>
-            )}
+            <HamburgerMenu currentPage="Back Home" />
           </div>
         </div>
 
-        {/* Mobile dropdown menu */}
-        {isMobile && menuOpen && (
-          <div
-            style={{
-              background: 'rgb(8,15,30)',
-              borderTop: '1px solid rgba(255,255,255,0.07)',
-              padding: '16px 20px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 14,
-            }}
-          >
-            <Link to="/assessment" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>Diagnostic</Link>
-            <a href="/?page=roi" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>ROI Calculator</a>
-            <Link to="/report?demo=true" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>Sample Report</Link>
-            <a href="#about" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>About</a>
-            <Link to="/apply" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>Advisory Services</Link>
-          </div>
-        )}
+        {/* Dropdown handled by HamburgerMenu component */}
       </nav>
 
       {/* Hero content — two-column layout */}
@@ -1901,7 +1864,7 @@ function Footer() {
               textDecoration: 'none',
             }}
           >
-            Reports
+            Sample Report
           </Link>
           <a
             href="/?page=roi"
