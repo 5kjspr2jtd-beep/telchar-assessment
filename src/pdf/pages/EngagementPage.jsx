@@ -118,6 +118,17 @@ export default function EngagementPage({ data }) {
         }}>
           {REPORT_NOTES.engagementDisclaimer}
         </Text>
+
+        {/* IP protection */}
+        <Text style={{
+          fontFamily: FONT, fontSize: 7, fontWeight: 300,
+          color: C.mutedWhite, lineHeight: 1.5,
+          textAlign: "center",
+          maxWidth: 400,
+          marginTop: 20,
+        }}>
+          Telchar AI proprietary material. This report and framework may not be reproduced or redistributed without written permission.
+        </Text>
       </View>
 
       <PdfFooter dark />

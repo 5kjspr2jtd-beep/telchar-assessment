@@ -110,7 +110,7 @@ function SegScale({ score, compact }) {
 
 
 // ── Page shell ───────────────────────────────────────────────
-function ReportPage({ children, pg, total, sectionTitle }) {
+function ReportPage({ children, pg, total }) {
   const w = useWidth();
   const mobile = w < 640;
   return (
@@ -142,33 +142,7 @@ function ReportPage({ children, pg, total, sectionTitle }) {
         backgroundSize: "60px 60px"
       }} />
 
-      {/* Top nav bar — hidden on mobile since App shell nav handles navigation */}
-      {!mobile && (
-      <div style={{
-        position: "sticky", top: 52, zIndex: 90,
-        background: "rgba(8,15,30,0.9)", backdropFilter: "blur(20px)",
-        borderBottom: "1px solid rgba(255,255,255,0.07)",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 28px", height: 52,
-      }}>
-        {/* Left: logo + section title */}
-        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-          <img src="/white_decal.svg" style={{ height: 18, width: "auto", flexShrink: 0 }} alt="Telchar AI" />
-          {sectionTitle && (
-            <span style={{ fontFamily:FONT, fontSize:12, color:P.muted, fontWeight:400, letterSpacing:"0.04em" }}>{sectionTitle}</span>
-          )}
-        </div>
-
-        {/* Center: company + industry */}
-        <div style={{ textAlign:"center", position:"absolute", left:"50%", transform:"translateX(-50%)" }}>
-          <div style={{ fontFamily:FONT, fontSize:13, fontWeight:500, color:P.white, lineHeight:1.2 }}>{CO}</div>
-          <div style={{ fontFamily:FONT, fontSize:12, color:P.dim }}>{IND}</div>
-        </div>
-
-        {/* Right: empty (tier tabs + counter handled in App shell) */}
-        <div/>
-      </div>
-      )}
+      {/* Inner page nav removed — global App shell nav handles branding + navigation */}
 
       {/* Content area */}
       <div style={{ flex:1, padding:mobile?"28px 20px":"48px 48px 0", position:"relative", zIndex:10 }}>
@@ -203,13 +177,13 @@ function Paywall({ onUpgrade }) {
       padding: "24px 28px",
       marginTop: 32,
     }}>
-      <div style={{ fontFamily:FONT, fontSize:11, color:P.blue2, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:10 }}>Full Report — $150</div>
-      <p style={{ fontFamily:FONT, fontSize:13, color:P.dim, fontWeight:300, lineHeight:1.7, margin:"0 0 14px" }}>Unlock all priority improvements, 30-day action plan, category analysis, implementation roadmap, risk analysis, and tool recommendations.</p>
+      <div style={{ fontFamily:FONT, fontSize:11, color:P.blue2, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:10 }}>AI Action Plan — $150</div>
+      <p style={{ fontFamily:FONT, fontSize:13, color:P.dim, fontWeight:300, lineHeight:1.7, margin:"0 0 14px" }}>Unlock all priority improvements, 30-day action plan, 90-day roadmap, deep category analysis, risk guidance, tool recommendations, and a downloadable branded PDF.</p>
       <button onClick={onUpgrade} style={{
         fontFamily:FONT, width:280, height:48, display:"flex", alignItems:"center", justifyContent:"center",
         background:"#2563eb", color:"#fff", fontSize:13, fontWeight:600,
         letterSpacing:"0.08em", textTransform:"uppercase", border:"none", cursor:"pointer", borderRadius:8, margin:"0 auto",
-      }}>Unlock Full Report</button>
+      }}>Unlock AI Action Plan</button>
     </div>
   );
 }
@@ -344,7 +318,7 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
   const interp  = `A score of ${SCORES.overall} places ${CO} in the ${scoreTier(SCORES.overall)} tier, ${delta >= 0 ? delta + " points above" : Math.abs(delta) + " points below"} the SMB benchmark of ${BENCHMARK}. ${SCORES.overall < 65 ? "The organization has established operational infrastructure but carries identifiable automation gaps across scheduling, reporting, and customer follow-up." : "The organization demonstrates strong operational foundations with clear opportunity for targeted AI implementation."} ${lowest2} represent the most direct path to measurable improvement within a structured 90-day window.`;
 
   return (
-    <ReportPage pg={pg} total={total} sectionTitle="Score Summary">
+    <ReportPage pg={pg} total={total}>
       {/* Section 1: Overall Score */}
       <div style={{ display:desktop?"grid":"block", gridTemplateColumns:desktop?"200px 1fr":undefined, gap:desktop?52:0, marginBottom:36 }}>
 
@@ -440,7 +414,7 @@ function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
   const visibleWins = (!demo && tier === "free") ? WINS.slice(0,1) : WINS;
 
   return (
-    <ReportPage pg={pg} total={total} sectionTitle="Priority Improvements">
+    <ReportPage pg={pg} total={total}>
       <SecLabel>Priority improvement areas</SecLabel>
       <div style={{ fontFamily:FONT, fontSize:mobile?13:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:28 }}>
         Three recommended starting points. Each requires setup, configuration, and testing. Timelines depend on your team's capacity and technical comfort.
@@ -599,7 +573,7 @@ function PageActionPlan({ pg, total }) {
   ];
 
   return (
-    <ReportPage pg={pg} total={total} sectionTitle="30-Day Action Plan">
+    <ReportPage pg={pg} total={total}>
       <SecLabel>30-Day action plan</SecLabel>
       <p style={{ fontFamily:FONT, fontSize:mobile?13:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:28 }}>
         A practical first-month operating plan built from your top three priorities. Each block has a clear objective, concrete actions, and expected outcome. This plan feeds directly into the full 90-day roadmap.
@@ -674,7 +648,7 @@ function PageCategory({ catKey, pg, total }) {
   const guidance = getCategoryGuidance(catKey);
 
   return (
-    <ReportPage pg={pg} total={total} sectionTitle="Category Analysis">
+    <ReportPage pg={pg} total={total}>
       <SecLabel>Category analysis</SecLabel>
 
       {/* Category header row */}
@@ -808,7 +782,7 @@ function PageRoadmap({ pg, total }) {
   ];
 
   return (
-    <ReportPage pg={pg} total={total} sectionTitle="90-Day Roadmap">
+    <ReportPage pg={pg} total={total}>
       <SecLabel>90-Day implementation roadmap</SecLabel>
       <p style={{ fontFamily:FONT, fontSize:mobile?13:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:32 }}>
         Structured as five progressive phases: setup, pilot, expansion, stabilization, and measurement. Each phase builds on the prior without disrupting operational continuity. Implementation is scoped, milestone-driven, and delivered by Telchar AI in collaboration with your team.
@@ -864,7 +838,7 @@ function PageRisk({ pg, total }) {
   ];
   const sCol = { High:P.red, Medium:P.amber, Low:P.green };
   return (
-    <ReportPage pg={pg} total={total} sectionTitle="Risk Analysis">
+    <ReportPage pg={pg} total={total}>
       <SecLabel>Risk analysis</SecLabel>
       <p style={{ fontFamily:FONT, fontSize:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:28 }}>
         Four implementation risks identified based on assessment findings. All are manageable within a structured engagement. None represent blockers.
@@ -908,7 +882,7 @@ function PageDataInfra({ pg, total }) {
       desc:"A lightweight dashboard (Looker Studio or equivalent, cost: $0) pulls from QuickBooks and Make data to provide a live view of business performance without manual compilation." },
   ];
   return (
-    <ReportPage pg={pg} total={total} sectionTitle="Data Infrastructure">
+    <ReportPage pg={pg} total={total}>
       <SecLabel>Data infrastructure plan</SecLabel>
       <p style={{ fontFamily:FONT, fontSize:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:28 }}>
         A four-layer data architecture built on tools already in use. No new software subscriptions beyond Make and Claude Pro. Total infrastructure cost under $30 per month.
@@ -949,7 +923,7 @@ function PageDataInfra({ pg, total }) {
 function PageEngagement({ pg, total }) {
   const navigate = useNavigate();
   return (
-    <ReportPage pg={pg} total={total} sectionTitle="Next Steps">
+    <ReportPage pg={pg} total={total}>
       <div style={{ maxWidth:720, margin:"0 auto" }}>
         {/* Eyebrow */}
         <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:"#4a80f5", marginBottom:16, fontFamily:FONT }}>

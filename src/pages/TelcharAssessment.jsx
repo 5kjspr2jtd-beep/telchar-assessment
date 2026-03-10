@@ -22,19 +22,11 @@ const INDUSTRIES = [
 ];
 
 const QUESTIONS = [
-  // Section A - Setup
-  {
-    id: "company_name",
-    section: 1,
-    sectionTitle: "Your Business",
-    label: "What is your company name?",
-    type: "text",
-    required: true,
-    placeholder: "Enter your company name",
-  },
+  // Section A - Your Business (fast taps, low friction)
   {
     id: "industry",
     section: 1,
+    sectionTitle: "Your Business",
     label: "What industry are you in?",
     type: "select",
     required: true,
@@ -51,32 +43,17 @@ const QUESTIONS = [
     options: ["Just me", "2 to 4", "5 to 10", "11 to 25", "26 to 50", "51 to 100", "100+"],
     autoAdvance: true,
   },
-  // Section B - Operational Friction
+  // Section B - Daily Operations
   {
     id: "admin_hours",
     section: 2,
-    sectionTitle: "Operational Friction",
+    sectionTitle: "Daily Operations",
     label: "How much time per week does your team spend on repetitive admin tasks like data entry, invoicing, follow-ups, or reporting?",
     type: "select",
     required: true,
     autoAdvance: true,
     scoring: { category: "data", scores: { 0: 4, 1: 3, 2: 2, 3: 1, 4: 1 } },
     options: ["Less than 5 hours", "5 to 15 hours", "15 to 30 hours", "30+ hours", "No idea"],
-  },
-  {
-    id: "customer_intake",
-    section: 2,
-    label: "How do you currently manage customer inquiries or intake?",
-    type: "select",
-    required: true,
-    autoAdvance: true,
-    scoring: { category: "operations", scores: { 0: 1, 1: 4, 2: 2, 3: 1 } },
-    options: [
-      "Phone/email manually",
-      "A CRM or intake system",
-      "A mix of both",
-      "We don't have a defined process",
-    ],
   },
   {
     id: "scheduling",
@@ -94,88 +71,25 @@ const QUESTIONS = [
     ],
   },
   {
-    id: "sales_process",
+    id: "customer_intake",
     section: 2,
-    label: "What does your sales process look like?",
+    label: "How do you currently manage customer inquiries or intake?",
     type: "select",
     required: true,
     autoAdvance: true,
-    scoring: { category: "sales", scores: { 0: 1, 1: 2, 2: 3, 3: 4 } },
+    scoring: { category: "operations", scores: { 0: 1, 1: 4, 2: 2, 3: 1 } },
     options: [
-      "We respond when people reach out",
-      "We have a basic follow-up process",
-      "We have a structured pipeline with stages",
-      "We use a CRM to manage everything",
+      "Phone/email manually",
+      "A CRM or intake system",
+      "A mix of both",
+      "We don't have a defined process",
     ],
   },
-  // Section C - Visibility and Systems
-  {
-    id: "performance_tracking",
-    section: 3,
-    sectionTitle: "Visibility and Systems",
-    label: "How do you currently track business performance (revenue, costs, customer satisfaction)?",
-    type: "select",
-    required: true,
-    autoAdvance: true,
-    scoring: { category: "data", scores: { 0: 2, 1: 3, 2: 4, 3: 1 } },
-    options: [
-      "Spreadsheets",
-      "Accounting software like QuickBooks",
-      "A dashboard or BI tool",
-      "We don't track this consistently",
-    ],
-  },
-  {
-    id: "customer_acquisition",
-    section: 3,
-    label: "How do your customers typically find you?",
-    type: "multiselect",
-    required: true,
-    scoring: { category: "sales" },
-    options: [
-      "Word of mouth",
-      "Social media",
-      "Paid ads",
-      "Our website",
-      "Referral partners",
-      "We're not sure",
-    ],
-  },
-  {
-    id: "knowledge_management",
-    section: 3,
-    label: "How are internal documents, SOPs, or company knowledge stored and shared?",
-    type: "select",
-    required: true,
-    autoAdvance: true,
-    scoring: { category: "content", scores: { 0: 1, 1: 2, 2: 3, 3: 4 } },
-    options: [
-      "In people's heads",
-      "Shared drives or folders with no real structure",
-      "A wiki or knowledge base",
-      "We have documented and organized systems",
-    ],
-  },
-  {
-    id: "content_creation",
-    section: 3,
-    label: "How do you handle content creation (social media, marketing, proposals)?",
-    type: "select",
-    required: true,
-    autoAdvance: true,
-    scoring: { category: "content", scores: { 0: 2, 1: 3, 2: 3, 3: 1 } },
-    options: [
-      "We do it ourselves when we have time",
-      "We have someone dedicated to it",
-      "We outsource it",
-      "We don't do much of this",
-    ],
-  },
-  // Section D - Technology Readiness
+  // Section C - Goals and Direction
   {
     id: "growth_priority",
-    section: 4,
-    sectionTitle: "Technology and Direction",
+    section: 3,
+    sectionTitle: "Goals and Direction",
     label: "What is your primary focus for the next 12 months?",
     type: "multiselect",
     required: true,
@@ -192,7 +106,7 @@ const QUESTIONS = [
   },
   {
     id: "revenue_focus",
-    section: 4,
+    section: 3,
     label: "Is this focused on new customer acquisition or expanding existing accounts?",
     type: "select",
     required: true,
@@ -206,7 +120,7 @@ const QUESTIONS = [
   },
   {
     id: "workload_focus",
-    section: 4,
+    section: 3,
     label: "Is this primarily administrative time or delivery capacity?",
     type: "select",
     required: true,
@@ -220,7 +134,7 @@ const QUESTIONS = [
   },
   {
     id: "exit_stage",
-    section: 4,
+    section: 3,
     label: "If your goal is preparing for an exit, what stage are you in?",
     type: "select",
     required: true,
@@ -234,8 +148,88 @@ const QUESTIONS = [
     ],
   },
   {
-    id: "tech_comfort",
+    id: "sales_process",
+    section: 3,
+    label: "What does your sales process look like?",
+    type: "select",
+    required: true,
+    autoAdvance: true,
+    scoring: { category: "sales", scores: { 0: 1, 1: 2, 2: 3, 3: 4 } },
+    options: [
+      "We respond when people reach out",
+      "We have a basic follow-up process",
+      "We have a structured pipeline with stages",
+      "We use a CRM to manage everything",
+    ],
+  },
+  // Section D - Systems and Visibility
+  {
+    id: "performance_tracking",
     section: 4,
+    sectionTitle: "Systems and Visibility",
+    label: "How do you currently track business performance (revenue, costs, customer satisfaction)?",
+    type: "select",
+    required: true,
+    autoAdvance: true,
+    scoring: { category: "data", scores: { 0: 2, 1: 3, 2: 4, 3: 1 } },
+    options: [
+      "Spreadsheets",
+      "Accounting software like QuickBooks",
+      "A dashboard or BI tool",
+      "We don't track this consistently",
+    ],
+  },
+  {
+    id: "knowledge_management",
+    section: 4,
+    label: "How are internal documents, SOPs, or company knowledge stored and shared?",
+    type: "select",
+    required: true,
+    autoAdvance: true,
+    scoring: { category: "content", scores: { 0: 1, 1: 2, 2: 3, 3: 4 } },
+    options: [
+      "In people's heads",
+      "Shared drives or folders with no real structure",
+      "A wiki or knowledge base",
+      "We have documented and organized systems",
+    ],
+  },
+  {
+    id: "content_creation",
+    section: 4,
+    label: "How do you handle content creation (social media, marketing, proposals)?",
+    type: "select",
+    required: true,
+    autoAdvance: true,
+    scoring: { category: "content", scores: { 0: 2, 1: 3, 2: 3, 3: 1 } },
+    options: [
+      "We do it ourselves when we have time",
+      "We have someone dedicated to it",
+      "We outsource it",
+      "We don't do much of this",
+    ],
+  },
+  {
+    id: "customer_acquisition",
+    section: 4,
+    label: "How do your customers typically find you?",
+    type: "multiselect",
+    required: true,
+    scoring: { category: "sales" },
+    options: [
+      "Word of mouth",
+      "Social media",
+      "Paid ads",
+      "Our website",
+      "Referral partners",
+      "We're not sure",
+    ],
+  },
+  // Section E - Technology
+  {
+    id: "tech_comfort",
+    section: 5,
+    sectionTitle: "Technology",
     label: "How would you rate your team's comfort level with adopting new technology?",
     type: "select",
     required: true,
@@ -245,7 +239,7 @@ const QUESTIONS = [
   },
   {
     id: "ai_experience",
-    section: 4,
+    section: 5,
     label: "Have you tried using any AI tools in your business? (ChatGPT, Copilot, automation tools, etc.)",
     type: "select",
     required: true,
@@ -258,11 +252,19 @@ const QUESTIONS = [
       "AI is already embedded in our operations",
     ],
   },
-  // Final Gate - Personalization (after all diagnostic questions)
+  // Section F - Your Report (identity + contact gate)
+  {
+    id: "company_name",
+    section: 6,
+    sectionTitle: "Your Report",
+    label: "What is your company name?",
+    type: "text",
+    required: true,
+    placeholder: "Enter your company name",
+  },
   {
     id: "contact_name",
-    section: 5,
-    sectionTitle: "Your Scorecard",
+    section: 6,
     isGate: true,
     label: "What is your name?",
     type: "text",
@@ -271,7 +273,7 @@ const QUESTIONS = [
   },
   {
     id: "contact_email",
-    section: 5,
+    section: 6,
     isGate: true,
     label: "What is your email?",
     type: "email",
@@ -579,7 +581,7 @@ function getAcquisitionContent(answers) {
 
 function getDynamicCTA(score) {
   if (score < 50) return { heading: "You have structural inefficiency. That means immediate opportunity", desc: "Most of your operations are absorbing cost that AI can eliminate. A 30-minute call identifies the highest-value starting point and gives you a clear path forward." };
-  if (score < 70) return { heading: "Solid base. Measurable leakage", desc: "Your business runs, but time and money are escaping through gaps AI can close. We will review your scorecard, rank the leakage by impact, and map a realistic timeline." };
+  if (score < 70) return { heading: "Solid base. Measurable leakage", desc: "Your business runs, but time and money are escaping through gaps AI can close. We will review your results, rank the leakage by impact, and map a realistic timeline." };
   if (score < 85) return { heading: "Organized but not optimized", desc: "Your operations are well-structured. The next step is targeted AI implementation that compounds what is already working. We will identify the specific moves that deliver the most value at your stage." };
   return { heading: "Positioned to compound", desc: "Your AI maturity is ahead of most businesses your size. A focused conversation identifies advanced applications and optimization strategies that match your level." };
 }
@@ -869,7 +871,7 @@ function NavBar({ onStart }) {
           onMouseOver={e => e.currentTarget.style.background = P.blue2}
           onMouseOut={e => e.currentTarget.style.background = "#2563eb"}
         >
-          Start Free Assessment
+          Start Free Diagnostic
         </button>
       )}
     </div>
@@ -933,8 +935,8 @@ function ScoreDisplay({ score, label, isOverall = false }) {
 // DIAMOND STEPPER
 // ============================================================
 function DiamondStepper({ current, total }) {
-  const SECTION_TITLES = ["Your Business", "Operational Friction", "Visibility and Systems", "Technology and Direction", "Your Scorecard"];
-  const SECTION_TITLES_SHORT = ["Business", "Friction", "Visibility", "Technology", "Scorecard"];
+  const SECTION_TITLES = ["Your Business", "Daily Operations", "Goals and Direction", "Systems and Visibility", "Technology", "Your Report"];
+  const SECTION_TITLES_SHORT = ["Business", "Operations", "Goals", "Systems", "Technology", "Report"];
   const currentQuestion = QUESTIONS[current];
   const currentSection = currentQuestion ? currentQuestion.section : 1;
   const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 640 : false);
@@ -1017,7 +1019,7 @@ function LandingPage({ onStart }) {
         }}>
           {/* Eyebrow */}
           <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.blue2, marginBottom: 16, fontFamily: FONT }}>
-            AI Readiness Assessment
+            AI Readiness Diagnostic
           </div>
 
           {/* H1 */}
@@ -1030,13 +1032,13 @@ function LandingPage({ onStart }) {
 
           {/* Sub paragraph */}
           <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, lineHeight: 1.7, marginBottom: 12, maxWidth: 460, marginLeft: "auto", marginRight: "auto" }}>
-            Answer a few questions about how you operate today and get a personalized scorecard with specific recommendations.
+            Answer a few questions about how you operate today and get a personalized readiness report with specific recommendations.
           </p>
 
           {/* Glass highlight block */}
           <div style={{ ...GLASS_CARD, maxWidth: 520, marginLeft: "auto", marginRight: "auto", marginBottom: 36, padding: "20px 28px", textAlign: "left" }}>
             <p style={{ fontFamily: FONT, fontSize: 14, fontWeight: 300, color: "rgba(255,255,255,0.7)", lineHeight: 1.7, margin: 0 }}>
-              Most AI assessments are built for enterprise companies with massive budgets and dedicated IT teams. This one is built for you. We help small and mid-size businesses cut through the noise and find the AI opportunities that actually make sense for your operation.
+              Most AI diagnostics are built for enterprise companies with massive budgets and dedicated IT teams. This one is built for small business owners and executives who want to cut through the noise and find the AI opportunities that actually make sense for their operation.
             </p>
           </div>
 
@@ -1050,7 +1052,7 @@ function LandingPage({ onStart }) {
             onMouseOver={e => e.currentTarget.style.background = P.blue2}
             onMouseOut={e => e.currentTarget.style.background = "#2563eb"}
           >
-            Start Your Assessment
+            Start Your Diagnostic
           </button>
 
           {/* Stats row */}
@@ -1071,7 +1073,7 @@ function LandingPage({ onStart }) {
           {/* Disclaimer */}
           <div style={{ marginTop: 40, padding: "16px 24px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.6, margin: 0 }}>
-              Your responses are confidential. We do not sell, share, or use your data for any purpose beyond delivering your assessment and improving our services.
+              Your responses are confidential. We do not sell, share, or use your data for any purpose beyond delivering your results and improving our services.
             </p>
           </div>
         </div>
@@ -1230,7 +1232,7 @@ function AssessmentFlow({ onComplete }) {
                     You're almost done.
                   </div>
                   <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 24, lineHeight: 1.5 }}>
-                    Where should we send your full scorecard?
+                    Where should we send your report?
                   </p>
                 </>
               )}
@@ -1502,13 +1504,13 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
           </div>
           {freeInsight && (
             <div style={{ marginTop: 16, padding: "20px 24px", background: "rgba(37,99,235,0.06)", borderLeft: "3px solid #2563eb", borderRadius: 4 }}>
-              <div style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginBottom: 8 }}>Detailed execution steps and tool recommendations available in the full report.</div>
+              <div style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginBottom: 8 }}>Full analysis, tool recommendations, and implementation guidance available in the AI Action Plan.</div>
               <button onClick={onUpgrade}
                 style={{ ...CTA.ghost, margin: "12px auto 0", fontSize: 12, padding: "10px 20px" }}
                 onMouseOver={e => e.currentTarget.style.borderColor = P.blue}
                 onMouseOut={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"}
               >
-                Unlock Full Report
+                Unlock AI Action Plan
               </button>
             </div>
           )}
@@ -1639,7 +1641,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
                 {answers.company_name ? `${answers.company_name}: AI Readiness Report` : "AI Readiness Report"}
               </h2>
               <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 20, lineHeight: 1.5 }}>
-                {isPro ? "Full breakdown ranked by impact. Your weakest areas appear first." : "Your top 2 priority areas ranked by impact. Unlock detailed execution steps and full action plan."}
+                {isPro ? "Full breakdown ranked by impact. Your weakest areas appear first." : "Your top priority areas ranked by impact. Upgrade to the AI Action Plan for all improvements, action plans, and roadmap."}
               </p>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {generatePDFContent(answers, scores, quickWins).map((section, i) => (
@@ -1655,77 +1657,56 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
             {!isPro && (
               <div ref={pricingRef} style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", marginBottom: 32, borderLeft: pricingGlow ? "3px solid #2563eb" : "3px solid rgba(37,99,235,0.3)", transition: "border-color 0.6s ease" }}>
                 <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>
-                  You have clear opportunity. Choose how far you want to take it.
+                  Get the full AI Action Plan
                 </h3>
                 <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 28, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
-                  The free score shows where you stand. The next step determines how fast you move.
+                  Your free results show where you stand. The AI Action Plan shows what to do, in what order, with what tools.
                 </p>
 
-                <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.dim, marginBottom: 14, fontFamily: FONT }}>Recommended for businesses ready to implement</div>
+                <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.dim, marginBottom: 14, fontFamily: FONT }}>Full AI Action Plan</div>
                 <button onClick={handleAdvancedCheckout} disabled={advancedLoading}
                   style={{ ...CTA.style, background: advancedLoading ? P.muted : "#2563eb", cursor: advancedLoading ? "default" : "pointer", letterSpacing: "0.10em" }}
                   onMouseOver={e => { if (!advancedLoading) e.currentTarget.style.background = P.blue2; }}
                   onMouseOut={e => { if (!advancedLoading) e.currentTarget.style.background = "#2563eb"; }}
                 >
-                  {advancedLoading ? "Redirecting..." : "Get the 90-Day Execution Plan \u2013 $150"}
+                  {advancedLoading ? "Redirecting..." : "Unlock AI Action Plan \u2013 $150"}
                 </button>
-                <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Everything in the full report plus a structured 90-day roadmap with sequencing, KPIs, ownership guidance, and implementation pacing.</p>
-                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 8 }}>Without a structured roadmap, most teams delay action and lose momentum.</p>
-                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 6, fontStyle: "italic", maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>This roadmap is built from your assessment responses. More detailed and accurate inputs produce a stronger plan.</p>
-                <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 4 }}>Designed for execution. Not external research or bespoke consulting.</p>
+                <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Three priority improvements with tool recommendations, 30-day action plan, 90-day implementation roadmap, deep category analysis, risk and execution guidance, and a downloadable branded PDF.</p>
+                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 8, fontStyle: "italic", maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Generated from your assessment responses. More detailed inputs produce a stronger plan.</p>
                 <p style={{ marginTop: 10 }}>
-                  <span onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample 90-day roadmap</span>
+                  <span onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample report</span>
                 </p>
 
-                <div style={{ marginTop: 28, paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-                  <button onClick={handleCheckout} disabled={checkoutLoading}
-                    style={{ ...CTA.ghost, color: checkoutLoading ? P.muted : P.blue, borderColor: checkoutLoading ? "rgba(255,255,255,0.07)" : P.blue, cursor: checkoutLoading ? "default" : "pointer", letterSpacing: "0.10em" }}
-                    onMouseOver={e => { if (!checkoutLoading) e.currentTarget.style.background = "rgba(37,99,235,0.06)"; }}
-                    onMouseOut={e => { if (!checkoutLoading) e.currentTarget.style.background = "transparent"; }}
-                  >
-                    {checkoutLoading ? "Redirecting..." : "Unlock Full Report \u2013 $150"}
-                  </button>
-                  <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 10 }}>Detailed action steps and tool guidance you can execute immediately.</p>
-                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 4 }}>For teams who prefer to determine sequencing internally.</p>
-                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 6, fontStyle: "italic" }}>The quality of your report depends on the accuracy of the information provided in your assessment.</p>
-                  <p style={{ marginTop: 8 }}>
-                    <span onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample full report</span>
-                  </p>
-                </div>
-
                 <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>Full Report = What to do &nbsp;&nbsp;&middot;&nbsp;&nbsp; Advanced Plan = What to do, and in what order</p>
+                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>Secure checkout powered by Stripe.</p>
                 </div>
-                <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, marginTop: 16 }}>Secure checkout powered by Stripe.</p>
               </div>
             )}
 
             {isPro && !isAdvanced && (
               <div style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
-                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Pro Report Unlocked</h3>
-                <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your full AI Readiness Report with execution detail is available above.</p>
-                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 24, fontStyle: "italic" }}>This report is generated from your assessment responses. It does not include external company research.</p>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>AI Action Plan Unlocked</h3>
+                <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your priority improvements, category analysis, and tool recommendations are available above.</p>
+                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 24, fontStyle: "italic" }}>Generated from your assessment responses. Does not include external company research.</p>
                 <div style={{ paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.dim, marginBottom: 14, fontFamily: FONT }}>Recommended for businesses ready to implement</div>
+                  <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.dim, marginBottom: 14, fontFamily: FONT }}>Add the 90-day roadmap</div>
                   <button onClick={handleAdvancedCheckout} disabled={advancedLoading}
                     style={{ ...CTA.style, background: advancedLoading ? P.muted : "#2563eb", cursor: advancedLoading ? "default" : "pointer", letterSpacing: "0.10em" }}
                     onMouseOver={e => { if (!advancedLoading) e.currentTarget.style.background = P.blue2; }}
                     onMouseOut={e => { if (!advancedLoading) e.currentTarget.style.background = "#2563eb"; }}
                   >
-                    {advancedLoading ? "Redirecting..." : "Get the 90-Day Execution Plan \u2013 $150"}
+                    {advancedLoading ? "Redirecting..." : "Add 90-Day Roadmap"}
                   </button>
-                  <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Everything in the full report plus a structured 90-day roadmap with sequencing, KPIs, ownership guidance, and implementation pacing.</p>
-                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 8 }}>Without a structured roadmap, most teams delay action and lose momentum.</p>
+                  <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>A phased 90-day implementation sequence with milestones, risk analysis, data infrastructure guidance, and execution pacing.</p>
                 </div>
               </div>
             )}
 
             {isAdvanced && (
               <div style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
-                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Advanced Plan Unlocked</h3>
-                <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your complete AI Readiness Report with 90-day roadmap and implementation guidance is available above.</p>
-                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 16, fontStyle: "italic", maxWidth: 460, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>This plan is built from your self-reported inputs and does not include external company research or bespoke competitive analysis.</p>
-                <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>Limited consulting engagements are available by application for businesses that require hands-on implementation support.</p>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Full AI Action Plan Unlocked</h3>
+                <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your complete AI Action Plan — priority improvements, 30-day action plan, 90-day roadmap, category analysis, and implementation guidance — is available above.</p>
+                <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 16, fontStyle: "italic", maxWidth: 460, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Generated from your assessment responses. Does not include external company research.</p>
               </div>
             )}
 
@@ -1756,6 +1737,9 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
             <div style={{ marginTop: 20 }}>
               <LogoMark />
             </div>
+            <p style={{ fontFamily: FONT, fontSize: 10, fontWeight: 300, color: P.muted, marginTop: 12, letterSpacing: "0.02em", lineHeight: 1.5 }}>
+              &copy; {new Date().getFullYear()} Telchar AI. Proprietary framework, report methodology, and materials. No reproduction, redistribution, or commercial reuse without written permission.
+            </p>
           </div>
         </div>
       </div>
@@ -1778,7 +1762,7 @@ export default function TelcharAssessment() {
     if (page !== "assessment") return;
     const handleBeforeUnload = (e) => {
       e.preventDefault();
-      e.returnValue = "You are part way through the AI readiness assessment. Leaving now will lose your progress.";
+      e.returnValue = "You are part way through the AI readiness diagnostic. Leaving now will lose your progress.";
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);

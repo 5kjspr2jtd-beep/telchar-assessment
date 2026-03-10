@@ -26,8 +26,8 @@ export default function TelcharPdfDocument({ data }) {
     <Document
       title={`Telchar AI Report - ${data.co}`}
       author="Telchar AI"
-      subject="AI Readiness Assessment Report"
-      keywords="AI, readiness, assessment, automation"
+      subject="AI Readiness Diagnostic Report"
+      keywords="AI, readiness, diagnostic, automation"
     >
       {/* ── All tiers ── */}
       <CoverPage data={data} />

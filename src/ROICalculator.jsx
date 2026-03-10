@@ -691,7 +691,7 @@ export default function ROICalculator({ embedded = false }) {
             </button>
             <a href="/assessment"
               style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.blue, cursor: "pointer", borderBottom: `1px solid ${P.blueglow}`, textDecoration: "none", paddingBottom: 1, textAlign: "center" }}>
-              Take the AI Readiness Assessment
+              Take the AI Readiness Diagnostic
             </a>
             <span onClick={resetAll}
               style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, cursor: "pointer", borderBottom: "1px solid rgba(255,255,255,0.07)", paddingBottom: 1, textAlign: "center" }}>

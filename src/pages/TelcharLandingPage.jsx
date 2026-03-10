@@ -63,6 +63,7 @@ function heroBarColor(score) {
 function HeroSection({ onCTA }) {
   const [visible, setVisible] = useState(false);
   const isMobile = useIsMobile();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [profileIndex, setProfileIndex] = useState(2); // start on "AI Ready"
   const [cardVisible, setCardVisible] = useState(true);
 
@@ -147,14 +148,14 @@ function HeroSection({ onCTA }) {
             justifyContent: 'space-between',
             alignItems: 'center',
             height: 64,
-            padding: isMobile ? '0 20px' : '0 36px',
+            padding: isMobile ? '0 16px' : '0 36px',
             maxWidth: 1200,
             width: '100%',
             margin: '0 auto',
           }}
         >
           <LogoMark variant="header" />
-          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 16 : 28 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 28 }}>
             {!isMobile && (
               <>
                 <Link
@@ -171,6 +172,20 @@ function HeroSection({ onCTA }) {
                 >
                   Diagnostic
                 </Link>
+                <a
+                  href="/?page=roi"
+                  style={{
+                    fontFamily: FONT,
+                    fontSize: 12,
+                    fontWeight: 400,
+                    color: P.dim,
+                    letterSpacing: '0.04em',
+                    textDecoration: 'none',
+                    transition: 'color 0.15s ease',
+                  }}
+                >
+                  ROI Calculator
+                </a>
                 <Link
                   to="/report?demo=true"
                   style={{
@@ -205,11 +220,11 @@ function HeroSection({ onCTA }) {
               onClick={onCTA}
               style={{
                 fontFamily: FONT,
-                fontSize: 12,
+                fontSize: isMobile ? 11 : 12,
                 fontWeight: 600,
                 letterSpacing: '0.04em',
-                height: 36,
-                padding: '10px 24px',
+                height: isMobile ? 32 : 36,
+                padding: isMobile ? '8px 16px' : '10px 24px',
                 lineHeight: 1,
                 background: P.blue,
                 color: P.white,
@@ -222,8 +237,47 @@ function HeroSection({ onCTA }) {
             >
               Start Free
             </button>
+            {isMobile && (
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Menu"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 6,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  gap: 4,
+                }}
+              >
+                <span style={{ display: 'block', width: 20, height: 2, background: P.dim, borderRadius: 1, transition: 'all 0.2s ease', transform: menuOpen ? 'rotate(45deg) translate(3px, 3px)' : 'none' }} />
+                <span style={{ display: 'block', width: 20, height: 2, background: P.dim, borderRadius: 1, transition: 'all 0.2s ease', opacity: menuOpen ? 0 : 1 }} />
+                <span style={{ display: 'block', width: 20, height: 2, background: P.dim, borderRadius: 1, transition: 'all 0.2s ease', transform: menuOpen ? 'rotate(-45deg) translate(3px, -3px)' : 'none' }} />
+              </button>
+            )}
           </div>
         </div>
+
+        {/* Mobile dropdown menu */}
+        {isMobile && menuOpen && (
+          <div
+            style={{
+              background: 'rgb(8,15,30)',
+              borderTop: '1px solid rgba(255,255,255,0.07)',
+              padding: '16px 20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 14,
+            }}
+          >
+            <Link to="/assessment" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>Diagnostic</Link>
+            <a href="/?page=roi" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>ROI Calculator</a>
+            <Link to="/report?demo=true" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>Reports</Link>
+            <a href="#about" onClick={() => setMenuOpen(false)} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: P.dim, letterSpacing: '0.04em', textDecoration: 'none' }}>About</a>
+          </div>
+        )}
       </nav>
 
       {/* Hero content — two-column layout */}
@@ -1496,13 +1550,13 @@ function AboutSection() {
           fontFamily: FONT, fontSize: 15, fontWeight: 300, color: LIGHT_TEXT.secondary,
           lineHeight: 1.8, margin: '0 0 16px',
         }}>
-          Built by a senior management consultant with experience helping companies improve operations, technology, and execution.
+          Telchar AI was developed by an executive leader in management consulting with deep experience helping companies improve operations, technology, and execution.
         </p>
         <p style={{
           fontFamily: FONT, fontSize: 15, fontWeight: 300, color: LIGHT_TEXT.secondary,
           lineHeight: 1.8, margin: 0,
         }}>
-          Telchar AI exists to give small businesses a practical AI plan — without the cost, noise, and wasted effort of figuring it out alone or hiring expensive advisors.
+          It exists to give small businesses a practical AI plan without the cost, noise, and wasted effort of figuring it out alone or hiring expensive advisors.
         </p>
       </div>
     </section>
@@ -1556,35 +1610,39 @@ function FAQSection() {
   const faqs = [
     {
       q: 'Who is this built for?',
-      a: 'Small business owners and executives running companies with 5 to 100 employees. If you manage a team, have established operations, and want to understand where AI fits before spending money — this is built for you.',
+      a: 'Small business owners and executives at companies with 5 to 100 employees dealing with too much manual work, disconnected tools, weak visibility, or wasted time on admin. If you want a clearer plan for where AI can actually improve operations, this is built for you.',
+    },
+    {
+      q: 'What does the AI readiness score actually mean?',
+      a: 'Your score shows how prepared your business is to use AI where it matters. It reflects how your business runs today, where friction exists, and where the biggest opportunities are across five dimensions: Operations Efficiency, Sales & CX, Data Visibility, Content & Knowledge, and Technology Readiness.',
     },
     {
       q: 'What does the free diagnostic give me?',
-      a: 'Your overall AI readiness score, a category breakdown across five dimensions, your maturity tier with interpretation, and your top starting point. Results appear on screen immediately after the last question. No email required to see your score.',
+      a: 'Your overall AI readiness score, a breakdown across five dimensions, your maturity tier, and your top starting point. It shows where your business is losing time or creating friction and points you to the first issue worth fixing. Results appear on screen immediately.',
     },
     {
       q: 'What does the AI Action Plan include?',
-      a: 'Three priority improvements with tool recommendations, a 30-day action plan, a 90-day implementation roadmap, deep category analysis across all five dimensions, risk and execution guidance, and a downloadable branded PDF report.',
+      a: 'The full report built from your diagnostic responses: your top 3 priority improvements, a 30-day action plan, a 90-day roadmap, recommended tools, implementation sequence, risk and execution guidance, and a downloadable branded PDF.',
     },
     {
       q: 'How is this different from asking ChatGPT for an AI plan?',
-      a: 'ChatGPT gives generic answers because it does not know your business. This diagnostic scores your actual operations across five dimensions, benchmarks you against similar companies, and generates prioritized recommendations specific to your industry, team size, and current tools.',
+      a: 'ChatGPT gives generic answers unless you already know what to ask. This diagnostic evaluates how your business actually runs, benchmarks you against similar companies, and prioritizes what to fix first based on your industry, team size, tools, and friction points.',
     },
     {
       q: 'Is the report generic?',
-      a: 'No. Every report is generated from your responses. The recommendations, tool suggestions, risk analysis, and action plan are specific to your industry, operations, and priorities. More detailed inputs produce a stronger plan.',
+      a: 'No. Every report is built from your diagnostic responses and tailored to your business, your operating friction, and your priorities.',
     },
     {
       q: 'Do I need to be technical to use this?',
-      a: 'No. The diagnostic asks about how you operate — scheduling, customer intake, sales process, content creation — not about code or infrastructure. The recommendations are written for business owners, not engineers.',
+      a: 'No. This is built for business owners and executives, not technical teams. It focuses on how your business runs and turns that into practical recommendations without requiring technical knowledge.',
     },
     {
       q: 'Who should buy the AI Action Plan?',
-      a: 'Business owners who see their free results and want the full deliverable: what to fix, in what order, with what tools, and on what timeline. The AI Action Plan includes a 30-day action plan, 90-day roadmap, and downloadable PDF you can share with your team.',
+      a: 'Owners and executives who want more than a score. It gives you a clear plan for what to fix first, what tools fit your business, and how to move forward without getting lost in AI hype.',
     },
     {
       q: 'When do I pay?',
-      a: 'After you complete the free diagnostic and see your results on screen. You can upgrade to the $150 AI Action Plan at that point for the full report with action plans, roadmap, and PDF — or walk away with your free results.',
+      a: 'You complete the free diagnostic first and see your results on screen. If you want the full deliverable, click Unlock AI Action Plan after your results. If not, you keep your free results.',
     },
   ];
 
@@ -1868,6 +1926,19 @@ function Footer() {
           }}
         >
           &copy; {new Date().getFullYear()} Telchar AI
+        </p>
+        <p
+          style={{
+            fontFamily: FONT,
+            fontSize: 10,
+            fontWeight: 300,
+            color: P.muted,
+            margin: '6px 0 0',
+            letterSpacing: '0.02em',
+            lineHeight: 1.5,
+          }}
+        >
+          Proprietary framework, report methodology, and materials. No reproduction, redistribution, or commercial reuse without written permission.
         </p>
       </footer>
     </div>

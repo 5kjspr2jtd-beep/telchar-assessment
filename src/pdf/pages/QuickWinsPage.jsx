@@ -214,13 +214,13 @@ export default function QuickWinsPage({ data }) {
             letterSpacing: 1.5, textTransform: "uppercase",
             color: C.blue, marginBottom: 6,
           }}>
-            FULL REPORT INCLUDES
+            AI ACTION PLAN INCLUDES
           </Text>
           <Text style={{
             fontFamily: FONT, fontSize: TYPE.body, fontWeight: 300,
             color: C.dimDark, lineHeight: 1.65,
           }}>
-            Two additional priority improvements, estimated 90-day impact analysis, five detailed category scorecards, implementation roadmap, risk analysis, data infrastructure plan, and next steps.
+            Two additional priority improvements, 30-day action plan, 90-day implementation roadmap, five detailed category analyses, risk analysis, data infrastructure guidance, and a downloadable branded PDF.
           </Text>
         </View>
       )}

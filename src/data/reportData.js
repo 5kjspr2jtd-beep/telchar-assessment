@@ -28,10 +28,10 @@ export const BENCHMARK_META = {
 };
 
 // ── Tier metadata ────────────────────────────────────────────
-// Two tiers only: Free Assessment + $150 Full Report
+// Two tiers only: Free Diagnostic + $150 AI Action Plan
 export const TIERS = {
-  free: { key: "free", label: "Free Assessment", price: null, pageCount: 3,  sections: ["cover", "summary", "quickWins"] },
-  full: { key: "full", label: "Full Report",     price: 150,  pageCount: 14, sections: ["cover", "summary", "quickWins", "actionPlan", "categories", "roadmap", "risk", "dataInfra", "engagement"] },
+  free: { key: "free", label: "Free Diagnostic", price: null, pageCount: 3,  sections: ["cover", "summary", "quickWins"] },
+  full: { key: "full", label: "AI Action Plan",  price: 150,  pageCount: 14, sections: ["cover", "summary", "quickWins", "actionPlan", "categories", "roadmap", "risk", "dataInfra", "engagement"] },
 };
 
 // Map URL tier params to internal tier names
