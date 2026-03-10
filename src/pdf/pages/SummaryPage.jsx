@@ -9,15 +9,11 @@ import { PdfAccentStrip, PdfHeader, PdfFooter, PdfSecLabel, PdfRule, PdfDiamondR
 import { scoreColor, scoreTier } from "../../design/telcharDesign";
 
 export default function SummaryPage({ data }) {
-  const { co, ind, scores, benchmark } = data;
-  const delta = scores.overall - benchmark;
-  const sorted = [...scores.cats].sort((a, b) => a.score - b.score);
-  const lowest2 = sorted.slice(0, 2).map(c => c.label).join(" and ");
+  const { co, ind, scores, benchmark: bench, summaryNarrative } = data;
+  const benchOverall = bench?.overall ?? 51;
 
-  const interp = `A score of ${scores.overall} places ${co} in the ${scoreTier(scores.overall)} tier, ${delta >= 0 ? delta + " points above" : Math.abs(delta) + " points below"} the SMB benchmark of ${benchmark}. ${scores.overall < 65
-    ? "The organization has established operational infrastructure but carries identifiable automation gaps across scheduling, reporting, and customer follow-up."
-    : "The organization demonstrates strong operational foundations with clear opportunity for targeted AI implementation."
-  } ${lowest2} represent the most direct path to measurable improvement within a structured 90-day window.`;
+  // Use engine-generated narrative; fall back to simple template if missing
+  const interp = summaryNarrative || `A score of ${scores.overall} places ${co} in the ${scoreTier(scores.overall)} tier.`;
 
   return (
     <Page size="A4" style={{ backgroundColor: C.offwhite, paddingTop: SP.accentStrip + SP.pageMargin, paddingBottom: SP.pageMargin + 20, paddingHorizontal: SP.pageMargin }}>
@@ -34,16 +30,14 @@ export default function SummaryPage({ data }) {
           {[
             ["Industry", ind],
             ["Categories", "5 of 5 scored"],
-            ["SMB Benchmark", `${benchmark} / 100`],
+            ["Reference Baseline", `${benchOverall} / 100`],
           ].map(([label, value]) => (
             <View key={label} style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
               paddingVertical: 4,
               borderBottomWidth: 1,
               borderBottomColor: C.lineDark,
             }}>
-              <Text style={{ fontFamily: FONT, fontSize: 7, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", color: C.mutedDark }}>
+              <Text style={{ fontFamily: FONT, fontSize: 7, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", color: C.mutedDark, marginBottom: 2 }}>
                 {label}
               </Text>
               <Text style={{ fontFamily: FONT, fontSize: 9, fontWeight: 400, color: C.dimDark }}>
@@ -66,7 +60,13 @@ export default function SummaryPage({ data }) {
           }}>
             {interp}
           </Text>
-          <PdfBenchmarkBlock score={scores.overall} benchmark={benchmark} />
+          <PdfBenchmarkBlock score={scores.overall} benchmark={benchOverall} />
+          <Text style={{
+            fontFamily: FONT, fontSize: 7, fontWeight: 300, fontStyle: "italic",
+            color: C.mutedDark, lineHeight: 1.6, marginTop: 8,
+          }}>
+            {bench?.meta?.note || "Reference baselines represent modeled expectations for businesses of similar industry and size."}
+          </Text>
         </View>
       </View>
 

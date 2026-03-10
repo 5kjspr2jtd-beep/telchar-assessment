@@ -136,49 +136,10 @@ function ActionBlock({ block, index }) {
 }
 
 export default function ActionPlanPage({ data }) {
-  const { co, wins, clientTools } = data;
+  const { co, actionPlan } = data;
 
-  const win1 = wins[0], win2 = wins[1], win3 = wins[2];
-  const toolList = (clientTools || []).join(", ");
-
-  const blocks = [
-    {
-      window: "Days 1 – 7", label: "Foundation",
-      objective: `Set up your primary automation platform and scope the first workflow: ${win1?.title || "highest-priority improvement"}.`,
-      actions: [
-        `Create a ${win1?.tool || "Make"} account and connect your core tools (${toolList})`,
-        "Audit the manual steps in your highest-priority workflow and document each handoff",
-        "Define what 'done' looks like: expected trigger, output, and success metric",
-        "Run a test scenario end-to-end in a sandbox before going live",
-      ],
-      outcome: "Platform configured, first workflow scoped and tested, team aligned on what changes.",
-      tool: win1?.tool || "Make",
-    },
-    {
-      window: "Days 8 – 14", label: "First Workflow Live",
-      objective: `Deploy your first automation and begin scoping the second priority: ${win2?.title || "next improvement"}.`,
-      actions: [
-        "Move the first workflow from test to production with error handling and alerts",
-        "Brief the team: what is automated, what to watch for, when to escalate",
-        `Begin scoping the second workflow using ${win2?.tool || "Claude + Make"}`,
-        "Track daily performance for the first week — log any failures or edge cases",
-      ],
-      outcome: "One workflow running in production. Second workflow scoped and ready to build.",
-      tool: win2?.tool || "Make + Claude Pro",
-    },
-    {
-      window: "Days 15 – 30", label: "Expand and Measure",
-      objective: `Deploy the second workflow and begin the third: ${win3?.title || "remaining priority"}. Measure results against baseline.`,
-      actions: [
-        "Build and deploy the second automation with the same test-then-deploy pattern",
-        `Scope and start building the third workflow using ${win3?.tool || "Claude + Make"}`,
-        "Compare actual time savings against the estimated impact from this report",
-        "Document all live workflows: trigger, steps, owner, and error handling",
-      ],
-      outcome: "Two workflows live, third in progress. Measurable time recovery confirmed.",
-      tool: win3?.tool || "Make + Claude Pro",
-    },
-  ];
+  // Use engine-generated action plan blocks
+  const blocks = actionPlan || [];
 
   return (
     <Page size="A4" style={{

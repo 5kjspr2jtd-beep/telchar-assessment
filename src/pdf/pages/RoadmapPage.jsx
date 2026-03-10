@@ -1,77 +1,11 @@
 // ── Roadmap Page (Light) ─────────────────────────────────────
-// 90-day implementation roadmap with 5 progressive phases.
+// Engine-generated 90-day implementation roadmap.
 // Content flows naturally across pages — no forced breaks.
 
 import React from "react";
 import { Page, View, Text } from "@react-pdf/renderer";
 import { C, FONT, SERIF, TYPE, SP } from "../pdfTokens";
 import { PdfAccentStrip, PdfHeader, PdfFooter, PdfSecLabel, PdfDiamond } from "../primitives";
-
-const PHASES = [
-  {
-    phaseNum: "01", window: "Week 1 – 2", label: "Setup and Baseline",
-    accentColor: "#2563eb",
-    goal: "Accounts configured, tools connected, priority list locked.",
-    steps: [
-      "Audit all manual workflows across operations, sales, content, and data categories",
-      "Log time spent per task to establish baseline hours (use a shared tracker or spreadsheet)",
-      "Rank workflows by frequency × time cost to identify top 3 automation candidates",
-      "Create Make.com account, connect primary tools (CRM, email, invoicing, file storage)",
-      "Verify API access and permissions for each connected tool",
-      "Define success metrics for each candidate workflow (time saved, error rate, throughput)",
-    ],
-  },
-  {
-    phaseNum: "02", window: "Week 3 – 4", label: "First Pilot Live",
-    accentColor: "#22c55e",
-    goal: "One automated workflow running in production with error handling.",
-    steps: [
-      "Build the highest-priority Make scenario end-to-end in a test environment",
-      "Add error handling: retry logic, fallback notifications, dead-letter logging",
-      "Run 5–10 test cycles with real data, validate outputs match manual process",
-      "Deploy to production with a monitoring dashboard (Make execution logs + alerts)",
-      "Train 1–2 team members: what triggers it, how to check status, when to escalate",
-      "Track pilot performance daily for the first week, then weekly",
-    ],
-  },
-  {
-    phaseNum: "03", window: "Week 5 – 8", label: "Expand and Validate",
-    accentColor: "#f59e0b",
-    goal: "Three workflows automated, measurable time recovery confirmed.",
-    steps: [
-      "Deploy second automation scenario using lessons from the pilot build",
-      "Deploy third scenario — prioritize a cross-functional workflow (e.g., sales → operations handoff)",
-      "Integrate Claude for at least one content or communication workflow (drafting, summarization, or classification)",
-      "Compare actual time savings against Week 1–2 baseline for all three workflows",
-      "Identify and fix edge cases or failure modes surfaced during the first 4 weeks of operation",
-      "Document each workflow: trigger, steps, expected output, error handling, owner",
-    ],
-  },
-  {
-    phaseNum: "04", window: "Week 9 – 10", label: "Stabilize and Harden",
-    accentColor: "#a855f7",
-    goal: "All workflows stable, team operating independently, documentation complete.",
-    steps: [
-      "Review 30-day execution logs for each automation — flag error rates above 2%",
-      "Refine scenarios: tighten filters, improve data validation, reduce false triggers",
-      "Finalize team documentation: runbooks, escalation paths, troubleshooting guides",
-      "Conduct a team walkthrough so all stakeholders understand what is automated and what is not",
-      "Ensure at least one team member can modify or pause any scenario without outside help",
-    ],
-  },
-  {
-    phaseNum: "05", window: "Week 11 – 12", label: "Measure and Plan Next Phase",
-    accentColor: "#4a80f5",
-    goal: "Clear ROI data, next automation candidates identified, practice self-sustaining.",
-    steps: [
-      "Calculate total hours recovered per week across all automated workflows",
-      "Compare actual ROI against the estimates in this report",
-      "Identify the next 2–3 automation candidates based on updated workflow audit",
-      "Assess whether additional tool integrations or Claude use cases are warranted",
-      "Produce a one-page summary: what was automated, hours saved, cost impact, next steps",
-    ],
-  },
-];
 
 function PhaseBlock({ phase }) {
   return (
@@ -130,7 +64,7 @@ function PhaseBlock({ phase }) {
 
       {/* Steps */}
       <View style={{ marginLeft: 36 }}>
-        {phase.steps.map((step, j) => (
+        {(phase.steps || []).map((step, j) => (
           <View key={j} style={{ flexDirection: "row", gap: 6, marginBottom: 4 }}>
             <View style={{ marginTop: 3 }}>
               <PdfDiamond size={5} fill={phase.accentColor} />
@@ -149,7 +83,8 @@ function PhaseBlock({ phase }) {
 }
 
 export default function RoadmapPage({ data }) {
-  const { co } = data;
+  const { co, roadmap } = data;
+  const phases = roadmap || [];
 
   return (
     <Page size="A4" style={{
@@ -169,7 +104,7 @@ export default function RoadmapPage({ data }) {
         Structured as five progressive phases: setup, pilot, expansion, stabilization, and measurement. Each phase builds on the prior without disrupting operational continuity.
       </Text>
 
-      {PHASES.map((phase) => (
+      {phases.map((phase) => (
         <PhaseBlock key={phase.phaseNum} phase={phase} />
       ))}
 

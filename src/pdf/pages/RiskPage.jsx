@@ -1,34 +1,10 @@
 // ── Risk Page (Light) ────────────────────────────────────────
-// Four implementation risks with severity ratings.
-// Compact enough to potentially share a page with DataInfra.
+// Engine-generated risks with structured fields.
 
 import React from "react";
 import { Page, View, Text } from "@react-pdf/renderer";
 import { C, FONT, TYPE, SP } from "../pdfTokens";
-import { PdfAccentStrip, PdfHeader, PdfFooter, PdfSecLabel, PdfCard } from "../primitives";
-
-const RISKS = [
-  {
-    label: "Tool integration gaps",
-    severity: "Medium",
-    desc: "Make requires active integrations for each tool in use. If a tool does not have a Make connector, custom API configuration may be needed. Identify all tools in the stack before build begins.",
-  },
-  {
-    label: "Team adoption friction",
-    severity: "Low",
-    desc: "Cowork operates through natural language, which reduces the learning curve significantly. Brief team orientation on what is automated — and what is not — prevents confusion.",
-  },
-  {
-    label: "Data quality issues",
-    severity: "Medium",
-    desc: "Automation is only as reliable as the data it processes. Inconsistent job records or duplicate entries in QuickBooks will produce incorrect outputs. A data audit is recommended before automation is deployed at scale.",
-  },
-  {
-    label: "Scope creep",
-    severity: "Low",
-    desc: "AI capability expands quickly. Attempting to automate too many workflows simultaneously increases risk and reduces quality. The phased roadmap is structured to prevent this by design.",
-  },
-];
+import { PdfAccentStrip, PdfHeader, PdfFooter, PdfSecLabel } from "../primitives";
 
 const SEVERITY_COLOR = {
   High: C.red,
@@ -37,7 +13,13 @@ const SEVERITY_COLOR = {
 };
 
 export default function RiskPage({ data }) {
-  const { co } = data;
+  const { co, risks } = data;
+  const riskList = risks || [];
+  const hasHigh = riskList.some(r => r.severity === "High");
+  const highCount = riskList.filter(r => r.severity === "High").length;
+  const introText = hasHigh
+    ? `${riskList.length} implementation risks identified based on assessment findings. ${highCount === 1 ? "One requires" : "Some require"} active mitigation. All are manageable within a structured engagement.`
+    : `${riskList.length} implementation risks identified based on assessment findings. All are manageable within a structured engagement. None represent blockers.`;
 
   return (
     <Page size="A4" style={{
@@ -54,10 +36,10 @@ export default function RiskPage({ data }) {
         fontFamily: FONT, fontSize: TYPE.body, fontWeight: 300,
         color: C.dimDark, lineHeight: 1.7, marginBottom: 14,
       }}>
-        Four implementation risks identified based on assessment findings. All are manageable within a structured engagement. None represent blockers.
+        {introText}
       </Text>
 
-      {RISKS.map((risk, i) => (
+      {riskList.map((risk, i) => (
         <View key={i} wrap={false} style={{
           backgroundColor: C.cardBg,
           borderWidth: 1,
@@ -65,41 +47,48 @@ export default function RiskPage({ data }) {
           borderRadius: SP.cardRadius,
           padding: SP.cardPad,
           marginBottom: 8,
-          flexDirection: "row",
-          gap: 14,
         }}>
-          {/* Risk content */}
-          <View style={{ flex: 1 }}>
+          {/* Header row: label + severity */}
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 6 }}>
             <Text style={{
               fontFamily: FONT, fontSize: TYPE.body, fontWeight: 500,
-              color: C.darkText, marginBottom: 4,
+              color: C.darkText, flex: 1,
             }}>
               {risk.label}
             </Text>
-            <Text style={{
-              fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300,
-              color: C.dimDark, lineHeight: 1.6,
-            }}>
-              {risk.desc}
-            </Text>
+            <View style={{ width: 60, alignItems: "flex-end" }}>
+              <Text style={{
+                fontFamily: FONT, fontSize: 7, fontWeight: 600,
+                letterSpacing: 1.2, textTransform: "uppercase",
+                color: C.mutedDark, marginBottom: 2,
+              }}>
+                SEVERITY
+              </Text>
+              <Text style={{
+                fontFamily: FONT, fontSize: TYPE.body, fontWeight: 500,
+                color: SEVERITY_COLOR[risk.severity] || C.darkText,
+              }}>
+                {risk.severity}
+              </Text>
+            </View>
           </View>
 
-          {/* Severity */}
-          <View style={{ width: 60, alignItems: "flex-end" }}>
-            <Text style={{
-              fontFamily: FONT, fontSize: 7, fontWeight: 600,
-              letterSpacing: 1.2, textTransform: "uppercase",
-              color: C.mutedDark, marginBottom: 3,
-            }}>
-              SEVERITY
+          {/* Structured fields */}
+          {risk.reason && (
+            <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300, color: C.dimDark, lineHeight: 1.6, marginBottom: 3 }}>
+              <Text style={{ fontWeight: 500 }}>Why it matters: </Text>{risk.reason}
             </Text>
-            <Text style={{
-              fontFamily: FONT, fontSize: TYPE.body, fontWeight: 500,
-              color: SEVERITY_COLOR[risk.severity] || C.darkText,
-            }}>
-              {risk.severity}
+          )}
+          {risk.watch && (
+            <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300, color: C.dimDark, lineHeight: 1.6, marginBottom: 3 }}>
+              <Text style={{ fontWeight: 500 }}>What to watch: </Text>{risk.watch}
             </Text>
-          </View>
+          )}
+          {risk.mitigation && (
+            <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300, color: C.dimDark, lineHeight: 1.6 }}>
+              <Text style={{ fontWeight: 500 }}>Mitigation: </Text>{risk.mitigation}
+            </Text>
+          )}
         </View>
       ))}
 

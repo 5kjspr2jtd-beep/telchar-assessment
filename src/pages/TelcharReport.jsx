@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, TEXT, LIGHT_TEXT, TYPE, CTA, scoreColor, scoreTier, hexToRgb, Diamond, Rule, SecLabel } from "../design/telcharDesign";
-import { getReportData, getCategoryTool, getCategoryGuidance, BENCHMARK as BENCHMARK_CONST, TIER_MAP, REPORT_NOTES } from "../data/reportData";
+import { getReportData, getCategoryTool, TIER_MAP, REPORT_NOTES } from "../data/reportData";
 import HamburgerMenu from "../components/HamburgerMenu";
 
 // ─────────────────────────────────────────────────────────────
@@ -13,8 +13,8 @@ import HamburgerMenu from "../components/HamburgerMenu";
 // ── Mutable report data — populated from shared data adapter ──
 // Page components read these module-level variables directly.
 // They are set once per render cycle in the App component via getReportData().
-let CO, IND, CLIENT_TOOLS, SCORES, WINS, STACK, DATE;
-const BENCHMARK = BENCHMARK_CONST;
+let CO, IND, CLIENT_TOOLS, SCORES, WINS, STACK, DATE, BENCH, SUMMARY_NARRATIVE, CATEGORY_ANALYSES, ACTION_PLAN, RISKS, ROADMAP;
+const BENCHMARK_NOTE = "Reference baselines represent modeled expectations for businesses of similar industry and size, informed by published research, recognized maturity frameworks, and practitioner analysis. Baselines are refined over time as more assessment data is collected.";
 
 
 // ── Tier gates ───────────────────────────────────────────────
@@ -313,10 +313,9 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
   const desktop = w >= 900;
   const animated = useCount(SCORES.overall);
 
-  const sorted  = [...SCORES.cats].sort((a,b)=>a.score-b.score);
-  const lowest2 = sorted.slice(0,2).map(c=>c.label).join(" and ");
-  const delta   = SCORES.overall - BENCHMARK;
-  const interp  = `A score of ${SCORES.overall} places ${CO} in the ${scoreTier(SCORES.overall)} tier, ${delta >= 0 ? delta + " points above" : Math.abs(delta) + " points below"} the SMB benchmark of ${BENCHMARK}. ${SCORES.overall < 65 ? "The organization has established operational infrastructure but carries identifiable automation gaps across scheduling, reporting, and customer follow-up." : "The organization demonstrates strong operational foundations with clear opportunity for targeted AI implementation."} ${lowest2} represent the most direct path to measurable improvement within a structured 90-day window.`;
+  const benchOverall = BENCH?.overall ?? 51;
+  const delta   = SCORES.overall - benchOverall;
+  const interp  = SUMMARY_NARRATIVE || `A score of ${SCORES.overall} places ${CO} in the ${scoreTier(SCORES.overall)} tier.`;
 
   return (
     <ReportPage pg={pg} total={total}>
@@ -329,7 +328,7 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
           <div style={{ fontFamily:FONT, fontSize:mobile?56:96, fontWeight:300, color:scoreColor(SCORES.overall), lineHeight:1, letterSpacing:"-0.05em", marginBottom:10 }}>{animated}</div>
           <div style={{ fontFamily:FONT, fontSize:13, fontWeight:700, letterSpacing:"0.3em", textTransform:"uppercase", color:scoreColor(SCORES.overall), display:"inline-block", marginBottom:24 }}>{scoreTier(SCORES.overall)}</div>
           <div style={{ borderTop:`1px solid ${P.linedark}` }}>
-            {[["Industry",IND],["Categories","5 of 5 scored"],["SMB benchmark",`${BENCHMARK} / 100`]].map(([k,v])=>(
+            {[["Industry",IND],["Categories","5 of 5 scored"],["Reference Baseline",`${benchOverall} / 100`]].map(([k,v])=>(
               <div key={k} style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", padding:"8px 0", borderBottom:`1px solid ${P.linedark}`, gap:8 }}>
                 <span style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.18em", textTransform:"uppercase", color:P.muted, flexShrink:0 }}>{k}</span>
                 <span style={{ fontFamily:FONT, fontSize:13, fontWeight:400, color:P.dim, textAlign:"right" }}>{v}</span>
@@ -352,7 +351,7 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
             marginBottom: 28,
           }}>
             <div style={{ display:"flex", flexWrap: mobile ? "wrap" : "nowrap", gap: mobile ? "12px 0" : 0 }}>
-              {[["YOUR SCORE",SCORES.overall,scoreColor(SCORES.overall)],["SMB AVERAGE",BENCHMARK,"#ffffff"],["DELTA",(delta>=0?"+":"")+delta,delta>=0?"#22c55e":"#ef4444"]].map(([label,val,col],i)=>(
+              {[["YOUR SCORE",SCORES.overall,scoreColor(SCORES.overall)],["REF. BASELINE",benchOverall,"#ffffff"],["DELTA",(delta>=0?"+":"")+delta,delta>=0?"#22c55e":"#ef4444"]].map(([label,val,col],i)=>(
                 <div key={label} style={{ paddingRight: mobile ? 16 : (i<2?20:0), paddingLeft: mobile ? (i>0?16:0) : (i>0?20:0), borderRight: (!mobile && i<2) ? `1px solid ${P.linedark}` : "none", ...(mobile ? { flex: "1 0 auto" } : {}) }}>
                   <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", color:"rgba(255,255,255,0.5)", marginBottom:4 }}>{label}</div>
                   <div style={{ fontFamily:FONT, fontSize: mobile ? 28 : 36, fontWeight:300, color:col, lineHeight:1 }}>{val}</div>
@@ -362,6 +361,11 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
           </div>
         </div>
       </div>
+
+      {/* Methodology note */}
+      <p style={{ fontFamily:FONT, fontSize:11, fontWeight:300, color:P.muted, lineHeight:1.7, margin:"0 0 24px", fontStyle:"italic" }}>
+        {BENCHMARK_NOTE}
+      </p>
 
       <Rule diamond={true} style={{ marginBottom:32 }}/>
 
@@ -512,7 +516,7 @@ function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
               ))}
             </div>
             <div style={{ marginTop:12, fontFamily:FONT, fontSize:12, fontWeight:300, color:P.muted, lineHeight:1.7 }}>
-              Estimates based on SMB automation benchmarks across comparable operational profiles. Actual results depend on implementation scope and workflow complexity.
+              Estimates based on modeled expectations for businesses of similar industry and size. Actual results depend on implementation scope and workflow complexity.
             </div>
           </div>
         );
@@ -528,50 +532,12 @@ function PageActionPlan({ pg, total }) {
   const w = useWidth();
   const mobile = w < 640;
 
-  // Derive action plan from top 3 wins + their recommended tools
-  const win1 = WINS[0], win2 = WINS[1], win3 = WINS[2];
-
-  const blocks = [
-    {
-      window: "Days 1 – 7", label: "Foundation",
-      accentColor: "#2563eb",
-      objective: `Set up your primary automation platform and scope the first workflow: ${win1?.title || "highest-priority improvement"}.`,
-      actions: [
-        `Create a ${win1?.tool || "Make"} account and connect your core tools (${CLIENT_TOOLS.join(", ")})`,
-        "Audit the manual steps in your highest-priority workflow and document each handoff",
-        "Define what 'done' looks like: expected trigger, output, and success metric",
-        "Run a test scenario end-to-end in a sandbox before going live",
-      ],
-      outcome: "Platform configured, first workflow scoped and tested, team aligned on what changes.",
-      tool: win1?.tool || "Make",
-    },
-    {
-      window: "Days 8 – 14", label: "First Workflow Live",
-      accentColor: "#22c55e",
-      objective: `Deploy your first automation and begin scoping the second priority: ${win2?.title || "next improvement"}.`,
-      actions: [
-        "Move the first workflow from test to production with error handling and alerts",
-        "Brief the team: what is automated, what to watch for, when to escalate",
-        `Begin scoping the second workflow using ${win2?.tool || "Claude + Make"}`,
-        "Track daily performance for the first week — log any failures or edge cases",
-      ],
-      outcome: "One workflow running in production. Second workflow scoped and ready to build.",
-      tool: win2?.tool || "Make + Claude Pro",
-    },
-    {
-      window: "Days 15 – 30", label: "Expand and Measure",
-      accentColor: "#f59e0b",
-      objective: `Deploy the second workflow and begin the third: ${win3?.title || "remaining priority"}. Measure results against baseline.`,
-      actions: [
-        "Build and deploy the second automation with the same test-then-deploy pattern",
-        `Scope and start building the third workflow using ${win3?.tool || "Claude + Make"}`,
-        "Compare actual time savings against the estimated impact from this report",
-        "Document all live workflows: trigger, steps, owner, and error handling",
-      ],
-      outcome: "Two workflows live, third in progress. Measurable time recovery confirmed. Foundation set for the 90-day roadmap.",
-      tool: win3?.tool || "Make + Claude Pro",
-    },
-  ];
+  // Use engine-generated action plan blocks
+  const ACCENT_COLORS = ["#2563eb", "#22c55e", "#f59e0b"];
+  const blocks = (ACTION_PLAN || []).map((block, i) => ({
+    ...block,
+    accentColor: ACCENT_COLORS[i] || ACCENT_COLORS[2],
+  }));
 
   return (
     <ReportPage pg={pg} total={total}>
@@ -646,7 +612,7 @@ function PageCategory({ catKey, pg, total }) {
   const w    = useWidth();
   const mobile = w < 640;
 
-  const guidance = getCategoryGuidance(catKey);
+  const analysis = CATEGORY_ANALYSES?.[catKey] || {};
 
   return (
     <ReportPage pg={pg} total={total}>
@@ -668,7 +634,24 @@ function PageCategory({ catKey, pg, total }) {
 
       {/* Analysis */}
       <SecLabel>Analysis</SecLabel>
-      <p style={{ fontFamily:FONT, fontSize:15, fontWeight:300, color:P.dim, lineHeight:1.9, marginBottom:28 }}>{guidance}</p>
+      {analysis.diagnosis ? (
+        <div style={{ marginBottom:28 }}>
+          <p style={{ fontFamily:FONT, fontSize:15, fontWeight:300, color:P.dim, lineHeight:1.9, margin:"0 0 16px" }}>{analysis.diagnosis}</p>
+          {[
+            ["What is working", analysis.strength],
+            ["Clearest gap", analysis.gap],
+            ["Why it matters", analysis.implication],
+            ["Where to focus next", analysis.focus],
+          ].map(([label, text]) => text ? (
+            <div key={label} style={{ marginBottom:10 }}>
+              <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.16em", textTransform:"uppercase", color:P.muted, marginBottom:4 }}>{label}</div>
+              <p style={{ fontFamily:FONT, fontSize:14, fontWeight:300, color:P.dim, lineHeight:1.8, margin:0 }}>{text}</p>
+            </div>
+          ) : null)}
+        </div>
+      ) : (
+        <p style={{ fontFamily:FONT, fontSize:15, fontWeight:300, color:P.dim, lineHeight:1.9, marginBottom:28 }}>Category analysis unavailable.</p>
+      )}
 
       {/* Benchmark comparison */}
       <div style={{
@@ -680,7 +663,7 @@ function PageCategory({ catKey, pg, total }) {
         marginBottom: 28,
       }}>
         <div style={{ display:"flex" }}>
-          {[["YOUR SCORE",cat.score,scoreColor(cat.score)],["SMB AVERAGE",BENCHMARK,"#ffffff"],["DELTA",(cat.score-BENCHMARK>=0?"+":"")+(cat.score-BENCHMARK),cat.score>=BENCHMARK?"#22c55e":"#ef4444"]].map(([label,val,col],i)=>(
+          {(()=>{ const catBench = BENCH?.categories?.[cat.key] ?? BENCH?.overall ?? 51; const catDelta = cat.score - catBench; return [["YOUR SCORE",cat.score,scoreColor(cat.score)],["REF. BASELINE",catBench,"#ffffff"],["DELTA",(catDelta>=0?"+":"")+catDelta,catDelta>=0?"#22c55e":"#ef4444"]]; })().map(([label,val,col],i)=>(
             <div key={label} style={{ paddingRight:i<2?20:0, paddingLeft:i>0?20:0, borderRight:i<2?`1px solid ${P.linedark}`:"none" }}>
               <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", color:"rgba(255,255,255,0.5)", marginBottom:4 }}>{label}</div>
               <div style={{ fontFamily:FONT, fontSize:36, fontWeight:300, color:col, lineHeight:1 }}>{val}</div>
@@ -731,56 +714,7 @@ function PageCategory({ catKey, pg, total }) {
 // ═══════════════════════════════════════════════════════════
 function PageRoadmap({ pg, total }) {
   const w = useWidth(); const mobile = w < 640;
-  const phases = [
-    { phase:"Week 1–2", label:"Setup and Baseline", window:"Week 1 – 2", color:P.blue, accentColor:"#2563eb", phaseNum:"01",
-      goal:"Accounts configured, tools connected, priority list locked.",
-      steps:[
-        "Audit all manual workflows across operations, sales, content, and data categories",
-        "Log time spent per task to establish baseline hours (use a shared tracker or spreadsheet)",
-        "Rank workflows by frequency × time cost to identify top 3 automation candidates",
-        "Create Make.com account, connect primary tools (CRM, email, invoicing, file storage)",
-        "Verify API access and permissions for each connected tool",
-        "Define success metrics for each candidate workflow (time saved, error rate, throughput)",
-      ] },
-    { phase:"Week 3–4", label:"First Pilot Live", window:"Week 3 – 4", color:P.blue, accentColor:"#22c55e", phaseNum:"02",
-      goal:"One automated workflow running in production with error handling.",
-      steps:[
-        "Build the highest-priority Make scenario end-to-end in a test environment",
-        "Add error handling: retry logic, fallback notifications, dead-letter logging",
-        "Run 5–10 test cycles with real data, validate outputs match manual process",
-        "Deploy to production with a monitoring dashboard (Make execution logs + alerts)",
-        "Train 1–2 team members: what triggers it, how to check status, when to escalate",
-        "Track pilot performance daily for the first week, then weekly",
-      ] },
-    { phase:"Week 5–8", label:"Expand and Validate", window:"Week 5 – 8", color:P.green, accentColor:"#f59e0b", phaseNum:"03",
-      goal:"Three workflows automated, measurable time recovery confirmed.",
-      steps:[
-        "Deploy second automation scenario using lessons from the pilot build",
-        "Deploy third scenario — prioritize a cross-functional workflow (e.g., sales → operations handoff)",
-        "Integrate Claude for at least one content or communication workflow (drafting, summarization, or classification)",
-        "Compare actual time savings against Week 1–2 baseline for all three workflows",
-        "Identify and fix edge cases or failure modes surfaced during the first 4 weeks of operation",
-        "Document each workflow: trigger, steps, expected output, error handling, owner",
-      ] },
-    { phase:"Week 9–10", label:"Stabilize and Harden", window:"Week 9 – 10", color:"#2D6FBA", accentColor:"#a855f7", phaseNum:"04",
-      goal:"All workflows stable, team operating independently, documentation complete.",
-      steps:[
-        "Review 30-day execution logs for each automation — flag error rates above 2%",
-        "Refine scenarios: tighten filters, improve data validation, reduce false triggers",
-        "Finalize team documentation: runbooks, escalation paths, troubleshooting guides",
-        "Conduct a team walkthrough so all stakeholders understand what is automated and what is not",
-        "Ensure at least one team member can modify or pause any scenario without outside help",
-      ] },
-    { phase:"Week 11–12", label:"Measure and Plan Next Phase", window:"Week 11 – 12", color:"#2D6FBA", accentColor:"#4a80f5", phaseNum:"05",
-      goal:"Clear ROI data, next automation candidates identified, practice self-sustaining.",
-      steps:[
-        "Calculate total hours recovered per week across all automated workflows",
-        "Compare actual ROI against the estimates in this report",
-        "Identify the next 2–3 automation candidates based on updated workflow audit",
-        "Assess whether additional tool integrations or Claude use cases are warranted",
-        "Produce a one-page summary: what was automated, hours saved, cost impact, next steps",
-      ] },
-  ];
+  const phases = ROADMAP || [];
 
   return (
     <ReportPage pg={pg} total={total}>
@@ -790,7 +724,7 @@ function PageRoadmap({ pg, total }) {
       </p>
 
       {phases.map((ph,i)=>(
-        <div key={ph.phase} style={{
+        <div key={ph.phaseNum} style={{
           background: "rgba(255,255,255,0.03)",
           border: "1px solid rgba(255,255,255,0.07)",
           borderLeft: `3px solid ${ph.accentColor}`,
@@ -831,36 +765,40 @@ function PageRoadmap({ pg, total }) {
 // PAGE 10 — RISK ANALYSIS (full only)
 // ═══════════════════════════════════════════════════════════
 function PageRisk({ pg, total }) {
-  const risks = [
-    { label:"Tool integration gaps", severity:"Medium", desc:"Make requires active integrations for each tool in use. If a tool does not have a Make connector, custom API configuration may be needed. Identify all tools in the stack before build begins." },
-    { label:"Team adoption friction", severity:"Low", desc:"Cowork operates through natural language, which reduces the learning curve significantly. Brief team orientation on what is automated — and what is not — prevents confusion." },
-    { label:"Data quality issues", severity:"Medium", desc:"Automation is only as reliable as the data it processes. Inconsistent job records or duplicate entries in QuickBooks will produce incorrect outputs. A data audit is recommended before automation is deployed at scale." },
-    { label:"Scope creep", severity:"Low", desc:"AI capability expands quickly. Attempting to automate too many workflows simultaneously increases risk and reduces quality. The phased roadmap is structured to prevent this by design." },
-  ];
+  const risks = RISKS || [];
   const sCol = { High:P.red, Medium:P.amber, Low:P.green };
+  const riskCount = risks.length;
+  const hasHigh = risks.some(r => r.severity === "High");
+  const introText = hasHigh
+    ? `${riskCount} implementation risks identified based on assessment findings. ${risks.filter(r=>r.severity==="High").length === 1 ? "One requires" : "Some require"} active mitigation. All are manageable within a structured engagement.`
+    : `${riskCount} implementation risks identified based on assessment findings. All are manageable within a structured engagement. None represent blockers.`;
   return (
     <ReportPage pg={pg} total={total}>
       <SecLabel>Risk analysis</SecLabel>
       <p style={{ fontFamily:FONT, fontSize:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:28 }}>
-        Four implementation risks identified based on assessment findings. All are manageable within a structured engagement. None represent blockers.
+        {introText}
       </p>
       {risks.map((r,i)=>(
         <div key={i} style={{
           ...glassCard,
-          display: "grid",
-          gridTemplateColumns: "1fr 80px",
-          gap: 20,
           padding: "20px 24px",
           marginBottom: 12,
-          alignItems: "start",
         }}>
-          <div>
-            <div style={{ fontFamily:FONT, fontSize:13, fontWeight:500, color:P.white, marginBottom:6 }}>{r.label}</div>
-            <div style={{ fontFamily:FONT, fontSize:12, fontWeight:300, color:P.dim, lineHeight:1.7 }}>{r.desc}</div>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
+            <div style={{ fontFamily:FONT, fontSize:14, fontWeight:500, color:P.white }}>{r.label}</div>
+            <div style={{ textAlign:"right", flexShrink:0, marginLeft:16 }}>
+              <div style={{ fontFamily:FONT, fontSize:9, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:2 }}>Severity</div>
+              <div style={{ fontFamily:FONT, fontSize:13, fontWeight:500, color:sCol[r.severity]||P.white }}>{r.severity}</div>
+            </div>
           </div>
-          <div style={{ textAlign:"right" }}>
-            <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:4 }}>Severity</div>
-            <div style={{ fontFamily:FONT, fontSize:13, fontWeight:500, color:sCol[r.severity]||P.white }}>{r.severity}</div>
+          <div style={{ fontFamily:FONT, fontSize:12, fontWeight:400, color:P.dim, lineHeight:1.7, marginBottom:8 }}>
+            <span style={{ fontWeight:500, color:"rgba(255,255,255,0.5)" }}>Why it matters: </span>{r.reason}
+          </div>
+          <div style={{ fontFamily:FONT, fontSize:12, fontWeight:400, color:P.dim, lineHeight:1.7, marginBottom:8 }}>
+            <span style={{ fontWeight:500, color:"rgba(255,255,255,0.5)" }}>What to watch: </span>{r.watch}
+          </div>
+          <div style={{ fontFamily:FONT, fontSize:12, fontWeight:400, color:P.dim, lineHeight:1.7 }}>
+            <span style={{ fontWeight:500, color:"rgba(255,255,255,0.5)" }}>Mitigation: </span>{r.mitigation}
           </div>
         </div>
       ))}
@@ -996,6 +934,12 @@ export default function App({ initialTier = "free", demo = false }) {
   WINS = reportData.wins;
   STACK = reportData.stack;
   DATE = reportData.date;
+  BENCH = reportData.benchmark;
+  SUMMARY_NARRATIVE = reportData.summaryNarrative;
+  CATEGORY_ANALYSES = reportData.categoryAnalyses;
+  ACTION_PLAN = reportData.actionPlan;
+  RISKS = reportData.risks;
+  ROADMAP = reportData.roadmap;
 
   const mapped = demo ? "full" : (TIER_MAP[initialTier] || "free");
   const [tier, setTier] = useState(mapped);

@@ -6,6 +6,8 @@
 // No layout logic, no UI concerns.
 // ─────────────────────────────────────────────────────────────
 
+import { buildEngineOutput } from "./reportEngine";
+
 // ── Category taxonomy ────────────────────────────────────────
 export const CATEGORY_LABELS = {
   operations: "Operations Efficiency",
@@ -17,15 +19,10 @@ export const CATEGORY_LABELS = {
 
 export const CATEGORY_KEYS = ["operations", "sales", "data", "content", "technology"];
 
-// ── Benchmark metadata ───────────────────────────────────────
-export const BENCHMARK = 51;
-export const BENCHMARK_META = {
-  value: 51,
-  label: "SMB Average",
-  source: "Telchar AI Readiness Index™",
-  framework: "v2.4 · Five Category",
-  note: "Based on SMB automation benchmarks across comparable operational profiles.",
-};
+// ── Benchmark ────────────────────────────────────────────────
+// Benchmark is now computed per-report by the engine (industry + size).
+// The structured benchmark object lives on engine output:
+//   benchmark.overall, benchmark.categories.{key}, benchmark.meta
 
 // ── Tier metadata ────────────────────────────────────────────
 // Two tiers only: Free Diagnostic + $150 AI Action Plan
@@ -63,7 +60,7 @@ export const APPLY_URL = `${SITE_BASE}/apply`;
 export const REPORT_NOTES = {
   classification: "Confidential",
   disclaimer: "This report presents findings from the Telchar AI Readiness Index™ across five operational dimensions. Scores reflect self-reported data collected via structured questionnaire and facilitated analysis.",
-  impactDisclaimer: "Estimates based on SMB automation benchmarks across comparable operational profiles. Actual results depend on implementation scope and workflow complexity.",
+  impactDisclaimer: "Estimates based on modeled expectations for businesses of similar industry and size. Actual results depend on implementation scope and workflow complexity.",
   engagementDisclaimer: "Implementation support is informed by program and product leadership experience from large-scale delivery environments, adapted for small business execution.",
   availabilityNote: "Availability is limited. We assess mutual fit before any engagement begins.",
 };
@@ -254,49 +251,76 @@ function loadFromSession() {
       clientTools = tools;
     }
 
-    let wins = DEMO_WINS;
-    if (data.quickWins && data.quickWins.length > 0) {
-      wins = data.quickWins.map((w, i) => ({
-        n: i + 1,
-        cat: w.category || "",
-        title: w.title || "",
-        desc: w.desc || "",
-        time: "2-4 weeks",
-        tool: "Make + Claude Pro",
-        toolCost: "~$29/mo total",
-      }));
-    }
-
-    return { co, ind, clientTools, scores, wins };
+    // Return raw answers and raw scores for the engine
+    return { co, ind, clientTools, scores, answers: data.answers || {}, rawScores: data.scores };
   } catch (e) {
     return null;
   }
 }
 
+// ── Demo answers (for engine to produce demo recommendations) ──
+const DEMO_ANSWERS = {
+  industry: "Construction / Trades",
+  employee_count: "5 to 10",
+  admin_hours: "15 to 30 hours",
+  scheduling: "Manually via phone/email/text",
+  customer_intake: "Phone/email manually",
+  growth_priority: ["Increase revenue", "Reduce operational workload"],
+  sales_process: "We have a basic follow-up process",
+  performance_tracking: "Accounting software like QuickBooks",
+  knowledge_management: "Shared drives or folders with no real structure",
+  content_creation: "We do it ourselves when we have time",
+  customer_acquisition: ["Word of mouth", "Our website"],
+  tech_comfort: "Cautious but open",
+  ai_experience: "We've experimented a little",
+  company_name: DEMO_CO,
+};
+
+// ── Demo raw scores (for engine category lookups) ──
+const DEMO_RAW_SCORES = {
+  overall: 54,
+  categories: {
+    operations:  { score: 48, label: "Operations Efficiency" },
+    sales:       { score: 52, label: "Sales & Customer Experience" },
+    data:        { score: 42, label: "Data & Performance Visibility" },
+    content:     { score: 58, label: "Content & Knowledge Management" },
+    technology:  { score: 62, label: "Technology Readiness" },
+  },
+};
+
 // ── Main entry point ─────────────────────────────────────────
 // Returns a complete, immutable report data object.
 // Both web report and PDF consume this same shape.
 export function getReportData(demo = false) {
-  let co, ind, clientTools, scores, wins;
+  let co, ind, clientTools, scores, answers, rawScores;
 
   if (demo) {
     co = DEMO_CO;
     ind = DEMO_IND;
     clientTools = [...DEMO_CLIENT_TOOLS];
     scores = { ...DEMO_SCORES, cats: DEMO_SCORES.cats.map(c => ({ ...c })) };
-    wins = DEMO_WINS.map(w => ({ ...w }));
+    answers = DEMO_ANSWERS;
+    rawScores = DEMO_RAW_SCORES;
   } else {
     const session = loadFromSession();
     if (session) {
-      ({ co, ind, clientTools, scores, wins } = session);
+      ({ co, ind, clientTools, scores } = session);
+      answers = session.answers;
+      rawScores = session.rawScores;
     } else {
+      // No session data — fall back to demo
       co = DEMO_CO;
       ind = DEMO_IND;
       clientTools = [...DEMO_CLIENT_TOOLS];
       scores = { ...DEMO_SCORES, cats: DEMO_SCORES.cats.map(c => ({ ...c })) };
-      wins = DEMO_WINS.map(w => ({ ...w }));
+      answers = DEMO_ANSWERS;
+      rawScores = DEMO_RAW_SCORES;
     }
   }
+
+  // Run the engine to get recommendations, signals, bands,
+  // benchmark, narrative, category analyses, and action plan
+  const engine = buildEngineOutput(answers, rawScores, clientTools, null, co);
 
   const stack = buildStack(scores, clientTools);
   const date = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
@@ -306,11 +330,19 @@ export function getReportData(demo = false) {
     ind,
     clientTools,
     scores,
-    wins,
+    wins: engine.wins,
     stack,
-    benchmark: BENCHMARK,
-    benchmarkMeta: BENCHMARK_META,
+    benchmark: engine.benchmark,
     date,
     notes: REPORT_NOTES,
+    // Engine outputs
+    signals: engine.signals,
+    overallBand: engine.overallBand,
+    categoryBands: engine.categoryBands,
+    summaryNarrative: engine.summaryNarrative,
+    categoryAnalyses: engine.categoryAnalyses,
+    actionPlan: engine.actionPlan,
+    risks: engine.risks,
+    roadmap: engine.roadmap,
   };
 }

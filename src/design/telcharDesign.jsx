@@ -67,11 +67,11 @@ export function scoreColor(s) {
 }
 
 export function scoreTier(s) {
-  if (s < 25) return "Critical";
-  if (s < 45) return "Early Stage";
-  if (s < 60) return "Developing";
-  if (s < 75) return "Advancing";
-  return "Strong";
+  if (s <= 39) return "Fragile";
+  if (s <= 54) return "Developing";
+  if (s <= 69) return "Progressing";
+  if (s <= 84) return "Advancing";
+  return "Leading";
 }
 
 // ── Color utility ────────────────────────────────────────────

@@ -115,7 +115,7 @@ export function PdfBenchmarkBlock({ score, benchmark, dark = false }) {
   const deltaCol = delta >= 0 ? C.green : C.red;
   const items = [
     { label: "YOUR SCORE", value: String(score), color: scoreColor(score) },
-    { label: "SMB AVERAGE", value: String(benchmark), color: dark ? C.white : C.darkText },
+    { label: "REF. BASELINE", value: String(benchmark), color: dark ? C.white : C.darkText },
     { label: "DELTA", value: deltaStr, color: deltaCol },
   ];
 

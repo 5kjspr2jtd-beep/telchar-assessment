@@ -7,11 +7,11 @@ import { Page, View, Text, Image } from "@react-pdf/renderer";
 import { C, FONT, SERIF, TYPE, SP } from "../pdfTokens";
 import { PdfAccentStrip, PdfFooter, PdfDiamondRule } from "../primitives";
 import { scoreColor, scoreTier } from "../../design/telcharDesign";
-import { REPORT_NOTES, BENCHMARK_META } from "../../data/reportData";
+import { REPORT_NOTES } from "../../data/reportData";
 import telcharLogo from "../fonts/telchar-logo-white.png";
 
 export default function CoverPage({ data }) {
-  const { co, ind, scores, date } = data;
+  const { co, ind, scores, date, benchmark: bench } = data;
   const col = scoreColor(scores.overall);
 
   return (
@@ -134,7 +134,7 @@ export default function CoverPage({ data }) {
         <View style={{ flexDirection: "row", gap: 0 }}>
           {[
             ["ASSESSMENT DATE", date],
-            ["FRAMEWORK", BENCHMARK_META.framework],
+            ["FRAMEWORK", bench?.meta?.framework || "v2.4 · Five Category"],
             ["CLASSIFICATION", REPORT_NOTES.classification],
           ].map(([label, value], i) => (
             <View key={label} style={{
