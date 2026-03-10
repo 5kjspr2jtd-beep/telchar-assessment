@@ -756,126 +756,126 @@ export function generateActionPlan(wins, signals, clientTools) {
   const block1Actions = [];
   if (isLowReadiness) {
     block1Actions.push(
-      `Create a Make account (free tier) and watch a 10-minute setup walkthrough before connecting any tools`,
-      `Connect your first tool (${clientTools?.[0] || "Gmail"}) to Make — one connection, nothing automated yet`,
-      `Map out the manual steps in your highest-priority workflow: ${win1?.title || "first improvement"}`,
-      `Define one clear success metric — the specific number you want to change in 30 days`,
+      `Create a free Make account and watch a 10-minute walkthrough video before connecting anything`,
+      `Connect your first tool (${clientTools?.[0] || "Gmail"}) to Make — just the connection, no automation yet`,
+      `Write down every manual step in your most important task: ${win1?.title || "first improvement"}`,
+      `Pick one number you want to improve in 30 days — that is how you will know this is working`,
     );
   } else if (isHighReadiness) {
     block1Actions.push(
-      `Create a Make account and connect your core tools (${toolList})`,
-      `Build the first workflow in test mode: ${win1?.title || "highest-priority improvement"}`,
-      `Define success criteria: expected trigger, output, and the ${goalFrame} metric you will track`,
-      `Run end-to-end testing with real data — validate every step before going live`,
+      `Create a Make account and connect your main tools (${toolList})`,
+      `Pick the number you want to improve (${goalFrame}) and write down what it is today`,
+      `Build the first automated workflow in test mode: ${win1?.title || "highest-priority improvement"}`,
+      `Run it with real data a few times to make sure every step works before turning it on`,
     );
   } else {
     block1Actions.push(
-      `Create a Make account and connect your core tools (${toolList})`,
-      `Audit the manual steps in your highest-priority workflow: ${win1?.title || "first improvement"}`,
-      `Define what "done" looks like: expected trigger, output, and ${goalFrame} metric`,
-      `Run a test scenario end-to-end in a sandbox before going live`,
+      `Create a Make account and connect your main tools (${toolList})`,
+      `Write down every manual step in your most important task: ${win1?.title || "first improvement"}`,
+      `Decide what "done" looks like — what triggers the task, what comes out, and what number you will track (${goalFrame})`,
+      `Build the first automated workflow in test mode and run it a few times before turning it on`,
     );
   }
 
   const block1Outcome = isLowReadiness
-    ? "Platform set up, first tool connected, first workflow fully mapped on paper. Team understands what will change."
-    : "Platform configured, first workflow scoped and tested, team aligned on what changes.";
+    ? "Make is set up, your first tool is connected, and you have a complete list of steps for the first task you are going to automate. The team knows what is changing."
+    : "Your tools are connected, the first automated task is built and tested, and the team is aligned on what is changing.";
 
   // Block 2: Days 8-14
   const block2Actions = [];
   if (isLowReadiness) {
     block2Actions.push(
-      `Move the first workflow from test to production — start with low-volume runs`,
-      `Brief the team: explain what is automated, what to watch for, and who to ask if something looks wrong`,
-      `Document the first workflow: trigger, steps, expected output, and known edge cases`,
-      `Begin mapping the second priority: ${win2?.title || "next improvement"}`,
+      `Turn on the first workflow — start with a small number of runs per day to make sure it works`,
+      `Tell the team what is now automated, what to watch for, and who to ask if something looks wrong`,
+      `Write it down: what triggers the task, what happens at each step, what should come out, and what can go wrong`,
+      `Start mapping out the second task you want to automate: ${win2?.title || "next improvement"}`,
     );
   } else if (isHighReadiness) {
     block2Actions.push(
-      `Deploy first workflow to production with error handling, alerts, and logging`,
-      `Brief the team on the new workflow and collect initial feedback after 48 hours`,
-      `Build the second workflow in test mode: ${win2?.title || "next improvement"}`,
-      `Track daily performance — log volume processed, failures, and time saved`,
+      `Turn on the first workflow with notifications set up so you know if something goes wrong`,
+      `Tell the team how the new workflow works and ask for feedback after a couple of days`,
+      `Start building the second workflow in test mode: ${win2?.title || "next improvement"}`,
+      `Track what is happening each day — how many times it ran, whether anything failed, and how much time it saved`,
     );
   } else {
     block2Actions.push(
-      `Move the first workflow from test to production with error handling and alerts`,
-      `Brief the team: what is automated, what to watch for, when to escalate`,
-      `Begin scoping the second workflow: ${win2?.title || "next improvement"}`,
-      `Track daily performance for the first week — log any failures or edge cases`,
+      `Turn on the first workflow with notifications set up so you know if something goes wrong`,
+      `Tell the team: what is automated now, what to watch for, and when to raise a concern`,
+      `Start planning the second task you want to automate: ${win2?.title || "next improvement"}`,
+      `Track what is happening for the first week — write down anything that fails or looks off`,
     );
   }
 
   const block2Outcome = isHighReadiness
-    ? "First workflow running and measured. Second workflow built and in testing."
-    : "One workflow running in production. Second workflow scoped and ready to build.";
+    ? "First workflow is running and you are tracking the results. Second workflow is built and being tested."
+    : "One workflow is running for real. The second one is planned and ready to build.";
 
   // Block 3: Days 15-30
   const block3Actions = [];
   if (signals.wantsExit) {
     block3Actions.push(
-      `Deploy the second workflow and begin the third: ${win3?.title || "remaining priority"}`,
-      `Document all automated workflows with trigger maps, error handling, and ownership`,
-      `Build a process inventory: what is automated, what is manual, what is next`,
-      `Compare actual time savings against this report's estimates — prepare for operational review`,
+      `Turn on the second workflow and start building the third: ${win3?.title || "remaining priority"}`,
+      `Write up every automated task — what triggers it, what it does, who owns it, and what to do if it breaks`,
+      `Make a list of everything that is automated and everything that is still manual`,
+      `Compare the actual time savings to what this report estimated — get ready for an operational review`,
     );
   } else if (signals.wantsRevenue) {
     block3Actions.push(
-      `Deploy the second workflow and begin the third: ${win3?.title || "remaining priority"}`,
-      `Measure revenue-related impact: response time, follow-up consistency, pipeline volume`,
-      `Identify the next revenue-impacting workflow to automate in the 90-day roadmap`,
-      `Document all live workflows: trigger, steps, owner, and error handling`,
+      `Turn on the second workflow and start building the third: ${win3?.title || "remaining priority"}`,
+      `Check the revenue-related numbers: Are responses faster? Are follow-ups more consistent? Are more leads moving forward?`,
+      `Decide which revenue-impacting task to automate next in the 90-day roadmap`,
+      `Write up all running workflows — what triggers them, what they do, who owns them`,
     );
   } else if (signals.wantsWorkloadReduction) {
     block3Actions.push(
-      `Deploy the second workflow and begin the third: ${win3?.title || "remaining priority"}`,
-      `Measure hours recovered: compare actual admin time this week vs. the baseline before automation`,
-      `Identify the next time-intensive workflow to automate in the 90-day roadmap`,
-      `Document all live workflows: trigger, steps, owner, and error handling`,
+      `Turn on the second workflow and start building the third: ${win3?.title || "remaining priority"}`,
+      `Compare actual admin hours this week to what they were before automation started`,
+      `Decide which time-consuming task to automate next in the 90-day roadmap`,
+      `Write up all running workflows — what triggers them, what they do, who owns them`,
     );
   } else {
     block3Actions.push(
-      `Build and deploy the second automation with the same test-then-deploy pattern`,
-      `Scope and start building the third workflow: ${win3?.title || "remaining priority"}`,
-      `Compare actual ${goalFrame} against the estimated impact from this report`,
-      `Document all live workflows: trigger, steps, owner, and error handling`,
+      `Build and turn on the second automated task, using the same test-then-launch approach`,
+      `Start building the third: ${win3?.title || "remaining priority"}`,
+      `Compare actual results (${goalFrame}) to what this report estimated`,
+      `Write up all running workflows — what triggers them, what they do, who owns them`,
     );
   }
 
   const block3Outcome = isLowReadiness
-    ? "Two workflows live, third in progress. Team has firsthand experience with automation. Foundation set for the 90-day roadmap."
+    ? "Two automated tasks are running, the third is in progress. Your team has real experience with automation. You are ready for the 90-day roadmap."
     : signals.wantsExit
-      ? "Two workflows live, third in progress. Process documentation complete. Operational profile ready for review."
-      : `Two workflows live, third in progress. Measurable ${goalFrame} confirmed. Foundation set for the 90-day roadmap.`;
+      ? "Two automated tasks are running, the third is in progress. All processes are documented. Ready for operational review."
+      : `Two automated tasks are running, the third is in progress. You have real numbers showing ${goalFrame}. Ready for the 90-day roadmap.`;
 
   return [
     {
       window: "Days 1 – 7",
-      label: isLowReadiness ? "Setup and Orientation" : isHighReadiness ? "Configure and Test" : "Foundation",
+      label: isLowReadiness ? "Get Set Up" : isHighReadiness ? "Connect and Build" : "Get Set Up",
       objective: isLowReadiness
-        ? `Set up the automation platform and map your first workflow: ${win1?.title || "highest-priority improvement"}. The goal this week is understanding, not speed.`
-        : `Set up your primary automation platform and scope the first workflow: ${win1?.title || "highest-priority improvement"}.`,
+        ? `Set up Make, connect your first tool, and map out the first task you are going to automate: ${win1?.title || "highest-priority improvement"}. This week is about understanding the task clearly, not rushing.`
+        : `Set up Make, connect your tools, and build the first automated task: ${win1?.title || "highest-priority improvement"}.`,
       actions: block1Actions,
       outcome: block1Outcome,
       tool: win1?.tool || "Make",
     },
     {
       window: "Days 8 – 14",
-      label: isLowReadiness ? "First Workflow Live" : isHighReadiness ? "Deploy and Build" : "First Workflow Live",
+      label: isLowReadiness ? "Turn It On" : isHighReadiness ? "Launch and Start the Next One" : "Turn It On",
       objective: isHighReadiness
-        ? `First workflow in production and measured. Second workflow built and in testing: ${win2?.title || "next improvement"}.`
-        : `Deploy your first automation and begin scoping the second priority: ${win2?.title || "next improvement"}.`,
+        ? `First automated task is running and you are tracking results. Second one is being built: ${win2?.title || "next improvement"}.`
+        : `Turn on the first automated task and start planning the second: ${win2?.title || "next improvement"}.`,
       actions: block2Actions,
       outcome: block2Outcome,
-      tool: win2?.tool || "Make + Claude Pro",
+      tool: win2?.tool || "Make + Claude chat",
     },
     {
       window: "Days 15 – 30",
-      label: isLowReadiness ? "Deploy and Baseline" : isHighReadiness ? "Scale and Validate" : "Expand and Measure",
-      objective: `Deploy the second workflow and begin the third: ${win3?.title || "remaining priority"}. Measure results against baseline.`,
+      label: isLowReadiness ? "Expand and Measure" : isHighReadiness ? "Add More and Check Results" : "Expand and Measure",
+      objective: `Turn on the second automated task and start the third: ${win3?.title || "remaining priority"}. Compare your results to what you had before.`,
       actions: block3Actions,
       outcome: block3Outcome,
-      tool: win3?.tool || "Make + Claude Pro",
+      tool: win3?.tool || "Make + Claude chat",
     },
   ];
 }
@@ -888,119 +888,119 @@ const RISK_LIBRARY = [
   // ── Adoption / Team ──
   {
     id: "team_resistance",
-    label: "Team adoption resistance",
+    label: "Team pushback on new tools",
     severity: "High",
     eligible: (s) => s.techResistant,
-    reason: "The team has indicated resistance to new technology. Without buy-in, automated workflows will be bypassed or ignored.",
-    watch: "Early refusal to use new tools, reverting to manual processes within the first two weeks, or lack of engagement during onboarding.",
-    mitigation: "Start with a single workflow that eliminates a universally disliked manual task. Demonstrate time savings within the first week before expanding scope.",
+    reason: "Your team has shown resistance to new technology. If people do not want to use the new tools, they will go back to doing things the old way and the automation will sit unused.",
+    watch: "People refusing to use the new tools in the first two weeks, going back to the manual process, or not showing up for training.",
+    mitigation: "Start with one task that everyone hates doing by hand. Show real time savings in the first week before asking the team to change anything else.",
   },
   {
     id: "cautious_adoption",
-    label: "Slow adoption curve",
+    label: "Team is cautious about change",
     severity: "Medium",
     eligible: (s) => s.techCautious && !s.techResistant,
-    reason: "The team is open but cautious. Adoption will require visible proof of value before expanding beyond the first workflow.",
-    watch: "Hesitation to move from pilot to production, requests for extended testing periods, or reluctance to hand off manual control.",
-    mitigation: "Build the first automation on a low-stakes, high-frequency task. Share measurable results (time saved, errors avoided) after the first week to build confidence.",
+    reason: "Your team is open to trying new tools but wants to see proof that they work before committing. That is reasonable, but it means the first automation needs to show clear results quickly.",
+    watch: "People wanting to keep testing instead of using the automation for real work, or being reluctant to stop doing things by hand.",
+    mitigation: "Pick a simple, repetitive task for the first automation. Share the results (time saved, mistakes avoided) after the first week so the team can see it is working.",
   },
   {
     id: "ai_unfamiliarity",
-    label: "AI unfamiliarity",
+    label: "No experience with AI",
     severity: "Medium",
     eligible: (s) => s.aiNone,
-    reason: "The team has no prior experience with AI tools. First impressions will shape long-term willingness to adopt.",
-    watch: "Confusion about what AI can and cannot do, unrealistic expectations, or distrust of AI-generated outputs.",
-    mitigation: "Introduce AI through a supervised, human-in-the-loop workflow — AI drafts, a person reviews. Build trust before moving to fully automated execution.",
+    reason: "Your team has not used AI tools before. How the first experience goes will determine whether people trust it or avoid it going forward.",
+    watch: "Confusion about what AI can and cannot do, expecting too much too soon, or not trusting what the AI produces.",
+    mitigation: "Start with AI drafting something that a person reviews before it goes out — for example, a follow-up email or a summary. Let people get comfortable before removing the review step.",
   },
   // ── Integration / Technical ──
   {
     id: "tool_fragmentation",
-    label: "Tool stack fragmentation",
+    label: "Too many disconnected tools",
     severity: "Medium",
     eligible: (s) => {
       const tools = s._clientTools || [];
       return tools.length >= 5;
     },
-    reason: "A large number of tools in the stack increases the number of integrations required. Each connection point is a potential failure surface.",
-    watch: "API rate limits, authentication token expiry, or data format mismatches between connected tools.",
-    mitigation: "Prioritize integrations for the three highest-impact tools first. Add remaining connections incrementally after the core workflows are stable.",
+    reason: "You use a lot of different tools. The more tools that need to talk to each other, the more connections you have to set up and maintain — and each one is a place where something can break.",
+    watch: "Connections that stop working because a login expired, a tool changed its settings, or two tools send information in different formats.",
+    mitigation: "Connect the three most important tools first. Get those working reliably before adding the rest one at a time.",
   },
   {
     id: "integration_gaps",
-    label: "Missing tool connectors",
+    label: "Some tools may not connect easily",
     severity: "Medium",
     eligible: () => true, // universal but low-priority
     weight: 1,
-    reason: "Not all tools have pre-built automation connectors. Niche or legacy software may require custom API configuration or workarounds.",
-    watch: "Tools that lack API access entirely, require paid API tiers, or have undocumented endpoints.",
-    mitigation: "Verify connector availability for every tool in the stack before starting build. Flag gaps early and scope workarounds during the setup phase.",
+    reason: "Not every tool has a ready-made connector in Make. Some older or specialized software may need extra setup or a workaround to pass information back and forth.",
+    watch: "Tools that do not offer any way to connect to outside software, tools that charge extra for connections, or tools with limited documentation.",
+    mitigation: "Before you start building, check that every tool you plan to connect has a working connector in Make. If one does not, flag it early and plan a workaround.",
   },
   // ── Data quality ──
   {
     id: "data_quality",
-    label: "Data quality issues",
+    label: "Bad data in your current tools",
     severity: "High",
     eligible: (s) => s.noConsistentTracking || s.knowledgeInHeads,
-    reason: "Automation amplifies existing data problems. If records are inconsistent, duplicated, or incomplete, automated workflows will produce unreliable outputs.",
-    watch: "Duplicate entries, missing required fields, inconsistent naming conventions, or outdated records in the primary system of record.",
-    mitigation: "Run a targeted data audit on the systems feeding into the first automated workflow. Clean the immediate inputs before deploying — full cleanup can happen in parallel.",
+    reason: "Automation makes existing data problems worse, not better. If your records have duplicates, missing information, or outdated entries, the automated tasks will produce bad output — faster.",
+    watch: "Duplicate entries, missing fields, names spelled different ways in different places, or records that have not been updated in months.",
+    mitigation: "Before turning on the first automation, clean up the data it will use. You do not need to fix everything at once — just the information that feeds into the first automated task.",
   },
   {
     id: "data_quality_moderate",
-    label: "Inconsistent data formatting",
+    label: "Messy spreadsheet data",
     severity: "Medium",
     eligible: (s) => s.tracksWithSpreadsheets && !s.noConsistentTracking,
-    reason: "Spreadsheet-based tracking often contains format inconsistencies — mixed date formats, free-text where structured data is expected, or incomplete rows.",
-    watch: "Automation errors caused by unexpected data formats, blank fields, or values outside expected ranges.",
-    mitigation: "Add input validation to the first workflow. Define expected data formats explicitly and build error handling for common exceptions.",
+    reason: "Spreadsheets often have inconsistent formatting — dates written different ways, blank rows, or notes typed into fields that should have numbers. Automation will choke on those.",
+    watch: "Errors in the automation caused by blank fields, unexpected text in number columns, or dates that are not in a consistent format.",
+    mitigation: "Set up the first automation to check its inputs before running. Define what the data should look like (for example: dates as MM/DD/YYYY, no blank rows) and have it flag anything that does not match.",
   },
   // ── Process / Scope ──
   {
     id: "scope_creep",
-    label: "Scope creep",
+    label: "Trying to automate too much at once",
     severity: "Medium",
     eligible: (s) => s.implementationReadiness >= 3,
-    reason: "Higher readiness teams often want to automate everything at once. Expanding scope before the first workflows are stable increases failure risk across all of them.",
-    watch: "Requests to add new workflows before existing ones are documented and measured, or pressure to skip testing phases.",
-    mitigation: "Hold to the phased roadmap. Each new workflow enters production only after the previous one has run stable for at least one week.",
+    reason: "Teams that are ready to go often want to automate everything right away. But if you add too many automations before the first ones are running smoothly, problems in one can cause problems in all of them.",
+    watch: "Requests to add new automations before existing ones have been tested and measured, or pressure to skip the testing step.",
+    mitigation: "Stick to the plan. Only start a new automation after the previous one has been running without issues for at least one week.",
   },
   {
     id: "dependency_on_champion",
-    label: "Single-person dependency",
+    label: "Only one person knows how it works",
     severity: "Medium",
     eligible: (s) => s.teamSize === "1 to 5" || s.teamSize === "Just me",
-    reason: "In small teams, automation knowledge often concentrates in one person. If that person is unavailable, automated workflows cannot be maintained or debugged.",
-    watch: "Only one person understands how the workflows are configured, or only one person has admin access to the automation platform.",
-    mitigation: "Document every workflow with a runbook: trigger, steps, expected output, error handling, and escalation path. Ensure at least one other person can pause or modify any scenario.",
+    reason: "On small teams, one person usually ends up building and managing all the automations. If that person is sick, on vacation, or leaves, no one else knows how to keep things running.",
+    watch: "Only one person understands how the automations are set up, or only one person has the login to the automation platform.",
+    mitigation: "Write down how each automation works: what starts it, what it does, what to do if it breaks, and who to contact. Make sure at least one other person can pause or change any automation.",
   },
   // ── Goal-specific ──
   {
     id: "exit_documentation",
-    label: "Insufficient process documentation",
+    label: "Processes are not written down",
     severity: "High",
     eligible: (s) => s.wantsExit && (s.knowledgeInHeads || s.knowledgeUnstructured),
-    reason: "Exit readiness requires demonstrable, documented processes. Knowledge that exists only in people's heads or unstructured drives will reduce business valuation.",
-    watch: "Key workflows that cannot be explained without the person who runs them, or documentation that is outdated or incomplete.",
-    mitigation: "Make documentation a parallel workstream from day one. Every automated workflow should produce a runbook before it goes live.",
+    reason: "If you are preparing to sell or hand off the business, a buyer needs to see how everything works on paper. Knowledge that lives only in people's heads or scattered files will lower the value of the business.",
+    watch: "Important processes that no one can explain without the person who runs them, or documentation that is out of date or does not exist.",
+    mitigation: "Start writing things down from day one. Every automation should have a written description of how it works before it gets turned on.",
   },
   {
     id: "revenue_measurement",
-    label: "Unclear revenue attribution",
+    label: "Hard to tell what is driving revenue",
     severity: "Medium",
     eligible: (s) => s.wantsRevenue && s.noConsistentTracking,
-    reason: "Without consistent tracking, it is difficult to attribute revenue changes to automation improvements. ROI becomes a guess rather than a measurement.",
-    watch: "Inability to answer 'how much revenue did this workflow influence?' after the first 30 days.",
-    mitigation: "Establish a baseline revenue metric before automation begins. Track the specific metric each workflow is designed to influence.",
+    reason: "Without consistent tracking, you will not be able to tell whether the automation is actually helping revenue or whether the change came from something else. Your ROI becomes a guess.",
+    watch: "Not being able to answer 'how much revenue did this automation help with?' after the first 30 days.",
+    mitigation: "Before you start automating, write down your current revenue numbers for the tasks you plan to change. Track the same numbers after automation so you can compare.",
   },
   {
     id: "workload_expectation",
-    label: "Unrealistic time-saving expectations",
+    label: "Expecting too much time savings too fast",
     severity: "Low",
     eligible: (s) => s.wantsWorkloadReduction && s.highAdminBurden,
-    reason: "High admin burden creates urgency, but automation reduces specific task time — it does not eliminate all manual work overnight. Misaligned expectations lead to perceived failure.",
-    watch: "Frustration after the first week that 'nothing has changed,' even when specific workflows are measurably faster.",
-    mitigation: "Quantify the baseline hours for each automated task before starting. Report time saved per workflow, not overall workload reduction, during the first 30 days.",
+    reason: "When admin work is heavy, there is pressure to fix it all at once. But automation saves time on specific tasks — it does not eliminate all manual work overnight. If expectations are too high, it will feel like it is not working even when it is.",
+    watch: "Frustration after the first week that 'nothing has changed,' even when specific tasks are measurably faster.",
+    mitigation: "Before you start, write down how many hours each task takes. Report time saved per task, not total workload reduction, during the first 30 days.",
   },
 ];
 
@@ -1075,50 +1075,50 @@ export function generateRoadmap(wins, signals, clientTools) {
 
   // Phase 1: Setup
   const p1Steps = isLow ? [
-    `Audit all manual workflows — list every recurring task across operations, sales, content, and data`,
-    `Log time spent per task for one week to establish a baseline (use a shared tracker or simple spreadsheet)`,
-    `Rank workflows by frequency × time cost to identify top 3 automation candidates`,
-    `Create Make.com account (free tier) and watch a setup walkthrough before connecting tools`,
-    `Connect first tool (${clientTools?.[0] || "your primary tool"}) to Make — one connection, nothing automated yet`,
-    `Define success metrics for the first workflow: ${win1?.title || "highest-priority improvement"}`,
+    `List every task your team does repeatedly — across operations, sales, content, and admin`,
+    `For one week, track how long each recurring task takes (use a simple spreadsheet or shared tracker)`,
+    `Pick the top 3 tasks that take the most time and happen most often — those are the ones to automate first`,
+    `Create a free Make.com account and watch a setup walkthrough before connecting anything`,
+    `Connect your first tool (${clientTools?.[0] || "your primary tool"}) to Make — just the connection, no automation yet`,
+    `Decide how you will measure whether automating the first task is working: ${win1?.title || "highest-priority improvement"}`,
   ] : isHigh ? [
-    `Audit existing tool integrations and API access across the stack (${toolList})`,
-    `Map the end-to-end data flow for the top 3 ${goalContext} workflows`,
-    `Create Make.com account and connect all primary tools in one session`,
-    `Verify API permissions, rate limits, and authentication for each connection`,
-    `Define success criteria for each workflow: expected trigger, output, and ${goalMetric} target`,
-    `Build the first scenario in test mode: ${win1?.title || "highest-priority improvement"}`,
+    `Review the connections between your current tools (${toolList}) — what talks to what, and where are the gaps`,
+    `For each of the top 3 ${goalContext} tasks, write down the steps from start to finish and where data moves between tools`,
+    `Create a Make.com account and connect all your primary tools in one session`,
+    `Test each connection to make sure it works — check that permissions are set correctly and data flows through`,
+    `For each task, write down what should trigger it, what the output should be, and what ${goalMetric} you want to hit`,
+    `Build the first automation in test mode: ${win1?.title || "highest-priority improvement"}`,
   ] : [
-    `Audit all manual workflows across operations, sales, content, and data categories`,
-    `Log time spent per task to establish baseline hours (use a shared tracker or spreadsheet)`,
-    `Rank workflows by frequency × time cost to identify top 3 automation candidates`,
-    `Create Make.com account, connect primary tools (${toolList})`,
-    `Verify API access and permissions for each connected tool`,
-    `Define success metrics for each candidate workflow (${goalMetric})`,
+    `List every task your team does repeatedly — across operations, sales, content, and admin`,
+    `Track how long each recurring task takes for one week (use a simple spreadsheet or shared tracker)`,
+    `Pick the top 3 tasks that take the most time and happen most often — those are the ones to automate first`,
+    `Create a Make.com account and connect your primary tools (${toolList})`,
+    `Test each connection to make sure it works and permissions are set correctly`,
+    `Decide how you will measure success for each task you plan to automate (${goalMetric})`,
   ];
 
   // Phase 2: Pilot
   const p2Steps = isLow ? [
-    `Build the first Make scenario end-to-end in test mode: ${win1?.title || "highest-priority improvement"}`,
-    `Add basic error handling: failure notifications and a log of skipped records`,
-    `Run 5–10 test cycles with real data — validate outputs match what the manual process produces`,
-    `Deploy to production with low-volume runs for the first 3 days`,
-    `Brief the team: what is automated, what to watch for, and who to ask if something looks wrong`,
-    `Track results daily for the first week — log volume processed, failures, and time saved`,
+    `Build the first automation in Make from start to finish in test mode: ${win1?.title || "highest-priority improvement"}`,
+    `Set up notifications so you get an alert if anything fails or gets skipped`,
+    `Run it 5–10 times with real data — check that the output matches what you would have done by hand`,
+    `Turn it on for real, but start with low volume for the first 3 days to make sure it works`,
+    `Tell the team what is now automated, what to watch for, and who to ask if something looks wrong`,
+    `Check results daily for the first week — how many tasks ran, any failures, and time saved`,
   ] : isHigh ? [
-    `Deploy first workflow to production with error handling, retry logic, and alerting`,
-    `Run in parallel with the manual process for 48 hours to validate accuracy`,
-    `Brief the team on the new workflow and collect feedback after the first week`,
-    `Build the second scenario in test mode: ${win2?.title || "next priority"}`,
-    `Track daily performance: ${goalMetric}, failure rate, and edge cases`,
-    `Begin documenting the first workflow: trigger, steps, expected output, error handling, owner`,
+    `Turn on the first automation with notifications set up so you know if something fails`,
+    `Run it alongside the manual process for 48 hours to make sure results match`,
+    `Walk the team through the new automation and get their feedback after the first week`,
+    `Build the second automation in test mode: ${win2?.title || "next priority"}`,
+    `Track daily results: ${goalMetric}, anything that failed, and any unusual situations that came up`,
+    `Write down how the first automation works: what starts it, what it does, what comes out, and who owns it`,
   ] : [
-    `Build the highest-priority scenario end-to-end in a test environment: ${win1?.title || "highest-priority improvement"}`,
-    `Add error handling: retry logic, fallback notifications, dead-letter logging`,
-    `Run 5–10 test cycles with real data, validate outputs match manual process`,
-    `Deploy to production with a monitoring dashboard (Make execution logs + alerts)`,
-    `Train 1–2 team members: what triggers it, how to check status, when to escalate`,
-    `Track pilot performance daily for the first week, then weekly`,
+    `Build the first automation from start to finish in test mode: ${win1?.title || "highest-priority improvement"}`,
+    `Set up notifications so you get an alert if anything fails, and a log of anything that gets skipped`,
+    `Run it 5–10 times with real data — check that the output matches what you would have done by hand`,
+    `Turn it on for real with Make's activity log open so you can watch the first few runs`,
+    `Train 1–2 team members on how it works: what starts it, how to check if it ran, and when to ask for help`,
+    `Check results daily for the first week, then weekly after that`,
   ];
 
   // Phase 3: Expand
@@ -1129,90 +1129,727 @@ export function generateRoadmap(wins, signals, clientTools) {
       : "sales → operations handoff";
 
   const p3Steps = [
-    `Deploy second automation using lessons from the pilot: ${win2?.title || "next priority"}`,
-    `Deploy third scenario — prioritize a cross-functional workflow (${crossFunctionalExample})`,
+    `Turn on the second automation using what you learned from the first: ${win2?.title || "next priority"}`,
+    `Build and turn on the third — pick one that connects two parts of the business (${crossFunctionalExample})`,
     signals.aiNone
-      ? `Introduce AI for one content or communication task: supervised drafting with human review before sending`
-      : `Integrate AI into at least one content or communication workflow (drafting, summarization, or classification)`,
-    `Compare actual ${goalMetric} against Week 1–2 baseline for all three workflows`,
-    `Identify and fix edge cases or failure modes surfaced during the first 4 weeks of operation`,
-    `Document each workflow: trigger, steps, expected output, error handling, owner`,
+      ? `Try using AI for one writing or communication task: have it draft something, then review it yourself before sending`
+      : `Add AI to at least one writing or communication task — drafting, summarizing, or sorting incoming messages`,
+    `Compare your current ${goalMetric} to what you measured in Week 1–2 for all three automated tasks`,
+    `Look for situations where the automations did not handle something correctly and fix them`,
+    `Write down how each automation works: what starts it, what it does, what comes out, and who owns it`,
   ];
 
   // Phase 4: Stabilize
   const p4Steps = [
-    `Review 30-day execution logs for each automation — flag error rates above 2%`,
-    `Refine scenarios: tighten filters, improve data validation, reduce false triggers`,
+    `Review the last 30 days of activity for each automation — look for anything that failed or ran incorrectly`,
+    `Fine-tune each automation: fix anything that triggers when it should not, skips records it should catch, or produces incorrect output`,
     signals.wantsExit
-      ? `Finalize process documentation for all automated and manual workflows — runbooks, escalation paths, and ownership maps`
-      : `Finalize team documentation: runbooks, escalation paths, troubleshooting guides`,
-    `Conduct a team walkthrough so all stakeholders understand what is automated and what is not`,
+      ? `Finish writing up how every process works — automated and manual — including who owns it, what to do if it breaks, and how to hand it off`
+      : `Finish writing up how every process works: what to do if something breaks, who to call, and how to fix common problems`,
+    `Walk the whole team through what is automated and what is still done by hand so everyone is on the same page`,
     isLow
-      ? `Verify at least one team member beyond the project lead can pause, monitor, or restart any scenario`
-      : `Ensure at least one team member can modify or pause any scenario without outside help`,
+      ? `Make sure at least one person besides the project lead knows how to pause, check, or restart any automation`
+      : `Make sure at least one team member can change or pause any automation without outside help`,
   ];
 
   // Phase 5: Measure
   const p5Steps = [
-    `Calculate total ${signals.wantsWorkloadReduction ? "hours recovered" : signals.wantsRevenue ? "revenue influenced" : "efficiency gained"} per week across all automated workflows`,
-    `Compare actual results against the estimates in this report`,
-    `Identify the next 2–3 ${goalContext} workflows to automate based on updated audit`,
+    `Add up the total ${signals.wantsWorkloadReduction ? "hours saved" : signals.wantsRevenue ? "revenue influenced" : "time and effort saved"} per week across all three automations`,
+    `Compare your actual results to the estimates from this report — are you ahead, behind, or on track?`,
+    `Pick the next 2–3 ${goalContext} tasks to automate based on what you have learned so far`,
     signals.wantsExit
-      ? `Compile operational documentation package: what is automated, what is manual, process owners, and maintenance requirements`
-      : `Assess whether additional tool integrations or AI use cases are warranted`,
-    `Produce a one-page summary: what was automated, ${goalMetric} impact, and next steps`,
+      ? `Put together a complete summary of how the business runs: what is automated, what is manual, who owns each process, and what needs to keep running`
+      : `Decide whether you need to connect more tools or add AI to more tasks`,
+    `Write a one-page summary: what you automated, what changed (${goalMetric}), and what to do next`,
   ];
 
   return [
     {
       phaseNum: "01", window: "Week 1 – 2",
-      label: isLow ? "Audit and Orientation" : isHigh ? "Configure and Scope" : "Setup and Baseline",
+      label: isLow ? "Learn the Tools" : isHigh ? "Connect and Plan" : "Get Set Up",
       accentColor: PHASE_COLORS[0],
       goal: isLow
-        ? "Manual workflows audited, baseline hours logged, automation platform set up, first workflow mapped."
+        ? "You know which tasks to automate first, you have tracked how long they take, and Make is set up with your first tool connected."
         : isHigh
-          ? "Stack connected, top 3 workflows scoped, first scenario built in test mode."
-          : "Accounts configured, tools connected, priority list locked.",
+          ? "All your tools are connected, you have picked the top 3 tasks to automate, and the first one is built in test mode."
+          : "Accounts are set up, tools are connected, and you have picked the tasks to automate first.",
       steps: p1Steps,
     },
     {
       phaseNum: "02", window: "Week 3 – 4",
-      label: isLow ? "First Pilot Build" : isHigh ? "Deploy and Iterate" : "First Pilot Live",
+      label: isLow ? "Build and Test" : isHigh ? "Launch and Build the Next One" : "Turn It On",
       accentColor: PHASE_COLORS[1],
       goal: isLow
-        ? "First workflow built, tested, and running in production at low volume."
+        ? "The first automation is built, tested, and running with real data at low volume."
         : isHigh
-          ? "First workflow in production and measured. Second workflow built in test mode."
-          : "One automated workflow running in production with error handling.",
+          ? "The first automation is running and you are tracking results. The second is being built."
+          : "One automation is running with real data and you have notifications set up in case something goes wrong.",
       steps: p2Steps,
     },
     {
       phaseNum: "03", window: "Week 5 – 8",
-      label: "Expand and Validate",
+      label: "Add More and Measure",
       accentColor: PHASE_COLORS[2],
-      goal: `Three workflows automated, measurable ${goalMetric.split(" and ")[0]} confirmed.`,
+      goal: `Three tasks are automated and you can see a measurable change in ${goalMetric.split(" and ")[0]}.`,
       steps: p3Steps,
     },
     {
       phaseNum: "04", window: "Week 9 – 10",
-      label: "Stabilize and Harden",
+      label: "Clean Up and Document",
       accentColor: PHASE_COLORS[3],
       goal: signals.wantsExit
-        ? "All workflows stable, documentation complete, operational profile ready for review."
-        : "All workflows stable, team operating independently, documentation complete.",
+        ? "All automations are running smoothly, everything is documented, and the business is ready to hand off or review."
+        : "All automations are running smoothly, the team knows how everything works, and it is all written down.",
       steps: p4Steps,
     },
     {
       phaseNum: "05", window: "Week 11 – 12",
-      label: "Measure and Plan Forward",
+      label: "Check Results and Plan Ahead",
       accentColor: PHASE_COLORS[4],
-      goal: `Clear ${goalMetric} data, next automation candidates identified, practice self-sustaining.`,
+      goal: `You have clear ${goalMetric} numbers, you know what to automate next, and the team can keep things running without outside help.`,
       steps: p5Steps,
     },
   ];
 }
 
-// ── 9. Engine Entry Point ──────────────────────────────────────
+// ── 10. Category Tool Recommendation Generator ──────────────────
+// AI-first, capability-specific recommendation per category.
+// Signal-driven: reads diagnostic answers to produce contextual output.
+// Primary capability = Claude (chat, Projects, Cowork, Code).
+// Secondary capability = Make (orchestration, scheduling, integration).
+// No generic SaaS. No hardcoded pricing. Existing tools as context only.
+
+function generateCategoryToolRec(catKey, catScore, catBand, signals, clientTools, catBenchmark) {
+  const readiness = signals.implementationReadiness; // 0-5
+  const isLow = readiness <= 1;
+  const isHigh = readiness >= 4;
+  const aboveBaseline = catScore - (catBenchmark || 51) > 4;
+  const toolContext = clientTools.length > 0 ? clientTools.join(", ") : "your current tools";
+
+  // ── Per-category recommendation logic ──
+  // Each block selects: title, operationalProblem, primary/secondary capability,
+  // whyThisFits, aiApproach steps, expectedResult, planFit, startHere.
+  //
+  // Capability labels must be explicit:
+  //   "Claude chat", "Claude Projects", "Claude Cowork", "Claude Code", "Make"
+  // Never use bare "Claude" as a label.
+
+  let rec;
+
+  switch (catKey) {
+    case "operations": {
+      // Signal-driven problem identification
+      const problem = signals.intakeIsManual
+        ? `Customer inquiries come in by phone and email, and every one has to be read, sorted, and answered by hand. With ${toolContext}, there is no automatic connection between taking in a request, scheduling the work, and sending the invoice.`
+        : signals.schedulingIsManual
+          ? `Scheduling and dispatch are done by hand, which means things fall through the cracks. Work gets finished but the invoice does not go out right away, which slows down cash flow.`
+          : signals.highAdminBurden
+            ? `The team spends 15+ hours per week on admin work that follows the same pattern every time — entering data, updating statuses, and moving information between ${toolContext}.`
+            : `The daily work follows a predictable pattern, but each step still has to be done by hand. Every time someone has to stop and do a routine step manually, it slows things down and introduces mistakes.`;
+
+      if (aboveBaseline) {
+        rec = {
+          recommendationTitle: "Put Your Operational Know-How to Work Automatically",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "projects", label: "Claude Projects" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Your operations are already stronger than most businesses your size. Claude Projects keeps your procedures, how-to guides, and process notes in one place so anyone on the team can get answers without asking the owner. Make moves information between your tools automatically — when a job is done, the invoice goes out and the follow-up gets scheduled without anyone doing it by hand.",
+          aiApproach: [
+            "Add your most important process documents and how-to guides into a Claude Project",
+            "When someone has a question about how to handle a situation, they ask the Project instead of interrupting you",
+            "Set up Make so the routine steps (job done → invoice → follow-up) happen on their own",
+          ],
+          expectedResult: "Your team gets answers about how things work without waiting on one person. The routine steps that used to require someone to remember and act now happen automatically.",
+          planFit: isHigh
+            ? { level: "Max", rationale: "Your team is ready for heavy daily use across multiple areas. Max gives you longer conversations and higher limits for working with large documents." }
+            : { level: "Pro", rationale: "Claude Projects keeps your process documents available for the whole team to use on an ongoing basis. That requires a Pro account." },
+          startHere: [
+            { step: "Open Claude chat and describe a recent situation where someone had to ask you how to handle something", url: "https://claude.ai" },
+            { step: "Create a Project and add your top 5 process documents or how-to guides", url: "https://claude.ai/projects" },
+            { step: "Connect your job management tool to Make so completed jobs trigger the next steps automatically", url: "https://www.make.com/en/integrations" },
+          ],
+        };
+      } else if (signals.intakeIsManual) {
+        // O2 — Claude chat led: customer message reading + response
+        rec = {
+          recommendationTitle: "Handle Customer Inquiries Faster with AI",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Claude chat can read a customer message, figure out what kind of request it is, and write a reply — all in one step. Make connects this to your email and calendar so the whole process runs without you doing it by hand each time.",
+          aiApproach: [
+            "Paste a customer inquiry into Claude chat — it writes a response you can review and send",
+            "Once you trust the output, connect Make so new inquiries get a drafted response automatically",
+            "Set up Make to send the response through your email and add the job to your calendar",
+          ],
+          expectedResult: "Customers hear back in minutes instead of hours. Every inquiry gets a professional, consistent response. Your team stops spending time sorting through messages one by one.",
+          planFit: isLow
+            ? { level: "Free", rationale: "Start free. Paste a few real customer messages into Claude chat and see if the responses save you time before you pay for anything." }
+            : { level: "Pro", rationale: "You will use this every day for incoming messages. Pro gives you the volume you need and lets you save your response instructions in a Project." },
+          startHere: [
+            { step: "Open Claude chat and paste a real customer inquiry — ask it to write a response", url: "https://claude.ai" },
+            { step: "Save your response instructions as a Claude Project so every reply follows the same approach", url: "https://claude.ai/projects" },
+            { step: "Connect your email to Make so new messages get drafted responses automatically", url: "https://www.make.com/en/integrations/gmail" },
+          ],
+        };
+      } else if (signals.schedulingIsManual) {
+        // O3 — Make led: scheduling, dispatch, and invoicing triggers
+        rec = {
+          recommendationTitle: "Automate What Happens After Each Job",
+          operationalProblem: problem,
+          primaryCapability: { name: "Make", product: "make", label: "Make" },
+          secondaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          whyThisFits: `The core problem is timing — work gets finished but the next steps do not happen automatically. Make watches for triggers in ${toolContext} (job marked complete, new request comes in) and kicks off the next step: send the invoice, schedule the follow-up, notify the customer. Claude chat helps where a message needs to be written or a decision needs to be made.`,
+          aiApproach: [
+            "Map out the steps that should happen after a job is scheduled or completed — which ones could be triggered automatically?",
+            "Build a Make scenario that watches for completed jobs and triggers the invoice and follow-up",
+            "Add Claude chat as a step where the workflow needs to write a customer message or make a judgment call",
+          ],
+          expectedResult: "Invoices go out the same day the work is done. Follow-ups happen on schedule without anyone remembering to send them. The gap between finishing work and getting paid shrinks.",
+          planFit: isLow
+            ? { level: "Free", rationale: "Start free with Make's trial and Claude's free tier. Get one scheduling automation running before you pay for anything." }
+            : { level: "Pro", rationale: "Running scheduling automations daily with Claude writing customer messages requires a Pro account." },
+          startHere: [
+            { step: "Create a Make account and look at the connectors for your scheduling and invoicing tools", url: "https://www.make.com/en/register" },
+            { step: "Build your first scenario: when a job is marked complete, send the invoice automatically", url: "https://www.make.com/en/integrations" },
+            { step: "Open Claude chat and ask it to write a follow-up message template for completed jobs", url: "https://claude.ai" },
+          ],
+        };
+      } else if (signals.highAdminBurden) {
+        // O4 — Make led: data movement between tools
+        rec = {
+          recommendationTitle: "Stop Moving Data Between Tools by Hand",
+          operationalProblem: problem,
+          primaryCapability: { name: "Make", product: "make", label: "Make" },
+          secondaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          whyThisFits: `With 15+ hours a week going to admin, the biggest win is not writing better — it is moving data between ${toolContext} automatically. Make watches for changes in one tool and updates the others without anyone touching it. Claude chat steps in when the workflow needs to read something, categorize it, or write a summary.`,
+          aiApproach: [
+            `List the top 3 places where you copy data from one tool to another by hand (for example: job management → invoicing → email)`,
+            "Build a Make scenario that connects the first two tools so data flows when something changes",
+            "Add Claude chat as a step where the workflow needs to read, summarize, or categorize information",
+          ],
+          expectedResult: "The 15+ hours of admin work drops significantly because data moves between tools without anyone doing it by hand. Your team stops doing data entry and starts doing the work that actually needs a person.",
+          planFit: { level: "Pro", rationale: "Running multiple automations daily with Claude handling the thinking steps requires a Pro account." },
+          startHere: [
+            { step: "Create a Make account and check which of your tools have ready-made connectors", url: "https://www.make.com/en/register" },
+            { step: "Build your first scenario: connect the two tools you copy data between most often", url: "https://www.make.com/en/integrations" },
+            { step: "Open Claude chat and describe the admin tasks that take the most time — ask it to help prioritize what to automate next", url: "https://claude.ai" },
+          ],
+        };
+      } else {
+        // O5 — Claude chat only: plan before building
+        rec = {
+          recommendationTitle: "Figure Out What to Automate First",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: null,
+          whyThisFits: "Before connecting tools or building anything, the first step is figuring out which task is worth automating. Claude chat helps you think through your daily routine, identify the biggest time sinks, and plan the first automation step by step — no setup required.",
+          aiApproach: [
+            "Open Claude chat and describe your daily routine — ask it to identify which tasks follow a repeatable pattern",
+            "Pick the one that takes the most time and ask Claude chat to outline how you would automate it",
+            "Try the first step by hand using Claude chat before investing in any tools or setup",
+          ],
+          expectedResult: "You have a clear picture of which task to automate first and a step-by-step plan for how to do it — tested with Claude chat before you commit to anything.",
+          planFit: isLow
+            ? { level: "Free", rationale: "Start free. Use Claude chat to plan your first automation before paying for anything." }
+            : { level: "Pro", rationale: "Once you start using Claude chat daily to plan and manage automations, Pro gives you the room for that." },
+          startHere: [
+            { step: "Open Claude chat and describe the task you repeat most often — ask it to break down how to automate it", url: "https://claude.ai" },
+            { step: "Try the first step manually using Claude chat — does the output match what you would have done by hand?", url: "https://claude.ai" },
+            { step: "When you are ready to connect tools, create a Make account", url: "https://www.make.com/en/register" },
+          ],
+        };
+      }
+      break;
+    }
+
+    case "sales": {
+      const problem = signals.salesIsReactive
+        ? `The business waits for customers to reach out and does not have a way to follow up. If someone does not buy on the first conversation, they are usually lost because nobody goes back to them.`
+        : signals.salesIsBasic
+          ? `There is some follow-up, but it is inconsistent. Between day 2 and day 10 after first contact, leads go quiet because there is no system sending messages on a schedule. Every follow-up depends on someone remembering to do it.`
+          : signals.narrowAcquisition
+            ? `New customers come from ${signals.acquisitionChannels.length <= 1 ? "one main source" : "a small number of sources"}. When that source slows down, revenue slows with it. There is no backup.`
+            : `The sales process has some structure, but the important moments — following up after a quote, asking for a review, reaching back out to someone who went quiet — still depend on someone doing it by hand.`;
+
+      if (aboveBaseline) {
+        rec = {
+          recommendationTitle: "Use AI to Win More of the Right Jobs",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "projects", label: "Claude Projects" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Your sales process is already stronger than most businesses your size. Claude Projects keeps your pricing, past proposals, and notes about what worked and what didn't in one place. Before you write a proposal, you ask the Project — it tells you how to position the deal based on what has actually won before. Make pulls in new leads automatically so you always have fresh information to work with.",
+          aiApproach: [
+            "Add your pricing, service descriptions, and notes from recent wins and losses into a Claude Project",
+            "Before writing a proposal, ask the Project what approach is most likely to win based on your history",
+            "Set up Make to pull new lead information into a weekly summary that Claude can review for you",
+          ],
+          expectedResult: "Your proposals get stronger because they are based on what has actually worked, not just memory. You spot opportunities to sell more to existing customers. New leads get reviewed consistently every week.",
+          planFit: isHigh
+            ? { level: "Max", rationale: "Your team is ready to use this across multiple deals every day. Max gives you longer conversations and higher limits for working with large proposals and sales data." }
+            : { level: "Pro", rationale: "Keeping your sales history and pricing in a Project and using it regularly requires a Pro account." },
+          startHere: [
+            { step: "Open Claude chat and paste a recent proposal — ask it to point out what is strongest and what could be better", url: "https://claude.ai" },
+            { step: "Create a Sales Project with your pricing, notes from past wins and losses, and a description of your ideal customer", url: "https://claude.ai/projects" },
+            { step: "Set up a weekly Make scenario that pulls new lead data for Claude to review", url: "https://www.make.com/en/integrations" },
+          ],
+        };
+      } else if (signals.salesIsReactive) {
+        rec = {
+          recommendationTitle: "Stop Losing Leads After First Contact",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Claude chat writes follow-up messages, quote reminders, and review requests — each one written for the specific customer and job. Make sends them on a schedule so they go out without anyone having to remember.",
+          aiApproach: [
+            "Paste a recent quote or inquiry into Claude chat — it writes a follow-up sequence (day 1, day 3, day 7)",
+            "Review the messages and adjust the tone, then set up Make to send them automatically through Gmail",
+            "After completed work, use Claude chat to write a review request for that specific customer",
+          ],
+          expectedResult: "Every lead gets followed up on, on time, every time. Review requests go out after every job. You stop losing deals just because no one remembered to send the second message.",
+          planFit: isLow
+            ? { level: "Free", rationale: "Start free. Use Claude chat on a few real follow-up messages first. If it helps you respond faster and more consistently, move up to Pro." }
+            : { level: "Pro", rationale: "Writing follow-ups for multiple leads every day adds up. Pro gives you the volume and lets you save your templates in a Project." },
+          startHere: [
+            { step: "Open Claude chat and paste a recent customer inquiry — ask it to write a 3-message follow-up sequence", url: "https://claude.ai" },
+            { step: "Save your follow-up templates as a Claude Project so the tone stays consistent", url: "https://claude.ai/projects" },
+            { step: "Connect Gmail to Make so follow-ups go out on a schedule without you sending them", url: "https://www.make.com/en/integrations/gmail" },
+          ],
+        };
+      } else if (signals.salesIsBasic) {
+        // S3 — Make led: follow-up timing and scheduling
+        rec = {
+          recommendationTitle: "Put Your Follow-Ups on Autopilot",
+          operationalProblem: problem,
+          primaryCapability: { name: "Make", product: "make", label: "Make" },
+          secondaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          whyThisFits: "Your team already does some follow-up — the problem is consistency and timing. Make sends messages on a schedule so every lead gets followed up at the right time, automatically. Claude chat writes the messages so they sound personal, not like a mass email.",
+          aiApproach: [
+            "Use Claude chat to write a set of follow-up messages for common situations — after a quote, after a job, after a stalled conversation",
+            "Set up Make to send the right message at the right time: day 2 after a quote, day 7 if no response, day 14 for a final check-in",
+            "After completed work, Make triggers a review request written by Claude chat — specific to that customer and job",
+          ],
+          expectedResult: "Follow-ups go out on time, every time, without anyone remembering to send them. Leads that used to go quiet between day 2 and day 10 now get consistent contact. Your team focuses on closing, not on chasing.",
+          planFit: { level: "Pro", rationale: "Sending follow-ups daily with Claude writing personalized messages requires a Pro account." },
+          startHere: [
+            { step: "Create a Make account and connect your email (Gmail or Outlook)", url: "https://www.make.com/en/register" },
+            { step: "Build your first scenario: when a quote is sent, schedule a follow-up email for 3 days later", url: "https://www.make.com/en/integrations" },
+            { step: "Open Claude chat and write the follow-up message templates — one for day 3, one for day 7, one for day 14", url: "https://claude.ai" },
+          ],
+        };
+      } else if (signals.narrowAcquisition) {
+        // S4 — Claude Projects led: market research and channel diversification
+        rec = {
+          recommendationTitle: "Find New Ways to Reach Customers",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "projects", label: "Claude Projects" },
+          secondaryCapability: null,
+          whyThisFits: `You are relying on ${signals.acquisitionChannels?.length <= 1 ? "one main source" : "a small number of sources"} for new customers. Claude Projects keeps your customer data, your market context, and your acquisition history in one place. You ask it where the best opportunities are and what channels you should test next — based on your actual numbers, not guessing.`,
+          aiApproach: [
+            "Create a Claude Project with your customer list, where each customer came from, and their value to the business",
+            "Ask the Project which customer types are most profitable and where they came from — look for patterns",
+            "Ask Claude to research 2-3 new channels that fit your best customer profile and outline a simple test for each",
+          ],
+          expectedResult: "You have a clear picture of where your best customers come from and a plan to test new channels. Revenue becomes less dependent on a single source.",
+          planFit: { level: "Pro", rationale: "Keeping your customer and market data in a Project for ongoing analysis requires a Pro account." },
+          startHere: [
+            { step: "Create a Claude Project and upload your customer list — include where each one came from if you can", url: "https://claude.ai/projects" },
+            { step: "Ask the Project which customers are most profitable and what they have in common", url: "https://claude.ai/projects" },
+            { step: "Ask Claude to suggest 2-3 new channels that match your best customer profile", url: "https://claude.ai" },
+          ],
+        };
+      } else {
+        // S5 — Claude chat + Make: touchpoint consistency
+        rec = {
+          recommendationTitle: "Make Every Customer Touchpoint Consistent",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Claude chat writes the messages — follow-ups, proposals, review requests, check-ins — each one written for that specific customer. Make sends them at the right time so nothing gets forgotten.",
+          aiApproach: [
+            "Use Claude chat to write follow-up messages after quotes, completed work, and conversations that stalled",
+            "Save your service descriptions and the way you like to sound in a Claude Project so every message matches your voice",
+            "Connect Make to send these messages automatically when a quote has been sitting or a job was just finished",
+          ],
+          expectedResult: "Customers hear from you at every stage — after the quote, after the job, and when it is time to come back. Communication stays professional without anyone spending hours writing messages.",
+          planFit: { level: "Pro", rationale: "Writing customer messages regularly and keeping your brand voice saved in a Project requires a Pro account." },
+          startHere: [
+            { step: "Open Claude chat and describe a deal that went quiet — ask it to write a message to re-open the conversation", url: "https://claude.ai" },
+            { step: "Create a Project with your service list and the way you like to sound in messages", url: "https://claude.ai/projects" },
+            { step: "Set up Make to send a follow-up automatically when a quote has been open for 3+ days", url: "https://www.make.com/en/integrations" },
+          ],
+        };
+      }
+      break;
+    }
+
+    case "data": {
+      const problem = signals.noConsistentTracking
+        ? `There is no regular way to see how the business is doing. Decisions are based on gut feel instead of numbers. If someone wants a report, they have to pull the data together by hand.`
+        : signals.tracksWithSpreadsheets
+          ? `The numbers live in spreadsheets that someone has to update by hand. By the time anyone looks at them, they are usually out of date. There is no automatic way to keep the reports fresh.`
+          : signals.tracksWithAccounting
+            ? `Financial data comes through ${clientTools.includes("QuickBooks") ? "QuickBooks" : "accounting software"}, but other numbers — jobs, sales activity, customer pipeline — are tracked separately or not at all. You can see revenue, but not what is driving it.`
+            : signals.highAdminBurden
+              ? `More than 15 hours a week goes to reporting, data entry, and pulling numbers together. The data is there, but getting it into a useful format is the problem.`
+              : `Data lives in several different tools but none of them talk to each other. Getting a clear picture of how the business is doing means logging into multiple systems and putting the pieces together by hand.`;
+
+      if (aboveBaseline) {
+        rec = {
+          recommendationTitle: "See What Is Coming, Not Just What Happened",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "projects", label: "Claude Projects" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Your data tracking is already better than most businesses your size. Claude Projects keeps your key numbers, targets, and past results in one place. Each week you paste in fresh numbers and it tells you what changed, what looks off, and what to pay attention to. Make pulls the numbers from your tools automatically so you do not have to export them yourself.",
+          aiApproach: [
+            "Add your key metrics, targets, and recent results into a Claude Project",
+            "Each week, paste updated numbers and ask the Project what changed and what to watch",
+            "Set up Make to pull weekly data from your tools automatically so the numbers are always ready",
+          ],
+          expectedResult: "You stop compiling reports by hand and start getting told what matters. Problems show up earlier because you are looking at patterns, not just last month's totals.",
+          planFit: isHigh
+            ? { level: "Max", rationale: "Your team reviews data frequently and works with large exports. Max gives you the longer conversations and higher limits for heavy analytical work." }
+            : { level: "Pro", rationale: "Reviewing your numbers regularly with saved context in a Project requires a Pro account." },
+          startHere: [
+            { step: "Open Claude chat and paste last month's key numbers — ask it what stands out", url: "https://claude.ai" },
+            { step: "Create a Project with your key metrics and targets so it can compare week to week", url: "https://claude.ai/projects" },
+            { step: "Set up Make to pull your weekly numbers from your tools automatically", url: "https://www.make.com/en/integrations" },
+          ],
+        };
+      } else if (signals.noConsistentTracking) {
+        // No tracking at all — start with Claude chat to prove data analysis value
+        rec = {
+          recommendationTitle: "Start Seeing Your Numbers Clearly",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: null,
+          whyThisFits: "Claude chat can read whatever data you have — an exported report, a list of numbers, even a photo of a whiteboard — and tell you what it means in plain language. The first step is getting in the habit of looking at your numbers every week. Automation comes later.",
+          aiApproach: [
+            "Export your most important data (revenue, jobs completed, open quotes) and paste it into Claude chat — ask for a plain-language summary",
+            "Ask Claude chat which 3-5 numbers matter most for a business like yours and how to start tracking them",
+            "Do this weekly until it becomes a habit, then add Make to collect the data for you automatically",
+          ],
+          expectedResult: "For the first time, you have a regular view of how the business is actually doing. Decisions start coming from real numbers instead of gut feel. The habit comes first — the tools follow.",
+          planFit: { level: "Free", rationale: "Start free. The first step is building the habit of looking at your numbers every week. You can upgrade once you are doing it regularly." },
+          startHere: [
+            { step: "Open Claude chat and paste your last week's revenue numbers — ask what they tell you", url: "https://claude.ai" },
+            { step: "Ask Claude chat which numbers matter most for your industry and size", url: "https://claude.ai" },
+            { step: "Bookmark Claude chat and paste your numbers in again next week — the habit is the first step", url: "https://claude.ai" },
+          ],
+        };
+      } else if (signals.tracksWithSpreadsheets) {
+        // Has spreadsheets — bridge to automated pipeline
+        rec = {
+          recommendationTitle: "Get Your Spreadsheets Working for You Automatically",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Claude chat can read your spreadsheets and tell you what matters faster than you can do it by hand. Make pulls fresh numbers from your tools on a schedule so your spreadsheets stay up to date without anyone manually updating them.",
+          aiApproach: [
+            "Upload your current spreadsheet to Claude chat — ask it to summarize what stands out and flag anything unusual",
+            "Ask Claude chat which parts of your reporting you could stop doing by hand",
+            "Set up a Make scenario that pulls data from your tools weekly and puts it in a format Claude can read",
+          ],
+          expectedResult: "You stop spending hours updating spreadsheets by hand. Your numbers are always current. What used to take a morning of work now takes a few minutes of review.",
+          planFit: { level: "Pro", rationale: "Uploading spreadsheets and reviewing data regularly requires a Pro account. You can also save your reporting setup in a Project." },
+          startHere: [
+            { step: "Open Claude chat and upload your most important spreadsheet — ask what stands out", url: "https://claude.ai" },
+            { step: "Save your reporting definitions as a Claude Project so the analysis stays consistent week to week", url: "https://claude.ai/projects" },
+            { step: "Create a Make account to start pulling data from your tools automatically", url: "https://www.make.com/en/register" },
+          ],
+        };
+      } else {
+        rec = {
+          recommendationTitle: "Bring Your Numbers Together in One Place",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "projects", label: "Claude Projects" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: `Claude Projects keeps your business context, the numbers you care about, and what you have seen in the past all in one place. When you paste in fresh data from ${clientTools.includes("QuickBooks") ? "QuickBooks" : "your accounting tools"}, the Project compares it to what it already knows and tells you what is different. Make connects your tools so the data flows in without you pulling it by hand.`,
+          aiApproach: [
+            `Export data from ${clientTools.includes("QuickBooks") ? "QuickBooks" : "your main system"} and paste it into your Claude Project — ask a question about how the business is doing`,
+            "Ask the Project to compare your financial data against your operational numbers — what is driving revenue, where money is leaking",
+            "Set up Make to pull data from your tools automatically every week so it is ready when you need it",
+          ],
+          expectedResult: "For the first time, your financial numbers and your operational numbers are analyzed side by side. You see not just what happened, but why. The data shows up automatically instead of you pulling it by hand.",
+          planFit: { level: "Pro", rationale: "Keeping your business context in a Project and reviewing data regularly requires a Pro account." },
+          startHere: [
+            { step: `Open Claude chat and paste a ${clientTools.includes("QuickBooks") ? "QuickBooks" : "financial"} export — ask what stands out`, url: "https://claude.ai" },
+            { step: "Create a Project with your business context and key numbers so the analysis gets better over time", url: "https://claude.ai/projects" },
+            { step: `Connect ${clientTools.includes("QuickBooks") ? "QuickBooks" : "your accounting tool"} to Make so weekly exports happen automatically`, url: clientTools.includes("QuickBooks") ? "https://www.make.com/en/integrations/quickbooks" : "https://www.make.com/en/integrations" },
+          ],
+        };
+      }
+      break;
+    }
+
+    case "content": {
+      const problem = signals.knowledgeInHeads
+        ? `Important business knowledge lives in people's heads. When someone is out sick, on vacation, or leaves, that knowledge goes with them. There is no written system for how things work.`
+        : signals.knowledgeUnstructured
+          ? `Files and documents exist but they are scattered across shared drives with no real organization. Finding the right document takes longer than it should. Bringing on new team members is slow because nothing is in one place.`
+          : signals.contentNone || signals.contentAdHoc
+            ? `Marketing content — social posts, case studies, email campaigns — gets produced inconsistently or not at all. When it does happen, it takes a lot of time for each piece.`
+            : `Content gets written one piece at a time by hand. There is no way to turn the work you already do (job photos, customer feedback, project results) into marketing without starting from scratch each time.`;
+
+      const isLargerTeam = signals.teamSize && signals.teamSize !== "Just me" && signals.teamSize !== "1 to 5";
+
+      if (aboveBaseline && signals.knowledgeOrganized) {
+        // C1 — Strong content + organized knowledge → scale production
+        rec = {
+          recommendationTitle: "Produce More Content Without Hiring Anyone",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "projects", label: "Claude Projects" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Your content is already better organized than most businesses your size. Claude Projects keeps your brand voice, your best past content, and your messaging notes in one place. When you ask it to write something new — a blog post, a social update, an email — it sounds like you from the start. Make handles the posting schedule so drafts get reviewed and published without extra work.",
+          aiApproach: [
+            "Add your brand voice notes, your best past content, and your customer testimonials into a Claude Project",
+            "Use the Project to write new content — blog posts, social updates, emails — in your established voice",
+            "Set up Make to move finished drafts into your review queue and schedule them for publishing",
+          ],
+          expectedResult: "You put out more content without adding staff. Everything sounds consistent because it all draws from the same source. Publishing happens on schedule instead of whenever someone remembers.",
+          planFit: isHigh
+            ? { level: "Max", rationale: "Your team produces content frequently and works with large documents. Max gives you the longer conversations and higher limits needed for daily production." }
+            : { level: "Pro", rationale: "Producing content regularly with your brand voice saved in a Project requires a Pro account." },
+          startHere: [
+            { step: "Open Claude chat and paste your best-performing post or email — ask it what made it work", url: "https://claude.ai" },
+            { step: "Create a Project with your voice guidelines, sample content, and key messages", url: "https://claude.ai/projects" },
+            { step: "Set up Make to move drafts into your review and publishing workflow", url: "https://www.make.com/en/integrations" },
+          ],
+        };
+      } else if (signals.knowledgeInHeads && isLargerTeam) {
+        // C2a — Claude Cowork: team knowledge capture for larger teams
+        rec = {
+          recommendationTitle: "Get Your Team's Knowledge Written Down — Together",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "cowork", label: "Claude Cowork" },
+          secondaryCapability: null,
+          whyThisFits: "With a team of 6 or more, the knowledge is not just in one person's head — it is scattered across the whole team. Claude Cowork lets multiple people work with Claude at the same time on the same document. Each person describes how their part of the business works, and Claude turns it all into organized documentation that anyone can search and use.",
+          aiApproach: [
+            "Start a Claude Cowork session with your team — each person describes the processes they own",
+            "Claude combines everyone's input into step-by-step guides, organized by department or function",
+            "Review the documentation as a team, fill in gaps, and publish it as your internal reference",
+          ],
+          expectedResult: "What used to live only in people's heads is now written down in one place. New hires get up to speed faster. No single person is the only one who knows how something works.",
+          planFit: { level: "Pro", rationale: "Claude Cowork with your team for ongoing documentation work requires a Pro account." },
+          startHere: [
+            { step: "Open Claude Cowork and invite 1-2 team members to describe how one key process works", url: "https://claude.ai" },
+            { step: "Ask Claude to organize the descriptions into a step-by-step guide with common questions answered", url: "https://claude.ai" },
+            { step: "Create a Claude Project to store the finished documentation so anyone can search it later", url: "https://claude.ai/projects" },
+          ],
+        };
+      } else if (signals.knowledgeInHeads) {
+        rec = {
+          recommendationTitle: "Get What You Know Out of Your Head and Into a System",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "projects", label: "Claude Projects" },
+          secondaryCapability: null,
+          whyThisFits: "Claude Projects works like a living reference guide for your business. You describe how things work — your processes, your rules, what to do when something goes wrong — and Claude organizes it into clear documentation. After that, anyone on the team can ask the Project a question and get the answer instead of interrupting you.",
+          aiApproach: [
+            "Start a Claude Project and describe your top 5 processes — how they work, who does what, and what goes wrong",
+            "Ask Claude to turn those descriptions into step-by-step guides and common-question lists",
+            "When a team member has a question about how to do something, they ask the Project instead of coming to you",
+          ],
+          expectedResult: "What used to live only in your head is now written down and available to the whole team. New people get up to speed faster. You stop being the only person who knows how things work.",
+          planFit: { level: "Pro", rationale: "Building a knowledge base you use regularly and your team relies on requires a Pro account." },
+          startHere: [
+            { step: "Open Claude chat and describe how your most important process works — ask it to turn it into a step-by-step guide", url: "https://claude.ai" },
+            { step: "Create a Knowledge Base Project and add your top processes one at a time", url: "https://claude.ai/projects" },
+            { step: "Have a team member ask the Project a real question to see if it gives a useful answer", url: "https://claude.ai/projects" },
+          ],
+        };
+      } else if (signals.knowledgeUnstructured) {
+        // Messy shared drives → structure first, content second
+        rec = {
+          recommendationTitle: "Turn Your Messy Files into Answers Your Team Can Find",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "projects", label: "Claude Projects" },
+          secondaryCapability: null,
+          whyThisFits: "Claude Projects can read your existing documents and turn them into something your team can actually search. Instead of digging through folders trying to find the right file, your team asks the Project a question and gets the answer — plus a pointer to where the information lives.",
+          aiApproach: [
+            "Create a Claude Project and upload the documents your team asks about most often",
+            "Ask Claude to make a list of what each document covers and what is missing",
+            "Start using the Project as the first place anyone goes when they need to find something",
+          ],
+          expectedResult: "Finding information goes from a 10-minute dig through folders to a 30-second question. Your team stops wasting time looking for files. You can see where your documentation has gaps.",
+          planFit: { level: "Pro", rationale: "Uploading documents and keeping a searchable knowledge base going requires a Pro account." },
+          startHere: [
+            { step: "Open Claude chat and describe the question your team wastes the most time trying to answer", url: "https://claude.ai" },
+            { step: "Create a Knowledge Base Project and upload the 10 documents your team uses most", url: "https://claude.ai/projects" },
+            { step: "Ask the Project a real question that usually takes 10+ minutes to track down — compare the speed", url: "https://claude.ai/projects" },
+          ],
+        };
+      } else if (signals.contentNone) {
+        // No content at all — start with Claude chat, prove the concept
+        rec = {
+          recommendationTitle: "Start Getting Your Work Out There",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: null,
+          whyThisFits: "Claude chat can write a social post, a case study, or a customer email from just a few sentences about what you did. What used to take an hour of writing takes five minutes of review. You do not need a content plan to start — just one finished job and a description of what happened.",
+          aiApproach: [
+            "After a completed job, open Claude chat and describe what you did — ask it to write a social media post",
+            "Ask Claude chat to write a review request email you can send to the customer",
+            "Once you have 3-5 posts, ask Claude chat to sketch out a simple content calendar for next month",
+          ],
+          expectedResult: "You go from posting nothing to posting regularly — without hiring a marketer or spending hours writing. Every job becomes a piece of marketing.",
+          planFit: isLow
+            ? { level: "Free", rationale: "Start free. Write your first few posts with Claude chat to see how it works before paying for anything." }
+            : { level: "Pro", rationale: "Once you are writing content weekly, Pro gives you the room for that and lets you save your voice in a Project." },
+          startHere: [
+            { step: "Open Claude chat and describe your most recent completed job — ask it to write a social post and a review request email", url: "https://claude.ai" },
+            { step: "Adjust the tone, then post it — notice how much faster that was than writing it yourself", url: "https://claude.ai" },
+            { step: "Save the way you like to sound in a Claude Project so future posts match your voice", url: "https://claude.ai/projects" },
+          ],
+        };
+      } else {
+        // Ad-hoc or dedicated content — systematize with Projects + Make
+        rec = {
+          recommendationTitle: "Turn Every Finished Job into Marketing",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Claude chat takes what you already have — job photos, completion notes, customer feedback — and turns it into a finished social post, case study, or review request. A photo and two sentences become a ready-to-post piece. Make moves the finished content where it needs to go so you do not have to do it by hand.",
+          aiApproach: [
+            "After each completed job, paste your notes and photos into Claude chat — it writes a social post and a review request",
+            "Save the way you like to sound and your content templates in a Claude Project so everything stays consistent",
+            "Set up Make to send completed job information to Claude automatically and put the drafts in your review queue",
+          ],
+          expectedResult: "Content gets produced as a side effect of doing the work, not as a separate task. You go from sporadic posting to consistent output. Each finished job creates marketing for the next one.",
+          planFit: { level: "Pro", rationale: "Writing content regularly and keeping your brand voice saved in a Project requires a Pro account." },
+          startHere: [
+            { step: "Open Claude chat and describe a recently completed job — ask it to write a social media post", url: "https://claude.ai" },
+            { step: "Create a Project with the way you like to sound and any templates you use", url: "https://claude.ai/projects" },
+            { step: "Set up Make to send completed job info to Claude and put drafts in your review queue", url: "https://www.make.com/en/integrations" },
+          ],
+        };
+      }
+      break;
+    }
+
+    case "technology": {
+      const problem = signals.techResistant
+        ? `The team does not want more technology. The tools you have are not fully used. Anything new has to be invisible — no new dashboards, no new logins, no learning curve.`
+        : signals.techCautious
+          ? `The team is open to trying new tools but cautious. New things work best when they fit into how people already work instead of asking them to change. Past attempts at new tools have had mixed results.`
+          : signals.aiNone
+            ? `The business has not tried AI. The team may not know what AI can actually do for a business like this, or they may think it is more complicated than it is.`
+            : signals.aiExperimented
+              ? `The team has tried AI a few times but has not made it part of the daily routine. There is interest, but no regular habit yet.`
+              : `The tools you use are fine, but they do not talk to each other. Each one works on its own, and information does not move between them automatically.`;
+
+      if (aboveBaseline && isHigh) {
+        // High readiness + above baseline → advanced: Projects + Make
+        rec = {
+          recommendationTitle: "Run Your Business from One Place Instead of Many",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "projects", label: "Claude Projects" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: "Your team is already comfortable with technology and ready for more. Claude Projects gives you one place to ask questions about your data, write content, and check on how things are running — instead of logging into five different tools. Make moves the information between those tools automatically so everything stays in sync.",
+          aiApproach: [
+            "Create a Claude Project for each area of the business — sales, operations, content",
+            "Set up Make to pull data from all your connected tools and keep it flowing into your Projects",
+            "Every week, ask Claude to review the numbers and write a summary of what matters and what to do next",
+          ],
+          expectedResult: "Instead of logging into multiple tools to figure out how the business is doing, you ask one place and get the answer. Decisions happen faster because the analysis is already done.",
+          planFit: { level: "Max", rationale: "Using multiple Projects with large documents every day across your team gets the most out of Max, which gives you longer conversations and higher limits." },
+          startHere: [
+            { step: "Open Claude chat and ask it how your current tools could work together better", url: "https://claude.ai" },
+            { step: "Create a Project for the area of your business that needs the most attention right now", url: "https://claude.ai/projects" },
+            { step: "Build a Make scenario connecting your two most-used tools so data flows between them", url: "https://www.make.com/en/integrations" },
+          ],
+        };
+      } else if (aboveBaseline) {
+        // Above baseline but not high readiness → Make-led integration focus
+        rec = {
+          recommendationTitle: "Get Your Tools Talking to Each Other",
+          operationalProblem: `Your technology is solid, but ${toolContext} each work on their own. The opportunity is connecting what you already have so information flows between tools automatically.`,
+          primaryCapability: { name: "Make", product: "make", label: "Make" },
+          secondaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          whyThisFits: "Your tools are good. The problem is they do not talk to each other. Make connects them so information moves between tools automatically — no new apps to learn, no new logins. Claude chat helps where the workflow needs someone to read something, make a decision, or write a response.",
+          aiApproach: [
+            "List which of your tools need to share information with each other — find the top 3 places where you copy data by hand",
+            "Build a Make scenario connecting your two busiest tools so data flows between them automatically",
+            "Add Claude chat as a step where the workflow needs a decision, a summary, or something written",
+          ],
+          expectedResult: "Your tools start working as one system instead of separate pieces. You stop copying information between them by hand. Your team keeps using the tools they already know.",
+          planFit: { level: "Pro", rationale: "Connecting multiple tools with Claude doing the thinking steps is daily work. Pro gives you the access for that." },
+          startHere: [
+            { step: "Create a Make account and look at what integrations are available for your tools", url: "https://www.make.com/en/register" },
+            { step: "Build your first scenario: connect your two most-used tools with a simple trigger and action", url: "https://www.make.com/en/integrations" },
+            { step: "Open Claude chat and describe something that is hard to connect — ask it to help you figure out the workflow", url: "https://claude.ai" },
+          ],
+        };
+      } else if (signals.techResistant || signals.aiNone) {
+        rec = {
+          recommendationTitle: "Try AI on One Real Task — No Setup Required",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: null,
+          whyThisFits: "Claude chat works like a text conversation — no software to install, no dashboard to learn, no training needed. You type what you need in plain English and it gives you a useful result. This is the easiest way to see what AI can do without asking anyone to change how they work.",
+          aiApproach: [
+            "Pick one task your team does every week — writing a customer email, summarizing a job, drafting a document",
+            "Do it in Claude chat instead — compare the result to doing it by hand",
+            "If it works well, try a second task. Build confidence before adding anything else",
+          ],
+          expectedResult: "Your team sees firsthand that AI can do useful work. It feels like typing, not like learning new software. That experience makes the next step much easier.",
+          planFit: { level: "Free", rationale: "Start free. No commitment. Upgrade only after your team sees it work on a real task." },
+          startHere: [
+            { step: "Open Claude chat and type something you would normally do by hand — a customer email, a job summary, a status update", url: "https://claude.ai" },
+            { step: "Try a different task the next day — notice what Claude chat does well", url: "https://claude.ai" },
+            { step: "Show a team member and let them try their own task", url: "https://claude.ai" },
+          ],
+        };
+      } else {
+        // Cautious or experimented — Claude chat + Make, building toward regular use
+        rec = {
+          recommendationTitle: "Connect the Tools You Already Use",
+          operationalProblem: problem,
+          primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+          secondaryCapability: { name: "Make", product: "make", label: "Make" },
+          whyThisFits: `Your team already uses ${toolContext}, but each one works on its own. Make connects them so information moves between tools automatically. Claude chat helps where the workflow needs reading, writing, or a decision. Together they turn separate tools into one system.`,
+          aiApproach: [
+            "Figure out where information gets stuck between your tools — what do you end up copying or re-entering by hand?",
+            "Build one Make scenario connecting your two busiest tools, with Claude chat handling the steps that need thinking or writing",
+            "Once the first connection works, add the next pair of tools",
+          ],
+          expectedResult: "Your tools start working together instead of separately. You stop copying data between systems by hand. Your team keeps using what they know while Make and Claude handle the connections.",
+          planFit: { level: "Pro", rationale: "Connecting your tools and using Claude for the thinking steps is regular work. Pro gives you the daily access for that." },
+          startHere: [
+            { step: "Open Claude chat and describe which of your tools need to share information — ask it to help plan the connections", url: "https://claude.ai" },
+            { step: "Create a Make account and look at what integrations exist for your tools", url: "https://www.make.com/en/register" },
+            { step: "Build your first scenario: connect your two most-used tools with a simple trigger and action", url: "https://www.make.com/en/integrations" },
+          ],
+        };
+      }
+      break;
+    }
+
+    default:
+      rec = {
+        recommendationTitle: "Start Using AI on Your Most Repetitive Work",
+        operationalProblem: "There are tasks in this area that follow the same pattern every time. AI can take over the repetitive parts.",
+        primaryCapability: { name: "Claude", product: "chat", label: "Claude chat" },
+        secondaryCapability: { name: "Make", product: "make", label: "Make" },
+        whyThisFits: "Claude chat does the thinking and writing — reading information, deciding what matters, drafting the output. Make moves data between your tools so work does not get stuck.",
+        aiApproach: [
+          "Find the task in this area that takes the most time and follows the same pattern",
+          "Try it in Claude chat to see if AI does a good job with the core work",
+          "Build a Make scenario to trigger and deliver the work automatically",
+        ],
+        expectedResult: "The repetitive work takes less time and comes out more consistent. You focus on the parts that actually need a person.",
+        planFit: { level: "Pro", rationale: "Using this regularly requires a Pro account for the daily volume." },
+        startHere: [
+          { step: "Open Claude chat and describe the biggest time sink in this area", url: "https://claude.ai" },
+          { step: "Ask Claude chat to outline how to automate it step by step", url: "https://claude.ai" },
+          { step: "Create a Make account to start connecting your tools", url: "https://www.make.com/en/register" },
+        ],
+      };
+  }
+
+  return rec;
+}
+
+// ── 11. Engine Entry Point ──────────────────────────────────────
 // Consumes raw answers + calculated scores.
 // Returns the full engine output to be merged into the report object.
 
@@ -1258,6 +1895,15 @@ export function buildEngineOutput(answers, calculatedScores, clientTools, _legac
   // 90-Day Roadmap
   const roadmap = generateRoadmap(wins, signals, clientTools);
 
+  // Category tool recommendations (AI-first, signal-driven)
+  const categoryToolRecs = {};
+  CATEGORY_KEYS.forEach(key => {
+    const score = categoryScores[key]?.score ?? 0;
+    categoryToolRecs[key] = generateCategoryToolRec(
+      key, score, categoryBands[key], signals, clientTools, benchmark.categories[key]
+    );
+  });
+
   return {
     signals,
     wins,
@@ -1269,5 +1915,6 @@ export function buildEngineOutput(answers, calculatedScores, clientTools, _legac
     actionPlan,
     risks,
     roadmap,
+    categoryToolRecs,
   };
 }

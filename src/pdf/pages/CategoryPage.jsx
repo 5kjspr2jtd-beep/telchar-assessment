@@ -1,6 +1,6 @@
 // ── Category Page (Light) ────────────────────────────────────
 // One per category. Score header, analysis text,
-// benchmark comparison, recommended tool approach.
+// benchmark comparison, recommended approach (engine-driven).
 // Aims to fit one page per category where composition is strong;
 // allows natural overflow if content needs more room.
 
@@ -9,15 +9,13 @@ import { Page, View, Text, Link } from "@react-pdf/renderer";
 import { C, FONT, SERIF, TYPE, SP } from "../pdfTokens";
 import { PdfAccentStrip, PdfHeader, PdfFooter, PdfSecLabel, PdfRule, PdfDiamondRule, PdfScoreBar, PdfBenchmarkBlock, PdfCard, PdfDiamond } from "../primitives";
 import { scoreColor, scoreTier } from "../../design/telcharDesign";
-import { getCategoryTool } from "../../data/reportData";
 
 export default function CategoryPage({ catKey, data }) {
-  const { co, scores, benchmark: bench, stack, categoryAnalyses } = data;
+  const { co, scores, benchmark: bench, categoryAnalyses, categoryToolRecs } = data;
   const cat = scores.cats.find(c => c.key === catKey);
   if (!cat) return null;
 
-  const rec = getCategoryTool(catKey, cat.score, stack);
-  const tool = rec.tool;
+  const rec = categoryToolRecs?.[catKey] || {};
   const col = scoreColor(cat.score);
 
   // Use engine-generated category analysis
@@ -85,48 +83,92 @@ export default function CategoryPage({ catKey, data }) {
 
       <View style={{ marginTop: 14 }} />
 
-      {/* Recommended approach */}
+      {/* Recommended approach — engine-driven */}
       <PdfSecLabel>Recommended Approach</PdfSecLabel>
       <PdfCard accentColor={C.blue}>
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
-          <Link src={tool.url} style={{ fontFamily: FONT, fontSize: TYPE.subhead - 2, fontWeight: 500, color: C.darkText, textDecoration: "none" }}>
-            {tool.name}
-          </Link>
+          <Text style={{ fontFamily: FONT, fontSize: TYPE.subhead - 2, fontWeight: 500, color: C.darkText }}>
+            {rec.recommendationTitle || "Recommended Approach"}
+          </Text>
           <Text style={{ fontFamily: FONT, fontSize: 7, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", color: C.blue }}>
-            {tool.role}
+            {rec.primaryCapability?.label}{rec.secondaryCapability ? ` + ${rec.secondaryCapability.label}` : ""}
           </Text>
         </View>
 
-        <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300, color: C.dimDark, lineHeight: 1.65, marginBottom: 10 }}>
-          {rec.focus}
+        <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300, color: C.dimDark, lineHeight: 1.65, marginBottom: 8 }}>
+          {rec.operationalProblem}
         </Text>
 
         <PdfRule />
 
-        <Text style={{ fontFamily: FONT, fontSize: 7, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: C.mutedDark, marginBottom: 6 }}>
-          HOW IT APPLIES HERE
+        {/* Why this approach */}
+        <Text style={{ fontFamily: FONT, fontSize: 7, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: C.mutedDark, marginBottom: 4 }}>
+          WHY THIS APPROACH
         </Text>
-        {tool.examples.map((ex, i) => (
+        <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300, color: C.dimDark, lineHeight: 1.6, marginBottom: 8 }}>
+          {rec.whyThisFits}
+        </Text>
+
+        <PdfRule />
+
+        {/* How it works */}
+        <Text style={{ fontFamily: FONT, fontSize: 7, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: C.mutedDark, marginBottom: 6 }}>
+          HOW IT WORKS
+        </Text>
+        {(rec.aiApproach || []).map((step, i) => (
           <View key={i} style={{ flexDirection: "row", gap: 6, marginBottom: 4 }}>
             <View style={{ marginTop: 3 }}>
               <PdfDiamond size={5} fill={C.blue2} />
             </View>
             <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300, color: C.dimDark, lineHeight: 1.55, flex: 1 }}>
-              {ex}
+              {step}
             </Text>
           </View>
         ))}
 
-        {tool.startHere && tool.startHere.length > 0 && (
+        {/* Expected result */}
+        {rec.expectedResult && (
+          <>
+            <PdfRule />
+            <Text style={{ fontFamily: FONT, fontSize: 7, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: C.mutedDark, marginBottom: 4 }}>
+              EXPECTED RESULT
+            </Text>
+            <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300, color: C.dimDark, lineHeight: 1.55, marginBottom: 4 }}>
+              {rec.expectedResult}
+            </Text>
+          </>
+        )}
+
+        {/* Plan fit */}
+        {rec.planFit && (
+          <>
+            <PdfRule />
+            <Text style={{ fontFamily: FONT, fontSize: 7, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: C.mutedDark, marginBottom: 4 }}>
+              RECOMMENDED PLAN
+            </Text>
+            <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 300, color: C.dimDark, lineHeight: 1.55 }}>
+              <Text style={{ fontWeight: 600, color: C.darkText }}>{rec.planFit.level}</Text>
+              {" — "}{rec.planFit.rationale}
+            </Text>
+          </>
+        )}
+
+        {/* Start here */}
+        {rec.startHere && rec.startHere.length > 0 && (
           <>
             <PdfRule />
             <Text style={{ fontFamily: FONT, fontSize: 7, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: C.mutedDark, marginBottom: 6 }}>
               START HERE
             </Text>
-            {tool.startHere.map((link, i) => (
-              <Link key={i} src={link.url} style={{ fontFamily: FONT, fontSize: TYPE.smallBody, color: C.blue, marginBottom: 3, textDecoration: "none" }}>
-                {link.label} →
-              </Link>
+            {rec.startHere.map((link, i) => (
+              <View key={i} style={{ flexDirection: "row", gap: 4, marginBottom: 3 }}>
+                <Text style={{ fontFamily: FONT, fontSize: TYPE.smallBody, fontWeight: 600, color: C.blue }}>
+                  {i + 1}.
+                </Text>
+                <Link src={link.url} style={{ fontFamily: FONT, fontSize: TYPE.smallBody, color: C.blue, textDecoration: "none", flex: 1 }}>
+                  {link.step} →
+                </Link>
+              </View>
             ))}
           </>
         )}

@@ -79,18 +79,6 @@ const DEMO_SCORES = {
     { key: "technology", label: "Technology Readiness",           score: 62 },
   ]
 };
-const DEMO_WINS = [
-  { n: 1, cat: "Data & Performance Visibility", title: "Connect Your Tools into a Single Automated Workflow",
-    desc: "Your data lives in QuickBooks, Gmail, and spreadsheets that don't talk to each other. Make connects them and automates the handoffs — job completed triggers invoice, invoice triggers follow-up, data feeds your dashboard. One platform manages all of it. Setup takes a few hours, not weeks.",
-    time: "1-2 weeks", tool: "Make", toolCost: "From $9/mo" },
-  { n: 2, cat: "Operations Efficiency", title: "Automate Job Completion to Invoice to Follow-Up",
-    desc: "Every completed job should trigger an invoice and a customer follow-up automatically. Build this once in Make. It runs every time, without supervision. Your crew closes the job in the field. QuickBooks and Gmail handle the rest.",
-    time: "1 week", tool: "Make + Claude Pro", toolCost: "~$29/mo total" },
-  { n: 3, cat: "Sales & Customer Experience", title: "Use Claude to Draft Every Customer-Facing Message",
-    desc: "Every quote follow-up, review request, and job summary can be drafted by Claude automatically. Make collects the job details, Claude writes the message, it lands in Gmail ready to send or goes out automatically. Your team stops writing the same emails manually every week.",
-    time: "1-2 weeks", tool: "Make + Claude Pro", toolCost: "~$29/mo total" },
-];
-
 // ── Make template URL builder ────────────────────────────────
 function buildMakeTemplateUrl(scores, clientTools) {
   const weakest = [...scores.cats].sort((a, b) => a.score - b.score)[0];
@@ -189,38 +177,10 @@ function buildStack(scores, clientTools) {
       resources: [
         { label: "What is Claude Code? (plain-English overview)", url: "https://www.anthropic.com/claude-code" },
         { label: "Examples of what Claude Code has built", url: "https://code.claude.com" },
-        { label: "Ask Telchar AI if this fits your business", url: "https://telchar.ai" },
+        { label: "Ask Telchar AI if this fits your business", url: "https://www.telcharai.com/apply" },
       ]
     }
   };
-}
-
-// ── Category → tool recommendation ───────────────────────────
-const CATEGORY_GUIDANCE = {
-  operations: "Scheduling, dispatch, and job-to-invoice handoffs are the highest-friction manual processes in this category. A single Make workflow connecting your field tools to QuickBooks eliminates the most common failure points.",
-  sales:      "Pipeline leakage between day two and day ten post-quote is recoverable without new lead generation. Claude-drafted follow-up sequences running automatically inside Make address this directly.",
-  data:       "Reporting relies on manual compilation. Connecting QuickBooks to a lightweight dashboard layer through Make replaces weekly spreadsheet work with a live view of revenue, margins, and open jobs.",
-  content:    "Customer-facing content is produced inconsistently. Claude running inside Make workflows converts job notes and photos into draft social posts and review requests in under a minute per job.",
-  technology: "Core tools are in place and the team demonstrates adoption capacity. The gap is integration — tools that do not talk to each other create the manual work that Make is designed to eliminate.",
-};
-
-const CATEGORY_TOOL_MAP = {
-  operations: { key: "make",   focus: "Automate job completion → invoice → follow-up. One workflow, runs every time." },
-  sales:      { key: "claude", focus: "Claude drafts every follow-up, quote response, and review request inside Make." },
-  data:       { key: "make",   focus: "Make pulls your data on a schedule. Cowork reads it. You stop compiling spreadsheets." },
-  content:    { key: "claude", focus: "Job photos and notes in → social posts and customer messages out. 20 minutes a week." },
-  technology: { key: "cowork", focus: "Cowork operates your connected tools in plain language. No new UI. Start here." },
-};
-
-export function getCategoryTool(catKey, score, stack) {
-  const high = score < 55;
-  const m = CATEGORY_TOOL_MAP[catKey];
-  if (!m) return null;
-  return { ...m, high, tool: stack[m.key] };
-}
-
-export function getCategoryGuidance(catKey) {
-  return CATEGORY_GUIDANCE[catKey] || "";
 }
 
 // ── Load assessment data from sessionStorage ─────────────────
@@ -344,5 +304,6 @@ export function getReportData(demo = false) {
     actionPlan: engine.actionPlan,
     risks: engine.risks,
     roadmap: engine.roadmap,
+    categoryToolRecs: engine.categoryToolRecs,
   };
 }

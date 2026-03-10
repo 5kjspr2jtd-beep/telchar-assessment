@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, TEXT, LIGHT_TEXT, TYPE, CTA, scoreColor, scoreTier, hexToRgb, Diamond, Rule, SecLabel } from "../design/telcharDesign";
-import { getReportData, getCategoryTool, TIER_MAP, REPORT_NOTES } from "../data/reportData";
+import { getReportData, TIER_MAP, REPORT_NOTES } from "../data/reportData";
 import HamburgerMenu from "../components/HamburgerMenu";
 
 // ─────────────────────────────────────────────────────────────
@@ -13,7 +13,7 @@ import HamburgerMenu from "../components/HamburgerMenu";
 // ── Mutable report data — populated from shared data adapter ──
 // Page components read these module-level variables directly.
 // They are set once per render cycle in the App component via getReportData().
-let CO, IND, CLIENT_TOOLS, SCORES, WINS, STACK, DATE, BENCH, SUMMARY_NARRATIVE, CATEGORY_ANALYSES, ACTION_PLAN, RISKS, ROADMAP;
+let CO, IND, CLIENT_TOOLS, SCORES, WINS, STACK, DATE, BENCH, SUMMARY_NARRATIVE, CATEGORY_ANALYSES, ACTION_PLAN, RISKS, ROADMAP, CATEGORY_TOOL_RECS;
 const BENCHMARK_NOTE = "Reference baselines provide comparison context for businesses of similar industry and size. They are not a ceiling on performance or potential value.";
 
 
@@ -543,7 +543,7 @@ function PageActionPlan({ pg, total }) {
     <ReportPage pg={pg} total={total}>
       <SecLabel>30-Day action plan</SecLabel>
       <p style={{ fontFamily:FONT, fontSize:mobile?13:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:28 }}>
-        A practical first-month operating plan built from your top three priorities. Each block has a clear objective, concrete actions, and expected outcome. This plan feeds directly into the full 90-day roadmap.
+        Your first 30 days, broken into three blocks based on your top three priorities. Each block tells you what to do, what tool to use, and what the result should be. This plan is the first month of the full 90-day roadmap.
       </p>
 
       {blocks.map((block, i) => (
@@ -607,8 +607,7 @@ function PageActionPlan({ pg, total }) {
 // ═══════════════════════════════════════════════════════════
 function PageCategory({ catKey, pg, total }) {
   const cat  = SCORES.cats.find(c=>c.key===catKey);
-  const rec  = getCategoryTool(catKey, cat.score, STACK);
-  const tool = rec.tool;
+  const rec  = CATEGORY_TOOL_RECS?.[catKey] || {};
   const w    = useWidth();
   const mobile = w < 640;
 
@@ -672,7 +671,7 @@ function PageCategory({ catKey, pg, total }) {
         </div>
       </div>
 
-      {/* Recommended tool */}
+      {/* Recommended approach — engine-driven */}
       <SecLabel>Recommended approach</SecLabel>
       <div style={{
         ...glassCard,
@@ -681,25 +680,57 @@ function PageCategory({ catKey, pg, total }) {
         padding: "18px 20px",
       }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:8, flexWrap:"wrap", gap:8 }}>
-          <div style={{ fontFamily:FONT, fontSize:18, fontWeight:500, color:P.white }}>{tool.name}</div>
-          <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:P.blue2 }}>{tool.role}</div>
+          <div style={{ fontFamily:FONT, fontSize:18, fontWeight:500, color:P.white }}>{rec.recommendationTitle}</div>
+          <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:P.blue2 }}>
+            {rec.primaryCapability?.label}{rec.secondaryCapability ? ` + ${rec.secondaryCapability.label}` : ""}
+          </div>
         </div>
-        <p style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:P.dim, lineHeight:1.75, margin:"0 0 14px" }}>{rec.focus}</p>
+        <p style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:P.dim, lineHeight:1.75, margin:"0 0 14px" }}>{rec.operationalProblem}</p>
+
+        {/* Why this capability fits */}
         <div style={{ borderTop:`1px solid ${P.linedark}`, paddingTop:12 }}>
-          <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:8 }}>HOW IT APPLIES HERE</div>
-          {tool.examples.map((ex,i)=>(
+          <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:8 }}>WHY THIS APPROACH</div>
+          <p style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:P.dim, lineHeight:1.75, margin:"0 0 14px" }}>{rec.whyThisFits}</p>
+        </div>
+
+        {/* AI approach steps */}
+        <div style={{ borderTop:`1px solid ${P.linedark}`, paddingTop:12 }}>
+          <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:8 }}>HOW IT WORKS</div>
+          {(rec.aiApproach || []).map((step,i)=>(
             <div key={i} style={{ display:"flex", gap:8, marginBottom:6 }}>
               <Diamond size={9} fill={P.blue2} stroke="none" sw={0} style={{ marginTop:3 }}/>
-              <span style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:P.dim, lineHeight:1.6 }}>{ex}</span>
+              <span style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:P.dim, lineHeight:1.6 }}>{step}</span>
             </div>
           ))}
         </div>
-        {tool.startHere && (
+
+        {/* Expected result */}
+        {rec.expectedResult && (
+          <div style={{ borderTop:`1px solid ${P.linedark}`, paddingTop:12, marginTop:4 }}>
+            <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:6 }}>EXPECTED RESULT</div>
+            <p style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:P.dim, lineHeight:1.65, margin:0 }}>{rec.expectedResult}</p>
+          </div>
+        )}
+
+        {/* Plan fit */}
+        {rec.planFit && (
           <div style={{ borderTop:`1px solid ${P.linedark}`, paddingTop:12, marginTop:12 }}>
-            <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:8 }}>Start here</div>
-            {tool.startHere.map((link,i)=>(
-              <div key={i} style={{ marginBottom:6 }}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer" style={{ fontFamily:FONT, fontSize:13, color:"#4a80f5", textDecoration:"none", lineHeight:1.6 }}>{link.label}</a>
+            <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:6 }}>RECOMMENDED PLAN</div>
+            <p style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:P.dim, lineHeight:1.65, margin:0 }}>
+              <span style={{ fontWeight:600, color:P.white }}>{rec.planFit.level}</span>
+              {" — "}{rec.planFit.rationale}
+            </p>
+          </div>
+        )}
+
+        {/* Start here */}
+        {rec.startHere && rec.startHere.length > 0 && (
+          <div style={{ borderTop:`1px solid ${P.linedark}`, paddingTop:12, marginTop:12 }}>
+            <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, marginBottom:8 }}>START HERE</div>
+            {rec.startHere.map((link,i)=>(
+              <div key={i} style={{ display:"flex", gap:8, marginBottom:6 }}>
+                <span style={{ fontFamily:FONT, fontSize:13, fontWeight:600, color:P.blue2, flexShrink:0 }}>{i+1}.</span>
+                <a href={link.url} target="_blank" rel="noopener noreferrer" style={{ fontFamily:FONT, fontSize:13, color:"#4a80f5", textDecoration:"none", lineHeight:1.6 }}>{link.step}</a>
               </div>
             ))}
           </div>
@@ -720,7 +751,7 @@ function PageRoadmap({ pg, total }) {
     <ReportPage pg={pg} total={total}>
       <SecLabel>90-Day implementation roadmap</SecLabel>
       <p style={{ fontFamily:FONT, fontSize:mobile?13:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:32 }}>
-        Structured as five progressive phases: setup, pilot, expansion, stabilization, and measurement. Each phase builds on the prior without disrupting operational continuity. Implementation is scoped, milestone-driven, and delivered by Telchar AI in collaboration with your team.
+        A 12-week plan broken into five phases: get set up, run your first automation, add more, clean up, and measure results. Each phase builds on the one before it, so nothing changes too fast. Telchar AI works with your team to keep things on track.
       </p>
 
       {phases.map((ph,i)=>(
@@ -743,7 +774,7 @@ function PageRoadmap({ pg, total }) {
               display:"flex", alignItems:"center", justifyContent:"center",
               fontFamily:FONT, fontSize:11, fontWeight:700, color:ph.accentColor, marginBottom:10,
             }}>{ph.phaseNum}</div>
-            <div style={{ fontFamily:FONT, fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:ph.accentColor, marginBottom:6 }}>{ph.phase}</div>
+            <div style={{ fontFamily:FONT, fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:ph.accentColor, marginBottom:6 }}>{ph.window}</div>
             <div style={{ fontFamily:FONT, fontSize:17, fontWeight:500, color:P.white, marginBottom:8 }}>{ph.label}</div>
             {ph.goal && <div style={{ fontFamily:SERIF, fontSize:12, fontStyle:"italic", color:"rgba(255,255,255,0.35)", lineHeight:1.6 }}>{ph.goal}</div>}
           </div>
@@ -770,8 +801,8 @@ function PageRisk({ pg, total }) {
   const riskCount = risks.length;
   const hasHigh = risks.some(r => r.severity === "High");
   const introText = hasHigh
-    ? `${riskCount} implementation risks identified based on assessment findings. ${risks.filter(r=>r.severity==="High").length === 1 ? "One requires" : "Some require"} active mitigation. All are manageable within a structured engagement.`
-    : `${riskCount} implementation risks identified based on assessment findings. All are manageable within a structured engagement. None represent blockers.`;
+    ? `Based on your answers, we identified ${riskCount} things that could slow down implementation. ${risks.filter(r=>r.severity==="High").length === 1 ? "One needs" : "Some need"} attention early. All of them are manageable — here is what to watch for and what to do about each one.`
+    : `Based on your answers, we identified ${riskCount} things that could slow down implementation. None of them are serious, but they are worth knowing about. Here is what to watch for and what to do about each one.`;
   return (
     <ReportPage pg={pg} total={total}>
       <SecLabel>Risk analysis</SecLabel>
@@ -811,20 +842,20 @@ function PageRisk({ pg, total }) {
 // ═══════════════════════════════════════════════════════════
 function PageDataInfra({ pg, total }) {
   const layers = [
-    { num:"01", title:"Source systems", accentColor:"#2563eb", accentRgb:"37,99,235",
-      desc:"QuickBooks (financial), Gmail (communications), Google Calendar (scheduling). These are the authoritative data sources. All automation reads from and writes to these systems." },
-    { num:"02", title:"Integration layer", accentColor:"#22c55e", accentRgb:"34,197,94",
-      desc:"Make connects the source systems and routes data between them on a defined schedule or trigger. No data is duplicated manually — it flows through Make automatically." },
-    { num:"03", title:"Intelligence layer", accentColor:"#a855f7", accentRgb:"168,85,247",
-      desc:"Claude receives structured inputs from Make (job details, customer records, financial summaries) and produces outputs (drafted messages, summaries, analysis). Outputs are delivered back through Make." },
-    { num:"04", title:"Visibility layer", accentColor:"#f59e0b", accentRgb:"245,158,11",
-      desc:"A lightweight dashboard (Looker Studio or equivalent, cost: $0) pulls from QuickBooks and Make data to provide a live view of business performance without manual compilation." },
+    { num:"01", title:"Your business tools", accentColor:"#2563eb", accentRgb:"37,99,235",
+      desc:"QuickBooks (financial), Gmail (communications), Google Calendar (scheduling). These are the tools where your real data lives. Every automation reads from and writes back to these systems — they stay your single source of truth." },
+    { num:"02", title:"Connections between tools", accentColor:"#22c55e", accentRgb:"34,197,94",
+      desc:"Make connects your tools and moves data between them automatically — on a schedule or when something happens (like a new order or a completed job). No one has to copy and paste information from one tool to another." },
+    { num:"03", title:"AI that reads and writes for you", accentColor:"#a855f7", accentRgb:"168,85,247",
+      desc:"Claude gets information from Make (job details, customer records, financial summaries) and produces useful output — drafted emails, summaries, or analysis. The results are sent back through Make to wherever they need to go." },
+    { num:"04", title:"A dashboard so you can see what is happening", accentColor:"#f59e0b", accentRgb:"245,158,11",
+      desc:"A free dashboard (Looker Studio or similar) pulls from your tools and Make to show you how the business is performing — without anyone having to build a report by hand." },
   ];
   return (
     <ReportPage pg={pg} total={total}>
       <SecLabel>Data infrastructure plan</SecLabel>
       <p style={{ fontFamily:FONT, fontSize:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:28 }}>
-        A four-layer data architecture built on tools already in use. No new software subscriptions beyond Make and Claude Pro. Total infrastructure cost under $30 per month.
+        How your tools, automations, AI, and reporting fit together — built on the tools you already use. No new software beyond Make and Claude. Total cost under $30 per month.
       </p>
       {layers.map((l,i)=>(
         <div key={i} style={{
@@ -940,6 +971,7 @@ export default function App({ initialTier = "free", demo = false }) {
   ACTION_PLAN = reportData.actionPlan;
   RISKS = reportData.risks;
   ROADMAP = reportData.roadmap;
+  CATEGORY_TOOL_RECS = reportData.categoryToolRecs;
 
   const mapped = demo ? "full" : (TIER_MAP[initialTier] || "free");
   const [tier, setTier] = useState(mapped);

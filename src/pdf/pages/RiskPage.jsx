@@ -18,8 +18,8 @@ export default function RiskPage({ data }) {
   const hasHigh = riskList.some(r => r.severity === "High");
   const highCount = riskList.filter(r => r.severity === "High").length;
   const introText = hasHigh
-    ? `${riskList.length} implementation risks identified based on assessment findings. ${highCount === 1 ? "One requires" : "Some require"} active mitigation. All are manageable within a structured engagement.`
-    : `${riskList.length} implementation risks identified based on assessment findings. All are manageable within a structured engagement. None represent blockers.`;
+    ? `Based on your answers, we identified ${riskList.length} things that could slow down implementation. ${highCount === 1 ? "One needs" : "Some need"} attention early. All of them are manageable — here is what to watch for and what to do about each one.`
+    : `Based on your answers, we identified ${riskList.length} things that could slow down implementation. None of them are serious, but they are worth knowing about. Here is what to watch for and what to do about each one.`;
 
   return (
     <Page size="A4" style={{

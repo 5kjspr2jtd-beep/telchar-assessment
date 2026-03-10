@@ -8,20 +8,20 @@ import { PdfAccentStrip, PdfHeader, PdfFooter, PdfSecLabel, PdfDiamond } from ".
 
 const LAYERS = [
   {
-    num: "01", title: "Source Systems", accentColor: "#2563eb",
-    desc: "QuickBooks (financial), Gmail (communications), Google Calendar (scheduling). These are the authoritative data sources. All automation reads from and writes to these systems.",
+    num: "01", title: "Your Business Tools", accentColor: "#2563eb",
+    desc: "QuickBooks (financial), Gmail (communications), Google Calendar (scheduling). These are the tools where your real data lives. Every automation reads from and writes back to these systems — they stay your single source of truth.",
   },
   {
-    num: "02", title: "Integration Layer", accentColor: "#22c55e",
-    desc: "Make connects the source systems and routes data between them on a defined schedule or trigger. No data is duplicated manually — it flows through Make automatically.",
+    num: "02", title: "Connections Between Tools", accentColor: "#22c55e",
+    desc: "Make connects your tools and moves data between them automatically — on a schedule or when something happens (like a new order or a completed job). No one has to copy and paste information from one tool to another.",
   },
   {
-    num: "03", title: "Intelligence Layer", accentColor: "#a855f7",
-    desc: "Claude receives structured inputs from Make (job details, customer records, financial summaries) and produces outputs (drafted messages, summaries, analysis). Outputs are delivered back through Make.",
+    num: "03", title: "AI That Reads and Writes for You", accentColor: "#a855f7",
+    desc: "Claude gets information from Make (job details, customer records, financial summaries) and produces useful output — drafted emails, summaries, or analysis. The results are sent back through Make to wherever they need to go.",
   },
   {
-    num: "04", title: "Visibility Layer", accentColor: "#f59e0b",
-    desc: "A lightweight dashboard (Looker Studio or equivalent, cost: $0) pulls from QuickBooks and Make data to provide a live view of business performance without manual compilation.",
+    num: "04", title: "A Dashboard So You Can See What Is Happening", accentColor: "#f59e0b",
+    desc: "A free dashboard (Looker Studio or similar) pulls from your tools and Make to show you how the business is performing — without anyone having to build a report by hand.",
   },
 ];
 
@@ -43,7 +43,7 @@ export default function DataInfraPage({ data }) {
         fontFamily: FONT, fontSize: TYPE.body, fontWeight: 300,
         color: C.dimDark, lineHeight: 1.7, marginBottom: 14,
       }}>
-        A four-layer data architecture built on tools already in use. No new software subscriptions beyond Make and Claude Pro. Total infrastructure cost under $30 per month.
+        How your tools, automations, AI, and reporting fit together — built on the tools you already use. No new software beyond Make and Claude. Total cost under $30 per month.
       </Text>
 
       {LAYERS.map((layer, i) => (
