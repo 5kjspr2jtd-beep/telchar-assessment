@@ -855,7 +855,7 @@ export function generateActionPlan(wins, signals, clientTools) {
       objective: isLowReadiness
         ? `Set up Make, connect your first tool, and map out the first task you are going to automate: ${win1?.title || "highest-priority improvement"}. This week is about understanding the task clearly, not rushing.`
         : `Set up Make, connect your tools, and build the first automated task: ${win1?.title || "highest-priority improvement"}.`,
-      actions: block1Actions,
+      actions: injectGuideRefs(block1Actions, ACTION_PLAN_REFS),
       outcome: block1Outcome,
       tool: win1?.tool || "Make",
     },
@@ -865,7 +865,7 @@ export function generateActionPlan(wins, signals, clientTools) {
       objective: isHighReadiness
         ? `First automated task is running and you are tracking results. Second one is being built: ${win2?.title || "next improvement"}.`
         : `Turn on the first automated task and start planning the second: ${win2?.title || "next improvement"}.`,
-      actions: block2Actions,
+      actions: injectGuideRefs(block2Actions, ACTION_PLAN_REFS),
       outcome: block2Outcome,
       tool: win2?.tool || "Make + Claude chat",
     },
@@ -873,7 +873,7 @@ export function generateActionPlan(wins, signals, clientTools) {
       window: "Days 15 – 30",
       label: isLowReadiness ? "Expand and Measure" : isHighReadiness ? "Add More and Check Results" : "Expand and Measure",
       objective: `Turn on the second automated task and start the third: ${win3?.title || "remaining priority"}. Compare your results to what you had before.`,
-      actions: block3Actions,
+      actions: injectGuideRefs(block3Actions, ACTION_PLAN_REFS),
       outcome: block3Outcome,
       tool: win3?.tool || "Make + Claude chat",
     },
@@ -1173,7 +1173,7 @@ export function generateRoadmap(wins, signals, clientTools) {
         : isHigh
           ? "All your tools are connected, you have picked the top 3 tasks to automate, and the first one is built in test mode."
           : "Accounts are set up, tools are connected, and you have picked the tasks to automate first.",
-      steps: p1Steps,
+      steps: injectGuideRefs(p1Steps, ROADMAP_REFS),
     },
     {
       phaseNum: "02", window: "Week 3 – 4",
@@ -1184,14 +1184,14 @@ export function generateRoadmap(wins, signals, clientTools) {
         : isHigh
           ? "The first automation is running and you are tracking results. The second is being built."
           : "One automation is running with real data and you have notifications set up in case something goes wrong.",
-      steps: p2Steps,
+      steps: injectGuideRefs(p2Steps, ROADMAP_REFS),
     },
     {
       phaseNum: "03", window: "Week 5 – 8",
       label: "Add More and Measure",
       accentColor: PHASE_COLORS[2],
       goal: `Three tasks are automated and you can see a measurable change in ${goalMetric.split(" and ")[0]}.`,
-      steps: p3Steps,
+      steps: injectGuideRefs(p3Steps, ROADMAP_REFS),
     },
     {
       phaseNum: "04", window: "Week 9 – 10",
@@ -1200,14 +1200,14 @@ export function generateRoadmap(wins, signals, clientTools) {
       goal: signals.wantsExit
         ? "All automations are running smoothly, everything is documented, and the business is ready to hand off or review."
         : "All automations are running smoothly, the team knows how everything works, and it is all written down.",
-      steps: p4Steps,
+      steps: injectGuideRefs(p4Steps, ROADMAP_REFS),
     },
     {
       phaseNum: "05", window: "Week 11 – 12",
       label: "Check Results and Plan Ahead",
       accentColor: PHASE_COLORS[4],
       goal: `You have clear ${goalMetric} numbers, you know what to automate next, and the team can keep things running without outside help.`,
-      steps: p5Steps,
+      steps: injectGuideRefs(p5Steps, ROADMAP_REFS),
     },
   ];
 }
@@ -1851,7 +1851,219 @@ function generateCategoryToolRec(catKey, catScore, catBand, signals, clientTools
   return rec;
 }
 
-// ── 11. Engine Entry Point ──────────────────────────────────────
+// ── 11. Implementation Guide Generator ───────────────────────────
+// Practical how-to modules referenced by 30-Day and 90-Day sections.
+// Each module: { id, title, when, steps[] }
+// Only modules actually needed by the report are included.
+
+const GUIDE_MODULES = {
+  "process-mapping": {
+    id: "process-mapping",
+    title: "Process Mapping",
+    when: "The report tells you to map a process, write down the steps in a task, or figure out what to automate first.",
+    steps: [
+      "Open a new spreadsheet in Excel or Google Sheets. Create six columns:\n  A: Step Number  |  B: What Happens  |  C: Who Does It  |  D: How Long (minutes)  |  E: Tools Used  |  F: Could This Be Automated? (Yes / No / Maybe)",
+      "Pick one task — the one your team spends the most time on every week.",
+      "Walk through the task from the very first trigger (\"a new email arrives,\" \"a job is completed\") to the final output (\"invoice is sent,\" \"client is notified\"). Fill in every row. Write what actually happens, not the ideal version.",
+      "Do this for at least five real instances of the task over the course of a week. You will notice variations and exceptions that only show up with real examples.",
+      "Highlight every row where column F says \"Yes\" — those are your automation candidates. Sort them by column D (time) from highest to lowest.",
+      "The top three rows — the ones that take the most time and happen the same way every time — are where you start.",
+    ],
+  },
+  "before-you-automate": {
+    id: "before-you-automate",
+    title: "Before You Automate Anything",
+    when: "You have picked a task to automate and want to make sure it is ready.",
+    steps: [
+      "Ask: does this task happen the same way every time? If people do it differently each time, standardize the process first. Automation copies whatever you give it — including the inconsistencies.",
+      "Ask: is the data this task uses clean and up to date? Check for blank fields, duplicates, and inconsistent formatting (dates written three different ways, names spelled differently). Fix the data before connecting it to an automation.",
+      "Ask: what happens if this automation breaks at 2 AM? If the answer is \"a customer gets a wrong invoice\" or \"a lead gets lost,\" add a human review step. If the answer is \"a spreadsheet row is missing until Monday,\" it is safe to run unattended.",
+      "Ask: do you know what the trigger is, what the output should be, and how you will measure whether it worked? If you cannot answer all three, go back to your process map.",
+      "Run the task manually five more times while checking that every input and output matches what you expect. Only automate a task that you can do perfectly by hand.",
+    ],
+  },
+  "choosing-first-task": {
+    id: "choosing-first-task",
+    title: "Choosing the First Task to Automate",
+    when: "You have a list of tasks and need to decide which one to automate first.",
+    steps: [
+      "Open your process map (or create one — see Process Mapping above).",
+      "For each task, score two things on a 1–5 scale: (1) how much time it takes per week, and (2) how repetitive it is — same steps every time.",
+      "Multiply those two numbers together. The highest score is your best candidate.",
+      "Check: does the task use tools that connect to Make? Go to make.com/en/integrations and search for your tools. If they are not there, pick the next task down.",
+      "Check: if this automation breaks, will it cause a serious problem (wrong invoice, lost customer data)? If yes, pick something lower-stakes for your first automation.",
+      "Your first automation should be: high-time, high-repetition, low-risk, and built on tools that connect.",
+    ],
+  },
+  "using-claude-chat": {
+    id: "using-claude-chat",
+    title: "Using Claude Chat for a Real Task",
+    when: "The report recommends Claude chat for drafting, summarizing, sorting, or answering questions.",
+    steps: [
+      "Go to claude.ai and open a new conversation.",
+      "Start with one real task — not a test. Paste in a real email, real customer message, or real document.",
+      "Tell Claude exactly what you want. Use a prompt like one of these:\n  → \"Rewrite this email as a professional follow-up. Keep it under 100 words.\"\n  → \"Summarize this document in three bullet points for my team.\"\n  → \"Read this customer complaint and draft a response that acknowledges the issue and offers a next step.\"",
+      "Read the output. If it is close but not right, tell Claude what to change: \"Make it shorter,\" \"Use a friendlier tone,\" or \"Add a line about our return policy.\"",
+      "Try the same type of task three more times with different real inputs. You are building your own judgment for when AI is helpful and when it is not.",
+      "If the output is useful at least 3 out of 4 times, this is a task worth using Claude for regularly.",
+    ],
+  },
+  "using-claude-projects": {
+    id: "using-claude-projects",
+    title: "Using Claude Projects to Keep Work Consistent",
+    when: "The report recommends Claude Projects for tasks that need the same context every time — like writing in your brand voice, following a process, or producing a specific format.",
+    steps: [
+      "Open claude.ai and click \"Projects\" in the left sidebar, then \"New Project.\"",
+      "Give it a clear name that describes the job: \"Customer Follow-ups,\" \"Weekly Report Drafting,\" or \"Estimate Review.\"",
+      "In the project instructions, paste your rules. Include: your company's tone (formal, friendly, direct), the format you want (bullet points, numbered list, full paragraphs), any facts Claude should always know (company name, services, policies), and anything Claude should never say.",
+      "Upload 2–3 examples of good output — real emails you have sent, real reports you have written, or real templates your team uses.",
+      "Test it: paste in a new task and check whether the output matches your style and format without extra prompting.",
+      "If the output drifts from what you want, update the project instructions. Add the specific thing it got wrong as a new rule.",
+    ],
+  },
+  "using-claude-cowork": {
+    id: "using-claude-cowork",
+    title: "Using Claude Cowork for Bigger Tasks",
+    when: "The report recommends Claude Cowork — this is for tasks where Claude needs to work through something more complex, like researching a topic, building a plan, or working through a multi-step analysis.",
+    steps: [
+      "Open claude.ai. Claude Cowork is included with Claude Pro — you do not need a separate account.",
+      "Use Cowork when the task has multiple parts that build on each other. Examples: \"Research three competitors and summarize their pricing,\" \"Analyze this spreadsheet and recommend changes,\" or \"Build a 30-day onboarding checklist for new hires.\"",
+      "Give Claude clear context: paste in your data, describe what you are trying to accomplish, and tell it what format you want the output in.",
+      "Cowork lets Claude take more time to think through complex tasks. Let it work through the steps — you will see it reason through the problem before giving you a final answer.",
+      "Review the output in sections. If one part is wrong, ask Claude to redo just that part rather than starting over.",
+      "Save useful outputs to a Claude Project so you can reuse the context and instructions for similar tasks later.",
+    ],
+  },
+  "first-make-workflow": {
+    id: "first-make-workflow",
+    title: "Building Your First Make Workflow",
+    when: "The report recommends connecting two tools with Make to move data automatically.",
+    steps: [
+      "Go to make.com, sign in, and click \"Create a new scenario.\"",
+      "Pick exactly two tools — the one where the work starts (the trigger) and the one where the result should end up (the action). Do not add a third tool yet.",
+      "Set the trigger: what event starts the workflow? A common first pattern:\n  → Trigger: \"New row added to Google Sheets\"\n  → Action: \"Send an email via Gmail\" or \"Create a task in your project tool\"\nThis is a good starter because you can test it just by adding a row.",
+      "Set the action: map each field from the trigger to the right field in the action. Make shows you the available data — click to insert it, do not type it by hand.",
+      "Click \"Run once\" to test with one real row. Check that the email was sent (or the task was created) and that all the data looks correct.",
+      "Run it five more times with different real data. Fix any mapping issues. Only turn on the schedule after five clean runs in a row.",
+    ],
+  },
+  "testing-before-launch": {
+    id: "testing-before-launch",
+    title: "Testing Before You Turn It On",
+    when: "You have built an automation or AI workflow and want to make sure it works before using it for real work.",
+    steps: [
+      "Run the automation manually five times using real data from your business — not test data, not fake names.",
+      "After each run, check the output: Did the right data arrive? Is it formatted correctly? Was anything skipped or duplicated?",
+      "Try one edge case: What happens if a required field is blank? What if a name has an apostrophe or special character? What if the input is much longer than usual?",
+      "If anything fails, fix it and run five more times. Do not move on until you get five clean runs in a row.",
+      "Turn it on with a low-frequency schedule (once per hour or once per day) for the first three days.",
+      "Check results at the end of each day for the first week. Only increase the frequency after three clean days in a row.",
+    ],
+  },
+  "tracking-results": {
+    id: "tracking-results",
+    title: "Tracking Results in a Spreadsheet",
+    when: "The report tells you to track time saved, tasks automated, or results over time.",
+    steps: [
+      "Open a new spreadsheet in Excel or Google Sheets. Create seven columns:\n  A: Date  |  B: Task Name  |  C: Times Run  |  D: Time Before (min)  |  E: Time After (min)  |  F: Time Saved (min)  |  G: Notes",
+      "Fill in one row per automated task per day for the first two weeks. \"Time Before\" is how long the task used to take by hand. \"Time After\" is the time you still spend (reviewing, fixing, checking). \"Times Run\" is how many times the automation ran that day.",
+      "At the end of each week, add up column F — that is your weekly time recovery in minutes.",
+      "After two weeks, calculate your average weekly savings. Multiply the weekly minutes saved by your hourly labor cost divided by 60 to get a weekly dollar value.",
+      "Keep the spreadsheet updated weekly after that — one row per task per week is enough once the pattern is stable.",
+      "This is how you prove the automation is working — to yourself, your team, or anyone who asks whether this was worth doing.",
+    ],
+  },
+};
+
+export function generateImplementationGuide(signals, categoryToolRecs) {
+  const recs = categoryToolRecs || {};
+  const recValues = Object.values(recs);
+
+  // Determine which capabilities are recommended
+  const hasClaudeChat = recValues.some(r =>
+    r.primaryCapability?.product === "chat" || r.secondaryCapability?.product === "chat"
+  );
+  const hasClaudeProjects = recValues.some(r =>
+    r.primaryCapability?.product === "projects" || r.secondaryCapability?.product === "projects"
+  );
+  const hasClaudeCowork = recValues.some(r =>
+    r.primaryCapability?.product === "cowork" || r.secondaryCapability?.product === "cowork"
+  );
+  const hasMake = recValues.some(r =>
+    r.primaryCapability?.product === "make" || r.secondaryCapability?.product === "make"
+  );
+
+  // Build module list — only include what the report actually needs
+  const modules = [];
+  modules.push(GUIDE_MODULES["process-mapping"]);
+  modules.push(GUIDE_MODULES["before-you-automate"]);
+  modules.push(GUIDE_MODULES["choosing-first-task"]);
+
+  if (hasClaudeChat || hasClaudeProjects || hasClaudeCowork) {
+    modules.push(GUIDE_MODULES["using-claude-chat"]);
+  }
+  if (hasClaudeProjects) {
+    modules.push(GUIDE_MODULES["using-claude-projects"]);
+  }
+  if (hasClaudeCowork) {
+    modules.push(GUIDE_MODULES["using-claude-cowork"]);
+  }
+  if (hasMake) {
+    modules.push(GUIDE_MODULES["first-make-workflow"]);
+  }
+
+  modules.push(GUIDE_MODULES["testing-before-launch"]);
+  modules.push(GUIDE_MODULES["tracking-results"]);
+
+  return modules;
+}
+
+// ── 12. Guide Reference Injector ─────────────────────────────────
+// Appends short inline guide references to action plan / roadmap strings.
+
+function injectGuideRefs(items, refs) {
+  return items.map(text => {
+    for (const { match, ref } of refs) {
+      if (text.toLowerCase().includes(match.toLowerCase()) && !text.includes("Implementation Guide")) {
+        return `${text} (See Implementation Guide: ${ref})`;
+      }
+    }
+    return text;
+  });
+}
+
+const ACTION_PLAN_REFS = [
+  { match: "Write down every manual step", ref: "Process Mapping" },
+  { match: "map out the first task", ref: "Process Mapping" },
+  { match: "mapping out the second task", ref: "Process Mapping" },
+  { match: "Build the first automated workflow", ref: "Building Your First Make Workflow" },
+  { match: "Build your first", ref: "Building Your First Make Workflow" },
+  { match: "Build the first automation", ref: "Building Your First Make Workflow" },
+  { match: "Run it with real data", ref: "Testing Before You Turn It On" },
+  { match: "run it a few times before turning it on", ref: "Testing Before You Turn It On" },
+  { match: "Run it 5", ref: "Testing Before You Turn It On" },
+  { match: "Track what is happening", ref: "Tracking Results in a Spreadsheet" },
+  { match: "Compare actual", ref: "Tracking Results in a Spreadsheet" },
+  { match: "Check results daily", ref: "Tracking Results in a Spreadsheet" },
+];
+
+const ROADMAP_REFS = [
+  { match: "List every task your team does", ref: "Process Mapping" },
+  { match: "track how long each recurring task", ref: "Process Mapping" },
+  { match: "write down the steps from start to finish", ref: "Process Mapping" },
+  { match: "Create a free Make.com account", ref: "Building Your First Make Workflow" },
+  { match: "Create a Make.com account", ref: "Building Your First Make Workflow" },
+  { match: "Build the first automation", ref: "Building Your First Make Workflow" },
+  { match: "Run it 5", ref: "Testing Before You Turn It On" },
+  { match: "Turn it on for real", ref: "Testing Before You Turn It On" },
+  { match: "Compare your current", ref: "Tracking Results in a Spreadsheet" },
+  { match: "Check results daily", ref: "Tracking Results in a Spreadsheet" },
+  { match: "Add up the total", ref: "Tracking Results in a Spreadsheet" },
+  { match: "Write down how each automation works", ref: "Process Mapping" },
+  { match: "Finish writing up how every process works", ref: "Process Mapping" },
+];
+
+// ── 13. Engine Entry Point ──────────────────────────────────────
 // Consumes raw answers + calculated scores.
 // Returns the full engine output to be merged into the report object.
 
@@ -1906,6 +2118,9 @@ export function buildEngineOutput(answers, calculatedScores, clientTools, _legac
     );
   });
 
+  // Implementation Guide — only modules needed by this report
+  const implementationGuide = generateImplementationGuide(signals, categoryToolRecs);
+
   return {
     signals,
     wins,
@@ -1918,5 +2133,6 @@ export function buildEngineOutput(answers, calculatedScores, clientTools, _legac
     risks,
     roadmap,
     categoryToolRecs,
+    implementationGuide,
   };
 }

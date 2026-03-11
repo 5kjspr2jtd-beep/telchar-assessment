@@ -28,7 +28,7 @@ export const CATEGORY_KEYS = ["operations", "sales", "data", "content", "technol
 // Two tiers only: Free Diagnostic + AI Action Plan (early access — pricing TBD)
 export const TIERS = {
   free: { key: "free", label: "Free Diagnostic", price: null, pageCount: 3,  sections: ["cover", "summary", "quickWins"] },
-  full: { key: "full", label: "AI Action Plan",  price: 150,  pageCount: 14, sections: ["cover", "summary", "quickWins", "actionPlan", "categories", "roadmap", "risk", "dataInfra", "engagement"] },
+  full: { key: "full", label: "AI Action Plan",  price: 150,  pageCount: 15, sections: ["cover", "summary", "quickWins", "actionPlan", "categories", "roadmap", "risk", "dataInfra", "engagement", "implementationGuide"] },
 };
 
 // Map URL tier params to internal tier names
@@ -47,6 +47,7 @@ export function getSectionVisibility(tier) {
     risk:       isFull,
     dataInfra:  isFull,
     engagement: isFull,
+    implementationGuide: isFull,
   };
 }
 
@@ -305,5 +306,6 @@ export function getReportData(demo = false) {
     risks: engine.risks,
     roadmap: engine.roadmap,
     categoryToolRecs: engine.categoryToolRecs,
+    implementationGuide: engine.implementationGuide,
   };
 }

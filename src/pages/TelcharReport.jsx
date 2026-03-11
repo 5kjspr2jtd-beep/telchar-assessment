@@ -13,7 +13,7 @@ import HamburgerMenu from "../components/HamburgerMenu";
 // ── Mutable report data — populated from shared data adapter ──
 // Page components read these module-level variables directly.
 // They are set once per render cycle in the App component via getReportData().
-let CO, IND, CLIENT_TOOLS, SCORES, WINS, STACK, DATE, BENCH, SUMMARY_NARRATIVE, CATEGORY_ANALYSES, ACTION_PLAN, RISKS, ROADMAP, CATEGORY_TOOL_RECS;
+let CO, IND, CLIENT_TOOLS, SCORES, WINS, STACK, DATE, BENCH, SUMMARY_NARRATIVE, CATEGORY_ANALYSES, ACTION_PLAN, RISKS, ROADMAP, CATEGORY_TOOL_RECS, IMPLEMENTATION_GUIDE;
 const BENCHMARK_NOTE = "Reference baselines provide comparison context for businesses of similar industry and size. They are not a ceiling on performance or potential value.";
 
 
@@ -952,6 +952,59 @@ function PageEngagement({ pg, total }) {
 }
 
 // ═══════════════════════════════════════════════════════════
+// PAGE — IMPLEMENTATION GUIDE (full only)
+// ═══════════════════════════════════════════════════════════
+function PageImplementationGuide({ pg, total }) {
+  const w = useWidth();
+  const mobile = w < 640;
+  const modules = IMPLEMENTATION_GUIDE || [];
+
+  return (
+    <ReportPage pg={pg} total={total}>
+      <SecLabel>Implementation guide</SecLabel>
+      <p style={{ fontFamily:FONT, fontSize:mobile?13:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:32 }}>
+        Step-by-step instructions for the tasks referenced in your 30-day action plan and 90-day roadmap. Each section tells you exactly how to do one thing. Start with the ones your plan references, then come back for the rest when you need them.
+      </p>
+
+      {modules.map((mod, i) => (
+        <div key={mod.id} style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderLeft: "3px solid #2563eb",
+          borderRadius: 12,
+          padding: mobile ? "20px 16px" : "24px 28px",
+          marginBottom: 16,
+        }}>
+          <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
+            <div style={{
+              width:28, height:28, borderRadius:7,
+              background: "rgba(37,99,235,0.12)",
+              border: "1px solid rgba(37,99,235,0.35)",
+              display:"flex", alignItems:"center", justifyContent:"center",
+              fontFamily:FONT, fontSize:11, fontWeight:600, color:"#2563eb",
+            }}>{String(i+1).padStart(2,"0")}</div>
+            <div style={{ fontFamily:FONT, fontSize:17, fontWeight:500, color:P.white }}>{mod.title}</div>
+          </div>
+
+          <div style={{ fontFamily:SERIF, fontSize:13, fontStyle:"italic", color:"rgba(255,255,255,0.35)", lineHeight:1.6, marginBottom:14, paddingLeft:40 }}>
+            {mod.when}
+          </div>
+
+          <div style={{ paddingLeft:40 }}>
+            {mod.steps.map((step, j) => (
+              <div key={j} style={{ display:"flex", gap:10, marginBottom:10 }}>
+                <Diamond size={9} fill="#2563eb" stroke="none" sw={0} style={{ marginTop:3, flexShrink:0 }}/>
+                <span style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:"rgba(255,255,255,0.7)", lineHeight:1.7, whiteSpace:"pre-line" }}>{step}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </ReportPage>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
 // APP SHELL — tier gate + navigation
 // ═══════════════════════════════════════════════════════════
 export default function App({ initialTier = "free", demo = false }) {
@@ -972,6 +1025,7 @@ export default function App({ initialTier = "free", demo = false }) {
   RISKS = reportData.risks;
   ROADMAP = reportData.roadmap;
   CATEGORY_TOOL_RECS = reportData.categoryToolRecs;
+  IMPLEMENTATION_GUIDE = reportData.implementationGuide;
 
   const mapped = demo ? "full" : (TIER_MAP[initialTier] || "free");
   const [tier, setTier] = useState(mapped);
@@ -992,7 +1046,7 @@ export default function App({ initialTier = "free", demo = false }) {
   // Build page list based on tier
   const buildPages = (t) => {
     const effectiveTier = demo ? "full" : t;
-    const total = effectiveTier==="full" ? 14 : 3;
+    const total = effectiveTier==="full" ? 15 : 3;
     const pages = [
       { label:"Cover",              node:<PageCover pg={1} total={total} onNext={()=>{ setCur(1); window.scrollTo(0,0); }}/> },
       { label:"Score Summary",      node:<PageSummary pg={2} total={total} tier={effectiveTier} onUpgrade={()=>upgrade("full")} demo={demo}/> },
@@ -1010,6 +1064,7 @@ export default function App({ initialTier = "free", demo = false }) {
         { label:"Risk Analysis",    node:<PageRisk       pg={11} total={total}/> },
         { label:"Data Infra",       node:<PageDataInfra  pg={12} total={total}/> },
         { label:"Engagement Path",  node:<PageEngagement pg={13} total={total}/> },
+        { label:"Implementation Guide", node:<PageImplementationGuide pg={14} total={total}/> },
       );
     }
     return pages;

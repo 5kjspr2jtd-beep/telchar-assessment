@@ -17,6 +17,7 @@ import RoadmapPage from "./pages/RoadmapPage";
 import RiskPage from "./pages/RiskPage";
 import DataInfraPage from "./pages/DataInfraPage";
 import EngagementPage from "./pages/EngagementPage";
+import ImplementationGuidePage from "./pages/ImplementationGuidePage";
 
 export default function TelcharPdfDocument({ data }) {
   const { tier } = data;
@@ -43,6 +44,7 @@ export default function TelcharPdfDocument({ data }) {
       {isFull && <RiskPage data={data} />}
       {isFull && <DataInfraPage data={data} />}
       {isFull && <EngagementPage data={data} />}
+      {isFull && <ImplementationGuidePage data={data} />}
     </Document>
   );
 }
