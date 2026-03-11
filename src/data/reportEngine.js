@@ -1859,6 +1859,8 @@ function generateCategoryToolRec(catKey, catScore, catBand, signals, clientTools
 const GUIDE_MODULES = {
   "process-mapping": {
     id: "process-mapping",
+    accent: "#2563eb",
+    category: "PLANNING",
     title: "Process Mapping",
     when: "The report tells you to map a process, write down the steps in a task, or figure out what to automate first.",
     steps: [
@@ -1868,23 +1870,29 @@ const GUIDE_MODULES = {
       "Do this for at least five real instances of the task over the course of a week. You will notice variations and exceptions that only show up with real examples.",
       "Highlight every row where column F says \"Yes\" — those are your automation candidates. Sort them by column D (time) from highest to lowest.",
       "The top three rows — the ones that take the most time and happen the same way every time — are where you start.",
+      "After filling in your spreadsheet, paste it into Claude and ask: \"What steps am I missing? Which of these could be automated?\" Claude can spot gaps and suggest steps you may have overlooked.",
     ],
   },
   "before-you-automate": {
     id: "before-you-automate",
-    title: "Before You Automate Anything",
-    when: "You have picked a task to automate and want to make sure it is ready.",
+    accent: "#2563eb",
+    category: "PLANNING",
+    title: "Automation Readiness Checklist",
+    when: "You have picked a task to automate. Run through these questions before you build anything.",
     steps: [
-      "Ask: does this task happen the same way every time? If people do it differently each time, standardize the process first. Automation copies whatever you give it — including the inconsistencies.",
-      "Ask: is the data this task uses clean and up to date? Check for blank fields, duplicates, and inconsistent formatting (dates written three different ways, names spelled differently). Fix the data before connecting it to an automation.",
-      "Ask: what happens if this automation breaks at 2 AM? If the answer is \"a customer gets a wrong invoice\" or \"a lead gets lost,\" add a human review step. If the answer is \"a spreadsheet row is missing until Monday,\" it is safe to run unattended.",
-      "Ask: do you know what the trigger is, what the output should be, and how you will measure whether it worked? If you cannot answer all three, go back to your process map.",
-      "Run the task manually five more times while checking that every input and output matches what you expect. Only automate a task that you can do perfectly by hand.",
+      "Does this task happen the same way every time? If people do it differently each time, standardize the process first. Automation copies whatever you give it — including the inconsistencies.",
+      "Is the data this task uses clean and up to date? Check for blank fields, duplicates, and inconsistent formatting (dates written three different ways, names spelled differently). Fix the data before connecting it to an automation.",
+      "What happens if this automation breaks at 2 AM? If the answer is \"a customer gets a wrong invoice\" or \"a lead gets lost,\" add a human review step. If the answer is \"a spreadsheet row is missing until Monday,\" it is safe to run unattended.",
+      "Can you state the trigger, the expected output, and how you will measure success? If you cannot answer all three, go back to your process map.",
     ],
   },
   "choosing-first-task": {
     id: "choosing-first-task",
+    accent: "#2563eb",
+    category: "PLANNING",
     title: "Choosing the First Task to Automate",
+    accent: "#2563eb",
+    category: "PLANNING",
     when: "You have a list of tasks and need to decide which one to automate first.",
     steps: [
       "Open your process map (or create one — see Process Mapping above).",
@@ -1897,6 +1905,8 @@ const GUIDE_MODULES = {
   },
   "using-claude-chat": {
     id: "using-claude-chat",
+    accent: "#f59e0b",
+    category: "AI TOOLS",
     title: "Using Claude Chat for a Real Task",
     when: "The report recommends Claude chat for drafting, summarizing, sorting, or answering questions.",
     steps: [
@@ -1910,6 +1920,8 @@ const GUIDE_MODULES = {
   },
   "using-claude-projects": {
     id: "using-claude-projects",
+    accent: "#f59e0b",
+    category: "AI TOOLS",
     title: "Using Claude Projects to Keep Work Consistent",
     when: "The report recommends Claude Projects for tasks that need the same context every time — like writing in your brand voice, following a process, or producing a specific format.",
     steps: [
@@ -1923,6 +1935,8 @@ const GUIDE_MODULES = {
   },
   "using-claude-cowork": {
     id: "using-claude-cowork",
+    accent: "#f59e0b",
+    category: "AI TOOLS",
     title: "Using Claude Cowork for Bigger Tasks",
     when: "The report recommends Claude Cowork — this is for tasks where Claude needs to work through something more complex, like researching a topic, building a plan, or working through a multi-step analysis.",
     steps: [
@@ -1936,6 +1950,8 @@ const GUIDE_MODULES = {
   },
   "first-make-workflow": {
     id: "first-make-workflow",
+    accent: "#22c55e",
+    category: "AUTOMATION",
     title: "Building Your First Make Workflow",
     when: "The report recommends connecting two tools with Make to move data automatically.",
     steps: [
@@ -1949,6 +1965,8 @@ const GUIDE_MODULES = {
   },
   "testing-before-launch": {
     id: "testing-before-launch",
+    accent: "#22c55e",
+    category: "AUTOMATION",
     title: "Testing Before You Turn It On",
     when: "You have built an automation or AI workflow and want to make sure it works before using it for real work.",
     steps: [
@@ -1958,10 +1976,13 @@ const GUIDE_MODULES = {
       "If anything fails, fix it and run five more times. Do not move on until you get five clean runs in a row.",
       "Turn it on with a low-frequency schedule (once per hour or once per day) for the first three days.",
       "Check results at the end of each day for the first week. Only increase the frequency after three clean days in a row.",
+      "If an automation fails after launch, check three things first: (1) Did the input data change format — new columns, blank fields, or unexpected characters? (2) Did one of the connected tools update or change its login? (3) Did the trigger fire but the action fail — check the Make activity log for the specific error. Most failures come from data format changes or expired connections.",
     ],
   },
   "tracking-results": {
     id: "tracking-results",
+    accent: "#8b5cf6",
+    category: "MEASUREMENT",
     title: "Tracking Results in a Spreadsheet",
     when: "The report tells you to track time saved, tasks automated, or results over time.",
     steps: [
@@ -1971,6 +1992,7 @@ const GUIDE_MODULES = {
       "After two weeks, calculate your average weekly savings. Multiply the weekly minutes saved by your hourly labor cost divided by 60 to get a weekly dollar value.",
       "Keep the spreadsheet updated weekly after that — one row per task per week is enough once the pattern is stable.",
       "This is how you prove the automation is working — to yourself, your team, or anyone who asks whether this was worth doing.",
+      "Each week, paste your tracking spreadsheet into Claude and ask: \"What patterns do you see? Am I saving more or less time than last week?\" This turns raw numbers into a simple progress check.",
     ],
   },
 };
@@ -2045,6 +2067,8 @@ const ACTION_PLAN_REFS = [
   { match: "Track what is happening", ref: "Tracking Results in a Spreadsheet" },
   { match: "Compare actual", ref: "Tracking Results in a Spreadsheet" },
   { match: "Check results daily", ref: "Tracking Results in a Spreadsheet" },
+  { match: "Write up every automated task", ref: "Process Mapping" },
+  { match: "Write it down: what triggers", ref: "Process Mapping" },
 ];
 
 const ROADMAP_REFS = [
@@ -2061,6 +2085,9 @@ const ROADMAP_REFS = [
   { match: "Add up the total", ref: "Tracking Results in a Spreadsheet" },
   { match: "Write down how each automation works", ref: "Process Mapping" },
   { match: "Finish writing up how every process works", ref: "Process Mapping" },
+  { match: "AI for one writing or communication task", ref: "Using Claude Chat for a Real Task" },
+  { match: "Add AI to at least one writing", ref: "Using Claude Chat for a Real Task" },
+  { match: "Pick the next 2", ref: "Choosing the First Task to Automate" },
 ];
 
 // ── 13. Engine Entry Point ──────────────────────────────────────

@@ -966,40 +966,64 @@ function PageImplementationGuide({ pg, total }) {
         Step-by-step instructions for the tasks referenced in your 30-day action plan and 90-day roadmap. Each section tells you exactly how to do one thing. Start with the ones your plan references, then come back for the rest when you need them.
       </p>
 
-      {modules.map((mod, i) => (
-        <div key={mod.id} style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.07)",
-          borderLeft: "3px solid #2563eb",
-          borderRadius: 12,
-          padding: mobile ? "20px 16px" : "24px 28px",
-          marginBottom: 16,
-        }}>
-          <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
-            <div style={{
-              width:28, height:28, borderRadius:7,
-              background: "rgba(37,99,235,0.12)",
-              border: "1px solid rgba(37,99,235,0.35)",
-              display:"flex", alignItems:"center", justifyContent:"center",
-              fontFamily:FONT, fontSize:11, fontWeight:600, color:"#2563eb",
-            }}>{String(i+1).padStart(2,"0")}</div>
-            <div style={{ fontFamily:FONT, fontSize:17, fontWeight:500, color:P.white }}>{mod.title}</div>
-          </div>
-
-          <div style={{ fontFamily:SERIF, fontSize:13, fontStyle:"italic", color:"rgba(255,255,255,0.35)", lineHeight:1.6, marginBottom:14, paddingLeft:40 }}>
-            {mod.when}
-          </div>
-
-          <div style={{ paddingLeft:40 }}>
-            {mod.steps.map((step, j) => (
-              <div key={j} style={{ display:"flex", gap:10, marginBottom:10 }}>
-                <Diamond size={9} fill="#2563eb" stroke="none" sw={0} style={{ marginTop:3, flexShrink:0 }}/>
-                <span style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:"rgba(255,255,255,0.7)", lineHeight:1.7, whiteSpace:"pre-line" }}>{step}</span>
+      {modules.map((mod, i) => {
+        const ac = mod.accent || "#2563eb";
+        const rgb = hexToRgb(ac);
+        const showCat = i === 0 || mod.category !== modules[i - 1]?.category;
+        const isAiAssist = (id) => !id.startsWith("using-claude") && (s => s.includes("paste") && s.includes("claude"));
+        return (
+          <div key={mod.id}>
+            {showCat && (
+              <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.14em", textTransform:"uppercase", color:ac, marginTop:i===0?0:28, marginBottom:10, paddingLeft:4 }}>
+                {mod.category}
               </div>
-            ))}
+            )}
+            <div style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderLeft: `3px solid ${ac}`,
+              borderRadius: 12,
+              padding: mobile ? "20px 16px" : "24px 28px",
+              marginBottom: 16,
+            }}>
+              <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
+                <div style={{
+                  width:28, height:28, borderRadius:7,
+                  background: `rgba(${rgb},0.12)`,
+                  border: `1px solid rgba(${rgb},0.35)`,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  fontFamily:FONT, fontSize:11, fontWeight:600, color:ac,
+                }}>{String(i+1).padStart(2,"0")}</div>
+                <div style={{ fontFamily:FONT, fontSize:17, fontWeight:500, color:P.white }}>{mod.title}</div>
+              </div>
+
+              <div style={{ fontFamily:SERIF, fontSize:13, fontStyle:"italic", color:"rgba(255,255,255,0.35)", lineHeight:1.6, marginBottom:14, paddingLeft:40 }}>
+                {mod.when}
+              </div>
+
+              <div style={{ paddingLeft:40 }}>
+                {mod.steps.map((step, j) => {
+                  const isTemplate = step.includes("\n");
+                  const stepLower = step.toLowerCase();
+                  const showAiTag = !mod.id.startsWith("using-claude") && stepLower.includes("paste") && stepLower.includes("claude");
+                  return (
+                    <div key={j} style={{
+                      display:"flex", gap:10, marginBottom:10,
+                      ...(isTemplate && { background:`rgba(${rgb},0.04)`, border:`1px solid rgba(${rgb},0.08)`, borderRadius:8, padding:"12px 14px", marginLeft:-14 }),
+                    }}>
+                      <Diamond size={9} fill={ac} stroke="none" sw={0} style={{ marginTop:3, flexShrink:0 }}/>
+                      <span style={{ fontFamily:FONT, fontSize:13, fontWeight:300, color:"rgba(255,255,255,0.7)", lineHeight:1.7, whiteSpace:"pre-line" }}>
+                        {showAiTag && <span style={{ fontFamily:FONT, fontSize:9, fontWeight:600, color:ac, letterSpacing:"0.08em", textTransform:"uppercase", background:`rgba(${rgb},0.10)`, padding:"2px 6px", borderRadius:4, marginRight:8, whiteSpace:"nowrap" }}>AI Assist</span>}
+                        {step}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </ReportPage>
   );
 }
