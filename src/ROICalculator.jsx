@@ -702,7 +702,7 @@ export default function ROICalculator({ embedded = false }) {
 
           {/* Footer note */}
           <div style={{ paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-            <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>No data stored. No email required. Provided by Telchar AI as a free planning resource.</p>
+            <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>No data stored. No email required. Provided by Telchar AI™ as a free planning resource.</p>
           </div>
         </div>
       )}

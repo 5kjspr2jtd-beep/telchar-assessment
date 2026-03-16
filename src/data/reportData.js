@@ -8,6 +8,9 @@
 
 import { buildEngineOutput } from "./reportEngine";
 
+// ── Report version ───────────────────────────────────────────
+export const REPORT_VERSION = "2.0";
+
 // ── Category taxonomy ────────────────────────────────────────
 export const CATEGORY_LABELS = {
   operations: "Operations Efficiency",
@@ -169,7 +172,7 @@ function buildStack(scores, clientTools) {
       color: "#22C55E",
       pricing: "Included with Claude Pro or Max",
       totalNote: "No extra cost on Claude Pro",
-      desc: "Claude Code builds software tools customized to how your business actually works. A job intake form that feeds directly into QuickBooks. A cost estimator your customers can use on your website. A dashboard that shows your 5 most important numbers, updated automatically. You do not build this yourself. Telchar AI scopes it, Claude Code builds it, and you get a tool that fits your workflow exactly — with no monthly seat fee.",
+      desc: "Claude Code builds software tools customized to how your business actually works. A job intake form that feeds directly into QuickBooks. A cost estimator your customers can use on your website. A dashboard that shows your 5 most important numbers, updated automatically. You do not build this yourself. Telchar AI\u2122 scopes it, Claude Code builds it, and you get a tool that fits your workflow exactly — with no monthly seat fee.",
       examples: [
         "Job intake form that feeds directly into QuickBooks — built once, runs forever",
         "Cost estimator on your website — customers get a number, you get a lead",
@@ -178,7 +181,7 @@ function buildStack(scores, clientTools) {
       resources: [
         { label: "What is Claude Code? (plain-English overview)", url: "https://www.anthropic.com/claude-code" },
         { label: "Examples of what Claude Code has built", url: "https://www.anthropic.com/claude-code" },
-        { label: "Ask Telchar AI if this fits your business", url: "https://www.telcharai.com/apply" },
+        { label: "Ask Telchar AI\u2122 if this fits your business", url: "https://www.telcharai.com/apply" },
       ]
     }
   };

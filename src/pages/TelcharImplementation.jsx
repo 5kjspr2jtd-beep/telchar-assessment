@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, Diamond, Rule, SecLabel, TEXT, TYPE, CTA } from "../design/telcharDesign";
 import HamburgerMenu from "../components/HamburgerMenu";
+import { supabase } from "../lib/supabase";
 
 // ============================================================
 // TELCHAR AI — Implementation Support Application
@@ -83,7 +84,7 @@ function AppPage({ children }) {
           fontFamily: FONT, fontSize: 11, fontWeight: 500,
           letterSpacing: "0.2em", textTransform: "uppercase",
           color: "rgba(255,255,255,0.3)",
-        }}>TELCHAR AI &middot; CONFIDENTIAL</span>
+        }}>TELCHAR AI™ &middot; CONFIDENTIAL</span>
       </div>
     </div>
   );
@@ -631,34 +632,98 @@ function sendApplicantConfirmation(email, companyName) {
   });
 }
 
-function sendOwnerNotification(applicationData, fitClassification) {
-  // Stub: In production, POST to /api/email/owner-notification
-  console.log("[Email] Owner notification →", {
-    subject: `New Implementation Application — ${applicationData.q_company} [${fitClassification.toUpperCase()}]`,
-    fit: fitClassification,
-    company: applicationData.q_company,
-    industry: applicationData.q_industry,
-    email: applicationData.q_email,
-    sponsor: applicationData.q_sponsor,
-    timeline: applicationData.q_timeline,
-  });
+function sendOwnerNotification(applicationData, fitClassification, applicationId) {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  if (!supabaseUrl) {
+    console.log("[Telchar] No Supabase URL — skipping application alert email");
+    return;
+  }
+
+  // Build structured answers from SECTIONS for email
+  const sectionAnswers = SECTIONS.map((section) => ({
+    letter: section.letter,
+    label: section.label,
+    fields: section.fields.map((f) => ({
+      id: f.id,
+      label: f.label,
+      value: f.type === "checkbox"
+        ? (applicationData[f.id] ? "Yes" : "No")
+        : (applicationData[f.id] != null ? String(applicationData[f.id]) : ""),
+    })),
+  }));
+
+  fetch(`${supabaseUrl}/functions/v1/notify-application`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      application_id: applicationId,
+      submission_time: new Date().toISOString(),
+      company_name: applicationData.q_company || "",
+      contact_email: applicationData.q_email || "",
+      industry: applicationData.q_industry || "",
+      revenue_range: applicationData.q_revenue || "",
+      employee_count: applicationData.q_employees || "",
+      geography: applicationData.q_geography || "",
+      fit_classification: fitClassification,
+      nda_accepted: true,
+      nda_accepted_at: new Date().toISOString(),
+      nda_signer_email: applicationData.q_email || "",
+      nda_version: "1.0",
+      section_answers: sectionAnswers,
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.ok) console.log("[Telchar] Application alert email sent:", data.email_id);
+      else console.warn("[Telchar] Application alert email skipped:", data.reason);
+    })
+    .catch((err) => console.error("[Telchar] Application alert email failed:", err));
 }
 
 function storeApplication(ndaAgreed, answers, fitClassification) {
-  // Store in sessionStorage for analytics and downstream use
+  const submittedAt = new Date().toISOString();
+  const applicationId = crypto.randomUUID();
   const record = {
-    submittedAt: new Date().toISOString(),
+    submittedAt,
     ndaAccepted: ndaAgreed,
     fitClassification,
     answers,
+    applicationId,
   };
+
+  // sessionStorage (existing behavior)
   try {
     sessionStorage.setItem("telchar_implementation_data", JSON.stringify(record));
-  } catch (e) {
-    // Silent fail in environments without sessionStorage
+  } catch (e) { /* silent */ }
+
+  // Supabase persistence (fire-and-forget)
+  if (supabase) {
+    supabase.from("consulting_applications").insert({
+      id: applicationId,
+      company_name: answers.q_company || "",
+      contact_email: answers.q_email || "",
+      industry: answers.q_industry || null,
+      revenue_range: answers.q_revenue || null,
+      employee_count: answers.q_employees || null,
+      geography: answers.q_geography || null,
+      answers_data: answers,
+      fit_score_class: fitClassification,
+      nda_accepted: ndaAgreed,
+      nda_accepted_at: ndaAgreed ? submittedAt : null,
+      nda_signer_name: null,
+      nda_signer_email: answers.q_email || null,
+      nda_version: "1.0",
+      nda_document_path: null,
+    }).then(({ error }) => {
+      if (error) {
+        console.error("[Telchar] Application save failed:", error);
+      } else {
+        console.log("[Telchar] Application saved — id:", applicationId);
+        try { sessionStorage.setItem("telchar_application_id", applicationId); } catch {}
+      }
+    });
   }
-  // Stub: In production, POST to /api/applications
-  console.log("[Storage] Application stored →", record);
+
   return record;
 }
 
@@ -763,18 +828,18 @@ export default function TelcharImplementation() {
     // Compute fit score internally (not shown to user)
     const fit = scoreFit(answers);
 
-    // Store application data
-    storeApplication(ndaAgreed, answers, fit);
+    // Store application data (returns record with applicationId)
+    const result = storeApplication(ndaAgreed, answers, fit);
 
-    // Send applicant confirmation email
+    // Send applicant confirmation email (stub — out of scope for this pass)
     if (answers.q_email) {
       sendApplicantConfirmation(answers.q_email, answers.q_company || "your company");
     }
 
     // Send owner notification with fit classification
-    sendOwnerNotification(answers, fit);
+    sendOwnerNotification(answers, fit, result.applicationId);
 
-    console.log("Application submitted", { answers, fitClassification: fit });
+    console.log("[Telchar] Application submitted", { applicationId: result.applicationId, fitClassification: fit });
     setStep(3);
   };
 

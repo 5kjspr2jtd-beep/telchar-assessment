@@ -576,8 +576,8 @@ function StepsSection() {
     },
     {
       num: '03',
-      title: 'Preview the full plan',
-      desc: 'Access the AI Action Plan for priority improvements, a 30-day action plan, 90-day roadmap, category analysis, risk guidance, and a downloadable PDF.',
+      title: 'Get the full AI Action Plan',
+      desc: 'Priority improvements, 30-day action plan, 90-day roadmap, category analysis, implementation guide, risk guidance, and a downloadable PDF — $150.',
     },
   ];
 
@@ -850,8 +850,8 @@ function TierSection({ onCTA }) {
     },
     {
       name: 'AI Action Plan',
-      price: 'Early Access',
-      priceNote: 'free during test',
+      price: '$150',
+      priceNote: 'one-time',
       featured: false,
       intent: 'Built for small business owners and executives ready to act.',
       items: [
@@ -912,7 +912,7 @@ function TierSection({ onCTA }) {
               margin: '14px 0 0',
             }}
           >
-            Start free. Preview the full AI Action Plan when you're ready to go deeper.
+            Start free. Get the full AI Action Plan when you're ready to go deeper.
           </p>
         </div>
 
@@ -1076,7 +1076,7 @@ function TierSection({ onCTA }) {
               marginBottom: 6,
             }}
           >
-            Is the full plan free right now?
+            What does the full plan cost?
           </p>
           <p
             style={{
@@ -1088,10 +1088,17 @@ function TierSection({ onCTA }) {
               margin: 0,
             }}
           >
-            Yes. During early access, the full AI Action Plan is available at no cost. Complete the free diagnostic, see your results,
-            and preview the full plan — priority improvements, 30-day action plan, 90-day roadmap, and a downloadable PDF report.
+            The full AI Action Plan is a one-time purchase of $150. Complete the free diagnostic, see your results,
+            and get the full plan — priority improvements, 30-day action plan, 90-day roadmap, implementation guide, and a downloadable PDF report.
           </p>
         </div>
+
+        <p style={{ fontFamily: FONT, fontSize: 11, fontWeight: 300, color: LIGHT_TEXT.muted, marginTop: 16, marginBottom: 0, textAlign: 'center', lineHeight: 1.5 }}>
+          All sales final.{' '}
+          <Link to="/terms" style={{ color: LIGHT_TEXT.muted, textDecoration: 'underline', textUnderlineOffset: '3px' }}>Terms</Link>
+          {' · '}
+          <Link to="/privacy" style={{ color: LIGHT_TEXT.muted, textDecoration: 'underline', textUnderlineOffset: '3px' }}>Privacy</Link>
+        </p>
 
         <div style={{ textAlign: 'center', marginTop: 28 }}>
           <Link
@@ -1522,13 +1529,13 @@ function AboutSection() {
           fontFamily: FONT, fontSize: 12, fontWeight: 600, letterSpacing: '0.22em',
           textTransform: 'uppercase', color: P.blue, marginBottom: 16,
         }}>
-          About Telchar AI
+          About Telchar AI™
         </div>
         <p style={{
           fontFamily: FONT, fontSize: 15, fontWeight: 300, color: LIGHT_TEXT.secondary,
           lineHeight: 1.8, margin: '0 0 16px',
         }}>
-          Telchar AI was developed by an executive leader in management consulting with deep experience helping companies improve operations, technology, and execution.
+          Telchar AI™ was developed by an executive leader in management consulting with deep experience helping companies improve operations, technology, and execution.
         </p>
         <p style={{
           fontFamily: FONT, fontSize: 15, fontWeight: 300, color: LIGHT_TEXT.secondary,
@@ -1807,7 +1814,7 @@ function CTASection({ onCTA }) {
             letterSpacing: '0.04em',
           }}
         >
-          Free. No login. Full plan available during early access.
+          Free diagnostic. No login required. Full AI Action Plan — $150.
         </p>
       </div>
     </section>
@@ -1880,6 +1887,32 @@ function Footer() {
           >
             ROI Calculator
           </a>
+          <Link
+            to="/terms"
+            style={{
+              fontFamily: FONT,
+              fontSize: 12,
+              fontWeight: 400,
+              color: P.dim,
+              letterSpacing: '0.04em',
+              textDecoration: 'none',
+            }}
+          >
+            Terms
+          </Link>
+          <Link
+            to="/privacy"
+            style={{
+              fontFamily: FONT,
+              fontSize: 12,
+              fontWeight: 400,
+              color: P.dim,
+              letterSpacing: '0.04em',
+              textDecoration: 'none',
+            }}
+          >
+            Privacy
+          </Link>
         </div>
         <p
           style={{
@@ -1891,7 +1924,7 @@ function Footer() {
             letterSpacing: '0.04em',
           }}
         >
-          &copy; {new Date().getFullYear()} Telchar AI
+          &copy; {new Date().getFullYear()} Telchar AI™
         </p>
         <p
           style={{

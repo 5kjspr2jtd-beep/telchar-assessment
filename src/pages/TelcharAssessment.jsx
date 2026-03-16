@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, Fragment } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { TELCHAR as P, FONT, SERIF, scoreColor, scoreTier, GOOGLE_FONTS_URL, TEXT, TYPE, CTA, OPTION_CARD } from "../design/telcharDesign";
 import HamburgerMenu from "../components/HamburgerMenu";
+import { supabase } from "../lib/supabase";
+import { REPORT_VERSION } from "../data/reportData";
 
 // ============================================================
 // TELCHAR AI - AI READINESS ASSESSMENT v2
@@ -1085,6 +1087,7 @@ function AssessmentFlow({ onComplete }) {
   const [answers, setAnswers] = useState({});
   const [otherText, setOtherText] = useState("");
   const [error, setError] = useState("");
+  const [contactConsent, setContactConsent] = useState(false);
   const [showEmailSuggestions, setShowEmailSuggestions] = useState(false);
   const emailDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com", "msn.com", "live.com", "protonmail.com", "comcast.net", "att.net", "sbcglobal.net", "verizon.net", "cox.net", "charter.net", "earthlink.net", "mac.com", "me.com"];
   const [fadeState, setFadeState] = useState("in");
@@ -1150,7 +1153,7 @@ function AssessmentFlow({ onComplete }) {
     const updatedAnswers = { ...answers };
     if (QUESTIONS[currentIndex].id === "industry" && answers.industry === "Other") updatedAnswers.industry = `Other: ${otherText}`;
     const nextIdx = findNextIndex(currentIndex, updatedAnswers);
-    if (nextIdx === null) { onComplete(updatedAnswers); return; }
+    if (nextIdx === null) { onComplete({ ...updatedAnswers, contact_consent: contactConsent }); return; }
     animateTo(nextIdx);
   };
 
@@ -1284,6 +1287,26 @@ function AssessmentFlow({ onComplete }) {
                         );
                       })()}
                     </div>
+                  )}
+
+                  {/* Lead capture text + consent checkbox (email question only) */}
+                  {question.id === "contact_email" && (
+                    <>
+                      <p style={{ fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.6, marginTop: 12, fontFamily: FONT }}>
+                        We use your email to deliver your report and follow up if you do not complete the Full AI Action Plan.
+                      </p>
+                      <label style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 14, cursor: "pointer" }}>
+                        <input
+                          type="checkbox"
+                          checked={contactConsent}
+                          onChange={(e) => setContactConsent(e.target.checked)}
+                          style={{ marginTop: 3, accentColor: "#2563eb", flexShrink: 0 }}
+                        />
+                        <span style={{ fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.6, fontFamily: FONT }}>
+                          Optional: You can contact me if my responses suggest a strong fit for Telchar AI™ consulting services.
+                        </span>
+                      </label>
+                    </>
                   )}
 
                   {/* Textarea */}
@@ -1479,7 +1502,7 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
               onMouseOver={e => e.currentTarget.style.borderColor = P.blue}
               onMouseOut={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"}
             >
-              Preview
+              Full Plan
             </button>
           </div>
         )}
@@ -1498,7 +1521,7 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
                 onMouseOver={e => e.currentTarget.style.borderColor = P.blue}
                 onMouseOut={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"}
               >
-                Preview AI Action Plan
+                Get AI Action Plan
               </button>
             </div>
           )}
@@ -1523,11 +1546,10 @@ function ReportSection({ section, defaultOpen = false, locked = false, freeInsig
 // ============================================================
 // RESULTS PAGE
 // ============================================================
-function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, onAdvancedCheckout }) {
+function ResultsPage({ answers, scores, quickWins, tier = "free", onAdvancedCheckout }) {
   const navigate = useNavigate();
   const mobile = useIsMobile();
   const [visible, setVisible] = useState(false);
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [advancedLoading, setAdvancedLoading] = useState(false);
   const [pricingGlow, setPricingGlow] = useState(false);
   const pricingRef = useRef(null);
@@ -1542,11 +1564,6 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
       setPricingGlow(true);
       setTimeout(() => setPricingGlow(false), 1500);
     }
-  };
-
-  const handleCheckout = async () => {
-    setCheckoutLoading(true);
-    try { if (onCheckout) await onCheckout(); } catch (err) { console.error("Checkout error:", err); setCheckoutLoading(false); }
   };
 
   const handleAdvancedCheckout = async () => {
@@ -1618,6 +1635,29 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
               })}
             </div>
 
+            {/* Early CTA — compact conversion block (free tier only) */}
+            {!isPro && (
+              <div style={{ ...GLASS_CARD, padding: mobile ? "24px 16px" : "28px 32px", textAlign: "center", marginTop: 32, marginBottom: 0, borderLeft: "3px solid rgba(37,99,235,0.3)" }}>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(16px,2.5vw,20px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginTop: 0, marginBottom: 8 }}>
+                  Get the full AI Action Plan
+                </h3>
+                <p style={{ fontFamily: FONT, fontSize: 14, fontWeight: 300, color: P.dim, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto", marginBottom: 20 }}>
+                  You're seeing the free diagnostic — your overall score, 5 category scores, and top 3 priorities ranked by impact. The Full AI Action Plan adds the detail behind those priorities, plus a 30-day action plan, 90-day roadmap, deep category analysis, implementation guide, and downloadable branded PDF.
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                  <button onClick={handleAdvancedCheckout} disabled={advancedLoading}
+                    style={{ ...CTA.style, background: advancedLoading ? P.muted : "#2563eb", cursor: advancedLoading ? "default" : "pointer", letterSpacing: "0.10em", margin: 0 }}
+                    onMouseOver={e => { if (!advancedLoading) e.currentTarget.style.background = P.blue2; }}
+                    onMouseOut={e => { if (!advancedLoading) e.currentTarget.style.background = "#2563eb"; }}
+                  >
+                    {advancedLoading ? "Redirecting..." : "Get the Full AI Action Plan \u2014 $150"}
+                  </button>
+                  <button onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px", marginTop: 10, background: "none", border: "none", padding: 0 }}>View sample report</button>
+                </div>
+                <p style={{ fontFamily: FONT, fontSize: 11, fontWeight: 300, color: P.muted, marginTop: 14, marginBottom: 0, lineHeight: 1.5 }}>One-time purchase of $150. All sales final. Recommendations based on your responses; results vary by execution. <Link to="/terms" style={{ color: P.muted, textDecoration: "underline", textUnderlineOffset: "3px" }}>Terms</Link></p>
+              </div>
+            )}
+
             {/* Divider */}
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", margin: "48px 0" }} />
 
@@ -1629,7 +1669,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
                 {answers.company_name ? `${answers.company_name}: AI Readiness Report` : "AI Readiness Report"}
               </h2>
               <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 20, lineHeight: 1.5 }}>
-                {isPro ? "Full breakdown ranked by impact. Your weakest areas appear first." : "Your top priority areas ranked by impact. Preview the full AI Action Plan for all improvements, action plans, and roadmap."}
+                {isPro ? "Full breakdown ranked by impact. Your weakest areas appear first." : "Your top 3 priorities ranked by impact. Click any row for detail."}
               </p>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {generatePDFContent(answers, scores, quickWins).map((section, i) => (
@@ -1648,7 +1688,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
                   Get the full AI Action Plan
                 </h3>
                 <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 28, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
-                  Your free results show where you stand. The AI Action Plan shows what to do, in what order, with what tools.
+                  You're seeing the free diagnostic — your overall score, 5 category scores, and top 3 priorities ranked by impact. The Full AI Action Plan adds the detail behind those priorities, plus a 30-day action plan, 90-day roadmap, deep category analysis, implementation guide, and downloadable branded PDF.
                 </p>
 
                 <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: P.dim, marginBottom: 14, fontFamily: FONT }}>Full AI Action Plan</div>
@@ -1657,23 +1697,23 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
                   onMouseOver={e => { if (!advancedLoading) e.currentTarget.style.background = P.blue2; }}
                   onMouseOut={e => { if (!advancedLoading) e.currentTarget.style.background = "#2563eb"; }}
                 >
-                  {advancedLoading ? "Redirecting..." : "Preview Full AI Action Plan"}
+                  {advancedLoading ? "Redirecting..." : "Get the Full AI Action Plan \u2014 $150"}
                 </button>
                 <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Three priority improvements with tool recommendations, 30-day action plan, 90-day implementation roadmap, deep category analysis, risk and execution guidance, and a downloadable branded PDF.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 8, fontStyle: "italic", maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Generated from your assessment responses. More detailed inputs produce a stronger plan.</p>
                 <p style={{ marginTop: 10 }}>
-                  <span onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px" }}>View sample report</span>
+                  <button onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px", background: "none", border: "none", padding: 0 }}>View sample report</button>
                 </p>
 
                 <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>Early access preview — full pricing coming soon.</p>
+                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.5 }}>One-time purchase of $150. All sales final. Recommendations based on your responses; results vary by execution. <Link to="/terms" style={{ color: P.muted, textDecoration: "underline", textUnderlineOffset: "3px" }}>Terms</Link></p>
                 </div>
               </div>
             )}
 
             {isPro && !isAdvanced && (
               <div style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
-                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>AI Action Plan — Preview Access</h3>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Your AI Action Plan</h3>
                 <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your priority improvements, category analysis, and tool recommendations are available above.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 24, fontStyle: "italic" }}>Generated from your assessment responses. Does not include external company research.</p>
                 <div style={{ paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
@@ -1692,7 +1732,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
 
             {isAdvanced && (
               <div style={{ ...GLASS_CARD, padding: mobile ? "28px 16px" : "40px 32px", textAlign: "center", borderLeft: "3px solid " + P.green, marginBottom: 32 }}>
-                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Full AI Action Plan — Preview Access</h3>
+                <h3 style={{ fontFamily: FONT, fontSize: "clamp(18px,3vw,24px)", fontWeight: 300, color: P.white, lineHeight: 1.3, marginBottom: 12, marginTop: 0 }}>Your Full AI Action Plan</h3>
                 <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 300, color: P.dim, marginBottom: 16, lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>Your complete AI Action Plan — priority improvements, 30-day action plan, 90-day roadmap, category analysis, and implementation guidance — is available above.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginBottom: 16, fontStyle: "italic", maxWidth: 460, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Generated from your assessment responses. Does not include external company research.</p>
               </div>
@@ -1717,7 +1757,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
             </p>
             <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "16px auto", maxWidth: 300 }} />
             <p style={{ fontFamily: FONT, fontSize: 11, fontWeight: 400, color: P.dim, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-              The Telchar AI Readiness Index{"\u2122"} &middot; Scoring methodology proprietary to Telchar AI
+              The Telchar AI Readiness Index{"\u2122"} &middot; Scoring methodology proprietary to Telchar AI™
             </p>
             <p style={{ marginTop: 12 }}>
               <a href="/apply" style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, textDecoration: "underline", textUnderlineOffset: "3px" }}>Learn about implementation support</a>
@@ -1726,7 +1766,12 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onCheckout, on
               <LogoMark />
             </div>
             <p style={{ fontFamily: FONT, fontSize: 10, fontWeight: 300, color: P.muted, marginTop: 12, letterSpacing: "0.02em", lineHeight: 1.5 }}>
-              &copy; {new Date().getFullYear()} Telchar AI. Proprietary framework, report methodology, and materials. No reproduction, redistribution, or commercial reuse without written permission.
+              &copy; {new Date().getFullYear()} Telchar AI™. Proprietary framework, report methodology, and materials. No reproduction, redistribution, or commercial reuse without written permission.
+            </p>
+            <p style={{ fontFamily: FONT, fontSize: 11, fontWeight: 400, color: P.muted, marginTop: 10, letterSpacing: "0.04em" }}>
+              <Link to="/terms" style={{ color: P.muted, textDecoration: "none" }}>Terms</Link>
+              {" · "}
+              <Link to="/privacy" style={{ color: P.muted, textDecoration: "none" }}>Privacy</Link>
             </p>
           </div>
         </div>
@@ -1818,12 +1863,155 @@ export default function TelcharAssessment() {
     console.log("Answers:", finalAnswers);
     console.log("Scores:", calculatedScores);
     console.log("Lead Quality:", lead);
+
+    // Fire-and-forget Supabase save
+    if (supabase) {
+      (async () => {
+        try {
+          // Generate IDs client-side so we don't need .select() (avoids anon SELECT RLS)
+          const submissionId = crypto.randomUUID();
+          const reportToken = crypto.randomUUID();
+
+          const { error: subErr } = await supabase
+            .from("submissions")
+            .insert({
+              id: submissionId,
+              report_token: reportToken,
+              company_name: finalAnswers.company_name || "",
+              contact_name: finalAnswers.contact_name || "",
+              contact_email: finalAnswers.contact_email || "",
+              industry: finalAnswers.industry || null,
+              employee_count: finalAnswers.employee_count || null,
+              overall_score: calculatedScores.overall,
+              scores_data: calculatedScores,
+              lead_quality_score: lead.score,
+              lead_quality_tier: lead.tier,
+              contact_consent: finalAnswers.contact_consent || false,
+              consulting_fit_flag: lead.tier === "HIGH",
+              report_version: REPORT_VERSION,
+            });
+
+          if (subErr) {
+            console.error("[Telchar] Submission save failed:", subErr);
+            return;
+          }
+
+          const sub = { id: submissionId, report_token: reportToken };
+          console.log("[Telchar] Saved to Supabase — submission_id:", sub.id, "report_token:", sub.report_token);
+
+          // Store for report save later
+          try {
+            sessionStorage.setItem("telchar_submission_id", sub.id);
+            sessionStorage.setItem("telchar_report_token", sub.report_token);
+          } catch (e) { /* sessionStorage unavailable */ }
+
+          // Save individual answers — derive from live QUESTIONS array
+          const answerRows = QUESTIONS
+            .filter((q) => finalAnswers[q.id] !== undefined && finalAnswers[q.id] !== null)
+            .map((q) => ({
+              submission_id: sub.id,
+              question_id: q.id,
+              answer_value: Array.isArray(finalAnswers[q.id]) ? finalAnswers[q.id].join(", ") : String(finalAnswers[q.id]),
+              answer_label: q.label || null,
+            }));
+
+          if (answerRows.length > 0) {
+            const { error: ansErr } = await supabase.from("submission_answers").insert(answerRows);
+            if (ansErr) console.error("[Telchar] Answer save failed:", ansErr);
+          }
+
+          // Build full diagnostic answers map from live QUESTIONS array
+          const diagnosticAnswerMap = [];
+          for (const q of QUESTIONS) {
+            const val = finalAnswers[q.id];
+            if (val !== undefined && val !== null) {
+              diagnosticAnswerMap.push({
+                id: q.id,
+                label: q.label,
+                value: Array.isArray(val) ? val.join(", ") : String(val),
+              });
+            }
+          }
+
+          // Send submission alert email (fire-and-forget, server-side via Edge Function)
+          const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+          if (supabaseUrl) {
+            fetch(`${supabaseUrl}/functions/v1/notify-submission`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                submission_id: sub.id,
+                report_token: sub.report_token,
+                submission_time: new Date().toISOString(),
+                contact_name: finalAnswers.contact_name || "",
+                contact_email: finalAnswers.contact_email || "",
+                company_name: finalAnswers.company_name || "",
+                industry: finalAnswers.industry || "",
+                employee_count: finalAnswers.employee_count || "",
+                overall_score: calculatedScores.overall,
+                top_priorities: wins.slice(0, 3).map((w) => w.title),
+                lead_quality_tier: lead.tier,
+                consulting_fit_flag: lead.tier === "HIGH",
+                contact_consent: finalAnswers.contact_consent || false,
+                diagnostic_answers: diagnosticAnswerMap,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.ok) console.log("[Telchar] Submission alert email sent:", data.email_id);
+                else console.warn("[Telchar] Submission alert email skipped:", data.reason);
+              })
+              .catch((err) => console.error("[Telchar] Submission alert email failed:", err));
+          }
+        } catch (err) {
+          console.error("[Telchar] Supabase save error:", err);
+        }
+      })();
+    }
+
     setPage("results");
     window.scrollTo(0, 0);
   };
 
-  const handleCheckout = () => { navigate("/report?tier=report"); };
-  const handleAdvancedCheckout = () => { navigate("/report?tier=plan"); };
+  const handleAdvancedCheckout = async () => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    let submissionId, reportToken, contactEmail;
+    try {
+      submissionId = sessionStorage.getItem("telchar_submission_id");
+      reportToken = sessionStorage.getItem("telchar_report_token");
+      const saved = sessionStorage.getItem("telchar_assessment_data");
+      if (saved) {
+        const data = JSON.parse(saved);
+        contactEmail = data.answers?.contact_email || "";
+      }
+    } catch (e) { /* ignore */ }
+
+    // If Supabase save hasn't completed yet or is not configured, fall back to free report
+    if (!supabaseUrl || !submissionId || !reportToken) {
+      console.warn("[Telchar] Cannot create checkout — missing submission data, opening free report");
+      navigate("/report?tier=free");
+      return;
+    }
+
+    const res = await fetch(`${supabaseUrl}/functions/v1/create-checkout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        submission_id: submissionId,
+        report_token: reportToken,
+        contact_email: contactEmail || "",
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      console.error("[Telchar] Checkout session creation failed:", data);
+      throw new Error("Failed to start checkout");
+    }
+  };
 
   return (
     <>
@@ -1843,7 +2031,6 @@ export default function TelcharAssessment() {
           scores={scores}
           quickWins={quickWins}
           tier={tier}
-          onCheckout={handleCheckout}
           onAdvancedCheckout={handleAdvancedCheckout}
         />
       )}

@@ -127,7 +127,7 @@ export default function EngagementPage({ data }) {
           maxWidth: 400,
           marginTop: 20,
         }}>
-          Telchar AI proprietary material. This report and framework may not be reproduced or redistributed without written permission.
+          Telchar AI™ proprietary material. This report and framework may not be reproduced or redistributed without written permission.
         </Text>
       </View>
 

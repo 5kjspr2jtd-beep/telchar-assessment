@@ -194,7 +194,7 @@ export function PdfHeader({ sectionTitle, co, dark = false }) {
       borderBottomColor: dark ? C.lineWhite : C.lineDark,
     }}>
       <Text style={{ fontFamily: FONT, fontSize: 8, fontWeight: 600, letterSpacing: 1.5, color: dark ? C.blue2 : C.blue, textTransform: "uppercase" }}>
-        TELCHAR AI
+        TELCHAR AI™
       </Text>
       <Text style={{ fontFamily: FONT, fontSize: TYPE.label, fontWeight: 400, color: textColor }}>
         {sectionTitle}
@@ -226,7 +226,7 @@ export function PdfFooter({ dark = false }) {
         textTransform: "uppercase",
         color: dark ? C.mutedWhite : C.mutedDark,
       }}>
-        TELCHAR AI · CONFIDENTIAL
+        TELCHAR AI™ · CONFIDENTIAL
       </Text>
       <Text style={{
         fontFamily: FONT,

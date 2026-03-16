@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, TEXT, LIGHT_TEXT, TYPE, CTA, scoreColor, scoreTier, hexToRgb, Diamond, Rule, SecLabel } from "../design/telcharDesign";
-import { getReportData, TIER_MAP, REPORT_NOTES } from "../data/reportData";
+import { getReportData, TIER_MAP, REPORT_NOTES, REPORT_VERSION } from "../data/reportData";
 import HamburgerMenu from "../components/HamburgerMenu";
+import { supabase } from "../lib/supabase";
 
 // ─────────────────────────────────────────────────────────────
 // TELCHAR AI · AI Readiness Assessment Report
@@ -161,7 +162,7 @@ function ReportPage({ children, pg, total }) {
         padding: mobile ? "0 12px" : "0 28px",
         position: "relative", zIndex: 10,
       }}>
-        <span style={{ fontFamily:FONT, fontSize:mobile?9:11, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, fontWeight:400 }}>TELCHAR AI · CONFIDENTIAL</span>
+        <span style={{ fontFamily:FONT, fontSize:mobile?9:11, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted, fontWeight:400 }}>TELCHAR AI™ · CONFIDENTIAL</span>
         <span style={{ fontFamily:FONT, fontSize:12, color:P.dim }}>{pg}/{total}</span>
       </div>
     </div>
@@ -178,13 +179,14 @@ function Paywall({ onUpgrade }) {
       padding: "24px 28px",
       marginTop: 32,
     }}>
-      <div style={{ fontFamily:FONT, fontSize:11, color:P.blue2, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:10 }}>AI Action Plan — Early Access</div>
-      <p style={{ fontFamily:FONT, fontSize:13, color:P.dim, fontWeight:300, lineHeight:1.7, margin:"0 0 14px" }}>Preview all priority improvements, 30-day action plan, 90-day roadmap, deep category analysis, risk guidance, tool recommendations, and a downloadable branded PDF.</p>
+      <div style={{ fontFamily:FONT, fontSize:11, color:P.blue2, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:10 }}>Full AI Action Plan — $150</div>
+      <p style={{ fontFamily:FONT, fontSize:13, color:P.dim, fontWeight:300, lineHeight:1.7, margin:"0 0 14px" }}>Unlock all priority improvements, 30-day action plan, 90-day roadmap, deep category analysis, risk guidance, tool recommendations, and a downloadable branded PDF.</p>
       <button onClick={onUpgrade} style={{
         fontFamily:FONT, width:280, height:48, display:"flex", alignItems:"center", justifyContent:"center",
         background:"#2563eb", color:"#fff", fontSize:13, fontWeight:600,
         letterSpacing:"0.08em", textTransform:"uppercase", border:"none", cursor:"pointer", borderRadius:8, margin:"0 auto",
-      }}>Preview AI Action Plan</button>
+      }}>Purchase Full AI Action Plan</button>
+      <p style={{ fontFamily:FONT, fontSize:11, fontWeight:300, color:"rgba(255,255,255,0.35)", marginTop:12, textAlign:"center", lineHeight:1.5 }}>One-time purchase of $150. All sales final.</p>
     </div>
   );
 }
@@ -297,7 +299,7 @@ function PageCover({ pg, total, onNext }) {
         padding: mobile ? "0 12px" : "0 28px",
         position: "relative", zIndex: 10,
       }}>
-        <span style={{ fontFamily:FONT, fontSize:mobile?9:11, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted }}>TELCHAR AI · CONFIDENTIAL</span>
+        <span style={{ fontFamily:FONT, fontSize:mobile?9:11, letterSpacing:"0.2em", textTransform:"uppercase", color:P.muted }}>TELCHAR AI™ · CONFIDENTIAL</span>
         <span style={{ fontFamily:FONT, fontSize:12, color:P.dim }}>{pg}/{total}</span>
       </div>
     </div>
@@ -751,7 +753,7 @@ function PageRoadmap({ pg, total }) {
     <ReportPage pg={pg} total={total}>
       <SecLabel>90-Day implementation roadmap</SecLabel>
       <p style={{ fontFamily:FONT, fontSize:mobile?13:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:32 }}>
-        A 12-week plan broken into five phases: get set up, run your first automation, add more, clean up, and measure results. Each phase builds on the one before it, so nothing changes too fast. Telchar AI works with your team to keep things on track.
+        A 12-week plan broken into five phases: get set up, run your first automation, add more, clean up, and measure results. Each phase builds on the one before it, so nothing changes too fast. Telchar AI™ works with your team to keep things on track.
       </p>
 
       {phases.map((ph,i)=>(
@@ -1061,7 +1063,97 @@ export default function App({ initialTier = "free", demo = false }) {
   // Ensure report always opens with page 1 fully visible
   useEffect(() => { window.scrollTo(0,0); }, []);
 
+  // Save report payload to Supabase (non-demo only, fire-and-forget)
+  useEffect(() => {
+    if (demo || !supabase || !reportData) return;
+    const submissionId = (() => { try { return sessionStorage.getItem("telchar_submission_id"); } catch { return null; } })();
+    if (!submissionId) return;
+    const saveKey = `telchar_report_saved_${submissionId}_${tier}`;
+    try { if (sessionStorage.getItem(saveKey) === "true") return; } catch { /* ignore */ }
+
+    supabase.from("diagnostic_reports").insert({
+      submission_id: submissionId,
+      tier: tier === "full" ? "full" : "free",
+      report_version: REPORT_VERSION,
+      scores_json: reportData.scores || null,
+      benchmark_json: reportData.benchmark || null,
+      recommendations_json: reportData.wins || null,
+      report_json: {
+        co: reportData.co,
+        ind: reportData.ind,
+        scores: reportData.scores,
+        wins: reportData.wins,
+        benchmark: reportData.benchmark,
+        summaryNarrative: reportData.summaryNarrative,
+        categoryAnalyses: reportData.categoryAnalyses,
+        actionPlan: reportData.actionPlan,
+        risks: reportData.risks,
+        roadmap: reportData.roadmap,
+        categoryToolRecs: reportData.categoryToolRecs,
+        implementationGuide: reportData.implementationGuide,
+      },
+    }).then(({ error }) => {
+      if (error) {
+        console.error(`[Telchar] Report save failed for submission=${submissionId} tier=${tier}:`, error);
+      } else {
+        try { sessionStorage.setItem(saveKey, "true"); } catch { /* ignore */ }
+        console.log(`[Telchar] Report saved for submission=${submissionId} tier=${tier}`);
+      }
+    });
+  }, [demo, tier, reportData]);
+
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  const startCheckout = async () => {
+    if (checkoutLoading) return;
+    setCheckoutLoading(true);
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    let submissionId, reportToken, contactEmail;
+    try {
+      submissionId = sessionStorage.getItem("telchar_submission_id");
+      reportToken = sessionStorage.getItem("telchar_report_token");
+      const saved = sessionStorage.getItem("telchar_assessment_data");
+      if (saved) {
+        const data = JSON.parse(saved);
+        contactEmail = data.answers?.contact_email || "";
+      }
+    } catch (e) { /* ignore */ }
+
+    if (!supabaseUrl || !submissionId || !reportToken) {
+      console.warn("[Telchar] Cannot create checkout — missing submission data");
+      setCheckoutLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${supabaseUrl}/functions/v1/create-checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          submission_id: submissionId,
+          report_token: reportToken,
+          contact_email: contactEmail || "",
+        }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("[Telchar] Checkout failed:", data);
+        setCheckoutLoading(false);
+      }
+    } catch (err) {
+      console.error("[Telchar] Checkout error:", err);
+      setCheckoutLoading(false);
+    }
+  };
+
   const upgrade = (newTier) => {
+    // If upgrading to full and not in demo mode, require Stripe checkout
+    if (newTier === "full" && !demo && tier !== "full") {
+      startCheckout();
+      return;
+    }
     setTier(newTier);
     setCur(0);
     window.scrollTo(0,0);

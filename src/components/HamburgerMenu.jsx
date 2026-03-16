@@ -9,6 +9,9 @@ const MENU_ITEMS = [
   { label: "Sample Report", to: "/report?demo=true", type: "link" },
   { label: "About", to: "/#about", type: "a" },
   { label: "Advisory Services", to: "/apply", type: "link" },
+  { type: "divider" },
+  { label: "Terms", to: "/terms", type: "link" },
+  { label: "Privacy", to: "/privacy", type: "link" },
 ];
 
 const linkStyle = {
@@ -85,7 +88,11 @@ export default function HamburgerMenu({ currentPage }) {
             boxShadow: "0 8px 32px rgba(0,0,0,0.45)",
           }}
         >
-          {MENU_ITEMS.map((item) => {
+          {MENU_ITEMS.map((item, idx) => {
+            if (item.type === "divider") {
+              return <div key={`divider-${idx}`} style={{ height: 1, background: "rgba(255,255,255,0.08)", margin: "4px 0" }} />;
+            }
+
             const isCurrent = item.label === currentPage;
             const style = isCurrent ? mutedStyle : linkStyle;
 
