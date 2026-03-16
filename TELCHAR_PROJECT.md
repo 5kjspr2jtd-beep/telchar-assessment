@@ -54,7 +54,7 @@ Claude Projects/
 │   └── pages/
 │       ├── TelcharLandingPage.jsx      (1630 lines) — marketing homepage
 │       ├── TelcharAssessment.jsx       (1872 lines) — AI readiness questionnaire
-│       ├── TelcharReport.jsx           (1286 lines) — scored report (3 tiers)
+│       ├── TelcharReport.jsx           (1286 lines) — scored report (2 tiers)
 │       └── TelcharImplementation.jsx   (942 lines) — implementation support application
 ```
 
@@ -240,7 +240,7 @@ Amber:  #f59e0b / rgb(245,158,11)
 
 ### TelcharReport.jsx
 
-**Structure:** Multi-page report with tier tabs (FREE / $50 / $150)
+**Structure:** Multi-page report with two tiers (Free Diagnostic / $150 AI Action Plan)
 
 **Pages (internal pagination):**
 - Cover (score, tier badge, category bars)

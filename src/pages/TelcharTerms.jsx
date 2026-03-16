@@ -116,7 +116,7 @@ export default function TelcharTerms() {
           {/* 5. Payment Terms */}
           <div style={sectionHead}>5. Payment Terms</div>
           <p style={bodyText}>
-            The AI Readiness Index™ diagnostic is free. The Full AI Action Plan will be available as a one-time
+            The AI Readiness Index™ diagnostic is free. The Full AI Action Plan is available as a one-time
             purchase of $150. It is a digital product delivered immediately upon purchase. Pricing is subject to
             change.
           </p>
@@ -148,9 +148,8 @@ export default function TelcharTerms() {
 
           {/* 9. Governing Law */}
           <div style={sectionHead}>9. Governing Law</div>
-          {/* TODO: Replace with actual jurisdiction */}
           <p style={bodyText}>
-            These terms shall be governed by and construed in accordance with the laws of [State / Jurisdiction],
+            These terms shall be governed by and construed in accordance with the laws of the State of Delaware,
             without regard to conflict of law principles.
           </p>
 

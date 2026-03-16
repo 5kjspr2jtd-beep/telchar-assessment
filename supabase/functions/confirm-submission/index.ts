@@ -58,10 +58,10 @@ Thank you for completing the Telchar AI Operational Diagnostic.
 
 Your overall readiness score is ${score}.
 
-View your free report here:
+View your diagnostic report here:
 ${link}
 
-If you'd like the full AI Action Plan with detailed recommendations, you can upgrade from your report page.
+If you'd like the full AI Action Plan with detailed recommendations, you can purchase it from your report page.
 
 — Telchar AI
 `;
