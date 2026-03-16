@@ -62,6 +62,7 @@ Deno.serve(async (req) => {
       tier: savedReport.tier,
       report_version: savedReport.report_version,
       full_access: sub.full_access || false,
+      submission_id: sub.id,
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
@@ -85,5 +86,6 @@ Deno.serve(async (req) => {
     answers,
     scores: sub.scores_data,
     full_access: sub.full_access || false,
+    submission_id: sub.id,
   }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
 });

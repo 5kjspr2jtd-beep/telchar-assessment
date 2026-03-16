@@ -216,6 +216,11 @@ function ReportRoute() {
       fetchReportAccess(supabaseUrl, token)
         .then((data) => {
           storeReportData(data);
+          // Persist checkout-critical IDs so the $150 CTA works from emailed links
+          try {
+            if (data.submission_id) sessionStorage.setItem("telchar_submission_id", data.submission_id);
+            if (token) sessionStorage.setItem("telchar_report_token", token);
+          } catch { /* sessionStorage unavailable */ }
           if (data.full_access) {
             try { sessionStorage.setItem("telchar_full_access", "true"); } catch { /* ignore */ }
           }
