@@ -2090,7 +2090,319 @@ const ROADMAP_REFS = [
   { match: "Pick the next 2", ref: "Choosing the First Task to Automate" },
 ];
 
-// ── 13. Engine Entry Point ──────────────────────────────────────
+// ── 13. Execution Prompts Generator ─────────────────────────────
+// Ready-to-use Claude prompts tied to the buyer's actual recommendations.
+// 4 always-included base prompts + up to 3 conditional prompts.
+
+const EXECUTION_PROMPTS = {
+  "process-mapping": {
+    id: "process-mapping",
+    title: "Map This Process Clearly",
+    category: "BASE",
+    accentColor: "#2563eb",
+    when: "Use this first — before you automate anything.",
+    promptBody: `I want you to map this business process clearly from start to finish.
+
+Context:
+- Business type: [INDUSTRY]
+- Team size: [EMPLOYEE_COUNT]
+- Goal: [PRIMARY GOAL]
+- Process I want to map: [PROCESS NAME]
+
+What I need:
+1. List every step in order
+2. Identify who owns each step
+3. Identify which tools are used at each step
+4. Flag any handoff, delay, or duplicate work
+5. Mark which steps look automatable
+6. End with the top 3 automation candidates and why
+
+Use a simple table with these columns:
+Step Number | What Happens | Owner | Tool Used | Pain Point | Automatable (Yes/No/Maybe)`,
+  },
+  "workflow-design": {
+    id: "workflow-design",
+    title: "Turn This Into a Workflow",
+    category: "BASE",
+    accentColor: "#2563eb",
+    when: "After mapping — when you are ready to clean up a process.",
+    promptBody: `Help me turn this manual process into a simple workflow I can improve or automate.
+
+Business context:
+- Industry: [INDUSTRY]
+- Team size: [EMPLOYEE_COUNT]
+- Priority area: [CATEGORY / PRIORITY NAME]
+
+Current process:
+[PASTE PROCESS OR NOTES]
+
+What I need from you:
+1. Rewrite the process in a cleaner step-by-step sequence
+2. Identify the trigger, the main actions, and the final output
+3. Show me what should stay manual and what should be automated
+4. Suggest the safest first version to implement
+5. End with a short "start here first" recommendation`,
+  },
+  "sop-creation": {
+    id: "sop-creation",
+    title: "Write the SOP",
+    category: "BASE",
+    accentColor: "#2563eb",
+    when: "When a process is stable enough to document.",
+    promptBody: `Write a practical SOP for this business process.
+
+Business context:
+- Company: [COMPANY_NAME]
+- Industry: [INDUSTRY]
+- Process name: [PROCESS NAME]
+
+Process notes:
+[PASTE PROCESS DETAILS]
+
+Create:
+1. Purpose
+2. When this process starts
+3. Step-by-step instructions
+4. Who owns each step
+5. What tools are used
+6. Common failure points
+7. What to do if something goes wrong
+
+Keep it practical, plain language, and usable by a small business team.`,
+  },
+  "weekly-review": {
+    id: "weekly-review",
+    title: "Review Results and Decide Next Steps",
+    category: "BASE",
+    accentColor: "#2563eb",
+    when: "Every week — paste your numbers and ask what matters.",
+    promptBody: `Review these weekly results and tell me what matters.
+
+Business context:
+- Industry: [INDUSTRY]
+- Current focus: [TOP PRIORITY]
+- Metrics or notes:
+[PASTE METRICS / NOTES / SPREADSHEET DATA]
+
+What I need:
+1. What improved
+2. What got worse
+3. What looks inconsistent
+4. What I should pay attention to next week
+5. The top 3 actions I should take next
+
+Keep it direct and practical.`,
+  },
+  "make-automation": {
+    id: "make-automation",
+    title: "Build the First Make Scenario",
+    category: "CONDITIONAL",
+    accentColor: "#6E5FD8",
+    when: "When you are ready to connect two tools in Make.",
+    promptBody: `Help me design my first Make scenario for this business process.
+
+Business context:
+- Industry: [INDUSTRY]
+- Process to automate: [PROCESS NAME]
+- Trigger tool: [TOOL 1]
+- Destination tool: [TOOL 2]
+
+Current manual process:
+[PASTE CURRENT PROCESS]
+
+I need:
+1. The trigger
+2. The action steps
+3. The fields that need to map
+4. The likely failure points
+5. The safest version to test first
+6. A test checklist for the first 5 runs
+
+Do not overengineer it. Start with the simplest useful version.`,
+  },
+  "sales-follow-up": {
+    id: "sales-follow-up",
+    title: "Improve Follow Up and Response Quality",
+    category: "CONDITIONAL",
+    accentColor: "#C96442",
+    when: "When leads are slipping or follow-up is inconsistent.",
+    promptBody: `Help me improve our follow-up process for leads and customer conversations.
+
+Business context:
+- Industry: [INDUSTRY]
+- Current issue: [FOLLOW-UP / RESPONSE ISSUE]
+
+Examples:
+[PASTE LEAD MESSAGE, INTAKE MESSAGE, OR CURRENT FOLLOW-UP]
+
+I need:
+1. A better follow-up sequence
+2. A first response template
+3. A second follow-up template
+4. A rule for when to stop following up
+5. Suggestions to make the process more consistent
+
+Keep the language natural and businesslike.`,
+  },
+  "spreadsheet-reporting": {
+    id: "spreadsheet-reporting",
+    title: "Turn This Spreadsheet Into Better Reporting",
+    category: "CONDITIONAL",
+    accentColor: "#f59e0b",
+    when: "When your spreadsheet exists but is not helping you make decisions.",
+    promptBody: `Review this spreadsheet structure and help me make it more useful for operating decisions.
+
+Business context:
+- Industry: [INDUSTRY]
+- What this spreadsheet is used for: [USE CASE]
+
+Spreadsheet columns / sample rows:
+[PASTE DATA OR COLUMN LIST]
+
+What I need:
+1. What is missing
+2. What should be cleaned up
+3. What should be tracked weekly
+4. What calculations should be added
+5. What charts or summaries would make this useful
+6. Which parts could be automated later`,
+  },
+  "knowledge-capture": {
+    id: "knowledge-capture",
+    title: "Capture What the Team Knows",
+    category: "CONDITIONAL",
+    accentColor: "#22c55e",
+    when: "When important knowledge lives in people's heads, not in documents.",
+    promptBody: `Help me turn this team knowledge into something documented and reusable.
+
+Context:
+- Team function: [TEAM / PROCESS AREA]
+- What is currently trapped in people's heads:
+[PASTE NOTES]
+
+What I need:
+1. A clean structure for documenting this knowledge
+2. The main sections that should exist
+3. What should become SOPs
+4. What should become FAQs
+5. What should become templates
+6. The best order to document this in
+
+Make it simple enough for a small team to maintain.`,
+  },
+  "claude-projects": {
+    id: "claude-projects",
+    title: "Set Up a Claude Project for This Work",
+    category: "CONDITIONAL",
+    accentColor: "#a855f7",
+    when: "When you want Claude to remember your business context across conversations.",
+    promptBody: `Help me set up a Claude Project for this business task.
+
+Task:
+[TASK NAME]
+
+Context I want the project to remember:
+[COMPANY CONTEXT / RULES / TONE / TEMPLATES]
+
+What I need:
+1. A project name
+2. Project instructions I can paste in
+3. The rules Claude should always follow
+4. What example files I should upload
+5. A test task to confirm the project is working correctly
+
+Keep it simple and ready to use.`,
+  },
+  "claude-cowork": {
+    id: "claude-cowork",
+    title: "Use Claude Cowork for Deeper Analysis",
+    category: "CONDITIONAL",
+    accentColor: "#4a80f5",
+    when: "When you need Claude to work through a complex business problem with you.",
+    promptBody: `Help me use Claude Cowork to analyze this business problem in depth.
+
+Business context:
+- Industry: [INDUSTRY]
+- Team size: [EMPLOYEE_COUNT]
+- Problem: [PROBLEM NAME]
+
+Source material:
+[PASTE NOTES / FILE CONTENT / MEETING NOTES / PROCESS DETAILS]
+
+What I want:
+1. A structured summary of the problem
+2. The main causes
+3. The missing information
+4. The best next decisions
+5. A recommended action sequence for the next 30 days`,
+  },
+};
+
+// Priority order for conditional prompt selection (max 3)
+const CONDITIONAL_PROMPT_PRIORITY = [
+  "make-automation",
+  "sales-follow-up",
+  "spreadsheet-reporting",
+  "knowledge-capture",
+  "claude-projects",
+  "claude-cowork",
+];
+
+export function generateExecutionPrompts(signals, categoryToolRecs) {
+  const recs = categoryToolRecs || {};
+  const recValues = Object.values(recs);
+
+  // Determine which capabilities are recommended
+  const hasMake = recValues.some(r =>
+    r.primaryCapability?.product === "make" || r.secondaryCapability?.product === "make"
+  );
+  const hasClaudeProjects = recValues.some(r =>
+    r.primaryCapability?.product === "projects" || r.secondaryCapability?.product === "projects"
+  );
+  const hasClaudeCowork = recValues.some(r =>
+    r.primaryCapability?.product === "cowork" || r.secondaryCapability?.product === "cowork"
+  );
+
+  // Determine which conditional prompts are relevant
+  // Each conditional should fire only when the category is genuinely weak or the signal is explicit.
+  const conditionalEligibility = {
+    "make-automation": hasMake,
+    "sales-follow-up": (
+      signals.salesIsReactive || signals.salesIsBasic || signals.intakeIsManual
+    ),
+    "spreadsheet-reporting": (
+      signals.noConsistentTracking || signals.tracksWithSpreadsheets
+    ),
+    "knowledge-capture": (
+      signals.knowledgeUnstructured || signals.knowledgeInHeads
+    ),
+    "claude-projects": hasClaudeProjects,
+    "claude-cowork": hasClaudeCowork,
+  };
+
+  // Always include 4 base prompts
+  const prompts = [
+    EXECUTION_PROMPTS["process-mapping"],
+    EXECUTION_PROMPTS["workflow-design"],
+    EXECUTION_PROMPTS["sop-creation"],
+    EXECUTION_PROMPTS["weekly-review"],
+  ];
+
+  // Add up to 3 conditional prompts in priority order
+  let conditionalCount = 0;
+  for (const id of CONDITIONAL_PROMPT_PRIORITY) {
+    if (conditionalCount >= 3) break;
+    if (conditionalEligibility[id]) {
+      prompts.push(EXECUTION_PROMPTS[id]);
+      conditionalCount++;
+    }
+  }
+
+  return prompts;
+}
+
+
+// ── 14. Engine Entry Point ──────────────────────────────────────
 // Consumes raw answers + calculated scores.
 // Returns the full engine output to be merged into the report object.
 
@@ -2148,6 +2460,9 @@ export function buildEngineOutput(answers, calculatedScores, clientTools, _legac
   // Implementation Guide — only modules needed by this report
   const implementationGuide = generateImplementationGuide(signals, categoryToolRecs);
 
+  // Execution Prompts — ready-to-use Claude prompts tied to recommendations
+  const executionPrompts = generateExecutionPrompts(signals, categoryToolRecs);
+
   return {
     signals,
     wins,
@@ -2161,5 +2476,6 @@ export function buildEngineOutput(answers, calculatedScores, clientTools, _legac
     roadmap,
     categoryToolRecs,
     implementationGuide,
+    executionPrompts,
   };
 }

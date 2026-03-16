@@ -4,6 +4,7 @@
 // FREE: Cover + Summary + QuickWins (1 win)
 // FULL: + all Quick Wins + Impact + 30-Day Action Plan
 //       + 5 Categories + Roadmap + Risk + DataInfra + Engagement
+//       + Implementation Guide + Execution Prompts
 
 import React from "react";
 import { Document } from "@react-pdf/renderer";
@@ -18,6 +19,7 @@ import RiskPage from "./pages/RiskPage";
 import DataInfraPage from "./pages/DataInfraPage";
 import EngagementPage from "./pages/EngagementPage";
 import ImplementationGuidePage from "./pages/ImplementationGuidePage";
+import ExecutionPromptsPage from "./pages/ExecutionPromptsPage";
 
 export default function TelcharPdfDocument({ data }) {
   const { tier } = data;
@@ -45,6 +47,7 @@ export default function TelcharPdfDocument({ data }) {
       {isFull && <DataInfraPage data={data} />}
       {isFull && <EngagementPage data={data} />}
       {isFull && <ImplementationGuidePage data={data} />}
+      {isFull && <ExecutionPromptsPage data={data} />}
     </Document>
   );
 }

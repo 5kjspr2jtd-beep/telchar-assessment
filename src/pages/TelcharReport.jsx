@@ -14,7 +14,7 @@ import { supabase } from "../lib/supabase";
 // ── Mutable report data — populated from shared data adapter ──
 // Page components read these module-level variables directly.
 // They are set once per render cycle in the App component via getReportData().
-let CO, IND, CLIENT_TOOLS, SCORES, WINS, STACK, DATE, BENCH, SUMMARY_NARRATIVE, CATEGORY_ANALYSES, ACTION_PLAN, RISKS, ROADMAP, CATEGORY_TOOL_RECS, IMPLEMENTATION_GUIDE;
+let CO, IND, CLIENT_TOOLS, SCORES, WINS, STACK, DATE, BENCH, SUMMARY_NARRATIVE, CATEGORY_ANALYSES, ACTION_PLAN, RISKS, ROADMAP, CATEGORY_TOOL_RECS, IMPLEMENTATION_GUIDE, EXECUTION_PROMPTS;
 const BENCHMARK_NOTE = "Reference baselines provide comparison context for businesses of similar industry and size. They are not a ceiling on performance or potential value.";
 
 
@@ -22,6 +22,7 @@ const BENCHMARK_NOTE = "Reference baselines provide comparison context for busin
 // FREE: Cover + Score Summary + Quick Wins (1 win) + CTA
 // FULL: + all Quick Wins + Impact + 30-Day Action Plan + 5 Categories
 //       + 90-Day Roadmap + Risk + Data Infra + Engagement
+//       + Implementation Guide + Execution Prompts
 
 // ── Count-up animation ───────────────────────────────────────
 function useCount(target, delay=0) {
@@ -1032,6 +1033,126 @@ function PageImplementationGuide({ pg, total }) {
 }
 
 // ═══════════════════════════════════════════════════════════
+// PAGE — EXECUTION PROMPTS (full only)
+// ═══════════════════════════════════════════════════════════
+function PageExecutionPrompts({ pg, total }) {
+  const w = useWidth();
+  const mobile = w < 640;
+  const prompts = EXECUTION_PROMPTS || [];
+  const [expanded, setExpanded] = useState(null);
+
+  return (
+    <ReportPage pg={pg} total={total}>
+      <SecLabel>Execution Prompts</SecLabel>
+      <p style={{ fontFamily:FONT, fontSize:mobile?13:15, fontWeight:300, color:P.dim, lineHeight:1.8, marginBottom:12 }}>
+        Ready-to-use prompts for Claude, tied to your actual recommendations and tool path. Copy any prompt below, paste it into Claude chat, replace the bracketed placeholders with your real details, and get useful output immediately.
+      </p>
+      <p style={{ fontFamily:FONT, fontSize:12, fontWeight:300, color:"rgba(255,255,255,0.3)", lineHeight:1.7, marginBottom:28, fontStyle:"italic" }}>
+        All prompts are designed for Claude chat at claude.ai. Open a free conversation, paste the prompt, and follow the output.
+      </p>
+
+      {prompts.map((prompt, i) => {
+        const ac = prompt.accentColor || "#2563eb";
+        const rgb = hexToRgb(ac);
+        const isOpen = expanded === prompt.id;
+        const showCat = i === 0 || prompt.category !== prompts[i - 1]?.category;
+
+        return (
+          <div key={prompt.id}>
+            {showCat && (
+              <div style={{ fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.14em", textTransform:"uppercase", color:ac, marginTop:i===0?0:28, marginBottom:10, paddingLeft:4 }}>
+                {prompt.category === "BASE" ? "Core Prompts" : "Based on Your Recommendations"}
+              </div>
+            )}
+            <div style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderLeft: `3px solid ${ac}`,
+              borderRadius: 12,
+              marginBottom: 12,
+              overflow: "hidden",
+            }}>
+              {/* Header — clickable to expand */}
+              <div
+                onClick={() => setExpanded(isOpen ? null : prompt.id)}
+                style={{
+                  display:"flex", alignItems:"center", gap:12,
+                  padding: mobile ? "16px 16px" : "18px 24px",
+                  cursor: "pointer",
+                  userSelect: "none",
+                }}
+              >
+                <div style={{
+                  width:28, height:28, borderRadius:7, flexShrink:0,
+                  background: `rgba(${rgb},0.12)`,
+                  border: `1px solid rgba(${rgb},0.35)`,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  fontFamily:FONT, fontSize:11, fontWeight:600, color:ac,
+                }}>{String(i+1).padStart(2,"0")}</div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontFamily:FONT, fontSize:mobile?15:17, fontWeight:500, color:P.white }}>{prompt.title}</div>
+                  <div style={{ fontFamily:SERIF, fontSize:12, fontStyle:"italic", color:"rgba(255,255,255,0.35)", lineHeight:1.5, marginTop:4 }}>{prompt.when}</div>
+                </div>
+                <div style={{
+                  fontFamily:FONT, fontSize:18, color:"rgba(255,255,255,0.3)",
+                  transition:"transform 0.2s",
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  flexShrink:0,
+                }}>{"\u25BE"}</div>
+              </div>
+
+              {/* Expandable prompt body */}
+              {isOpen && (
+                <div style={{
+                  padding: mobile ? "0 16px 16px" : "0 24px 24px",
+                }}>
+                  <div style={{
+                    background: `rgba(${rgb},0.04)`,
+                    border: `1px solid rgba(${rgb},0.10)`,
+                    borderRadius: 8,
+                    padding: mobile ? "16px 14px" : "20px 22px",
+                    position: "relative",
+                  }}>
+                    <div style={{
+                      fontFamily:FONT, fontSize:9, fontWeight:600, letterSpacing:"0.10em",
+                      textTransform:"uppercase", color:ac,
+                      marginBottom:12,
+                    }}>Prompt — copy and paste into Claude</div>
+                    <pre style={{
+                      fontFamily:FONT, fontSize:12, fontWeight:300,
+                      color:"rgba(255,255,255,0.7)", lineHeight:1.7,
+                      whiteSpace:"pre-wrap", wordBreak:"break-word",
+                      margin:0,
+                    }}>{prompt.promptBody}</pre>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(prompt.promptBody).catch(()=>{});
+                        const btn = e.currentTarget;
+                        const orig = btn.textContent;
+                        btn.textContent = "Copied";
+                        setTimeout(() => { btn.textContent = orig; }, 1500);
+                      }}
+                      style={{
+                        position:"absolute", top:mobile?12:16, right:mobile?10:18,
+                        fontFamily:FONT, fontSize:10, fontWeight:600, letterSpacing:"0.06em",
+                        textTransform:"uppercase",
+                        background:`rgba(${rgb},0.15)`, border:`1px solid rgba(${rgb},0.3)`,
+                        color:ac, borderRadius:5, padding:"5px 10px", cursor:"pointer",
+                      }}
+                    >Copy</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </ReportPage>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
 // APP SHELL — tier gate + navigation
 // ═══════════════════════════════════════════════════════════
 export default function App({ initialTier = "free", demo = false }) {
@@ -1053,6 +1174,7 @@ export default function App({ initialTier = "free", demo = false }) {
   ROADMAP = reportData.roadmap;
   CATEGORY_TOOL_RECS = reportData.categoryToolRecs;
   IMPLEMENTATION_GUIDE = reportData.implementationGuide;
+  EXECUTION_PROMPTS = reportData.executionPrompts;
 
   const mapped = demo ? "full" : (TIER_MAP[initialTier] || "free");
   const [tier, setTier] = useState(mapped);
@@ -1092,6 +1214,7 @@ export default function App({ initialTier = "free", demo = false }) {
         roadmap: reportData.roadmap,
         categoryToolRecs: reportData.categoryToolRecs,
         implementationGuide: reportData.implementationGuide,
+        executionPrompts: reportData.executionPrompts,
       },
     }).then(({ error }) => {
       if (error) {
@@ -1187,6 +1310,7 @@ export default function App({ initialTier = "free", demo = false }) {
         { label:"Data Infra",       node:<PageDataInfra  pg={12} total={total}/> },
         { label:"Engagement Path",  node:<PageEngagement pg={13} total={total}/> },
         { label:"Implementation Guide", node:<PageImplementationGuide pg={14} total={total}/> },
+        { label:"Execution Prompts",    node:<PageExecutionPrompts  pg={15} total={total}/> },
       );
     }
     return pages;
