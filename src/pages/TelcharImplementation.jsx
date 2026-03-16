@@ -624,12 +624,23 @@ function scoreFit(answers) {
 // In production, these would POST to an API endpoint.
 
 function sendApplicantConfirmation(email, companyName) {
-  // Stub: In production, POST to /api/email/applicant-confirmation
-  console.log("[Email] Applicant confirmation →", email, {
-    to: email,
-    subject: "Telchar AI — Application Received",
-    body: `Your implementation support application for ${companyName} has been received. We will review it and follow up if there is a strong mutual match.`,
-  });
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  if (!supabaseUrl || !email) return;
+
+  fetch(`${supabaseUrl}/functions/v1/confirm-application`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contact_email: email,
+      company_name: companyName || "",
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.ok) console.log("[Telchar] Applicant confirmation email sent:", data.email_id);
+      else console.warn("[Telchar] Applicant confirmation email skipped:", data.reason);
+    })
+    .catch((err) => console.error("[Telchar] Applicant confirmation email failed:", err));
 }
 
 function sendOwnerNotification(applicationData, fitClassification, applicationId) {

@@ -170,7 +170,7 @@ function ReportPage({ children, pg, total }) {
 }
 
 // ── Paywall block ─────────────────────────────────────────────
-function Paywall({ onUpgrade }) {
+function Paywall({ onUpgrade, error }) {
   return (
     <div style={{
       background: "rgba(37,99,235,0.08)",
@@ -186,6 +186,7 @@ function Paywall({ onUpgrade }) {
         background:"#2563eb", color:"#fff", fontSize:13, fontWeight:600,
         letterSpacing:"0.08em", textTransform:"uppercase", border:"none", cursor:"pointer", borderRadius:8, margin:"0 auto",
       }}>Purchase Full AI Action Plan</button>
+      {error && <p style={{ fontFamily:FONT, fontSize:13, fontWeight:400, color:"#ef4444", marginTop:10, textAlign:"center", lineHeight:1.5 }}>{error}</p>}
       <p style={{ fontFamily:FONT, fontSize:11, fontWeight:300, color:"rgba(255,255,255,0.35)", marginTop:12, textAlign:"center", lineHeight:1.5 }}>One-time purchase of $150. All sales final.</p>
     </div>
   );
@@ -309,7 +310,7 @@ function PageCover({ pg, total, onNext }) {
 // ═══════════════════════════════════════════════════════════
 // PAGE 2 — SCORE SUMMARY (all tiers)
 // ═══════════════════════════════════════════════════════════
-function PageSummary({ pg, total, tier, onUpgrade, demo }) {
+function PageSummary({ pg, total, tier, onUpgrade, demo, checkoutError }) {
   const w       = useWidth();
   const mobile  = w < 640;
   const desktop = w >= 900;
@@ -407,7 +408,7 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
       })}
 
       {/* Paywall for free */}
-      {!demo && tier === "free" && <Paywall onUpgrade={onUpgrade}/>}
+      {!demo && tier === "free" && <Paywall onUpgrade={onUpgrade} error={checkoutError}/>}
     </ReportPage>
   );
 }
@@ -415,7 +416,7 @@ function PageSummary({ pg, total, tier, onUpgrade, demo }) {
 // ═══════════════════════════════════════════════════════════
 // PAGE 3 — QUICK WINS (free: 1 win; full: all 3)
 // ═══════════════════════════════════════════════════════════
-function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
+function PageQuickWins({ pg, total, tier, onUpgrade, demo, checkoutError }) {
   const w = useWidth();
   const mobile = w < 640;
   const visibleWins = (!demo && tier === "free") ? WINS.slice(0,1) : WINS;
@@ -492,7 +493,7 @@ function PageQuickWins({ pg, total, tier, onUpgrade, demo }) {
         });
       })()}
 
-      {!demo && tier === "free" && <Paywall onUpgrade={()=>upgrade("full")}/>}
+      {!demo && tier === "free" && <Paywall onUpgrade={()=>upgrade("full")} error={checkoutError}/>}
 
       {/* Estimated impact — full only */}
       {(demo || tier === "full") && (() => {
@@ -1103,10 +1104,12 @@ export default function App({ initialTier = "free", demo = false }) {
   }, [demo, tier, reportData]);
 
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
 
   const startCheckout = async () => {
     if (checkoutLoading) return;
     setCheckoutLoading(true);
+    setCheckoutError("");
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     let submissionId, reportToken, contactEmail;
     try {
@@ -1121,6 +1124,7 @@ export default function App({ initialTier = "free", demo = false }) {
 
     if (!supabaseUrl || !submissionId || !reportToken) {
       console.warn("[Telchar] Cannot create checkout — missing submission data");
+      setCheckoutError("Your session data is missing. Please retake the assessment to purchase the full report.");
       setCheckoutLoading(false);
       return;
     }
@@ -1140,10 +1144,12 @@ export default function App({ initialTier = "free", demo = false }) {
         window.location.href = data.url;
       } else {
         console.error("[Telchar] Checkout failed:", data);
+        setCheckoutError("Payment is not available at this time. Please try again later or contact support.");
         setCheckoutLoading(false);
       }
     } catch (err) {
       console.error("[Telchar] Checkout error:", err);
+      setCheckoutError("Unable to connect to payment service. Please check your connection and try again.");
       setCheckoutLoading(false);
     }
   };
@@ -1165,8 +1171,8 @@ export default function App({ initialTier = "free", demo = false }) {
     const total = effectiveTier==="full" ? 15 : 3;
     const pages = [
       { label:"Cover",              node:<PageCover pg={1} total={total} onNext={()=>{ setCur(1); window.scrollTo(0,0); }}/> },
-      { label:"Score Summary",      node:<PageSummary pg={2} total={total} tier={effectiveTier} onUpgrade={()=>upgrade("full")} demo={demo}/> },
-      { label:"Quick Wins",         node:<PageQuickWins pg={3} total={total} tier={effectiveTier} onUpgrade={nt=>upgrade(nt)} demo={demo}/> },
+      { label:"Score Summary",      node:<PageSummary pg={2} total={total} tier={effectiveTier} onUpgrade={()=>upgrade("full")} demo={demo} checkoutError={checkoutError}/> },
+      { label:"Quick Wins",         node:<PageQuickWins pg={3} total={total} tier={effectiveTier} onUpgrade={nt=>upgrade(nt)} demo={demo} checkoutError={checkoutError}/> },
     ];
     if (effectiveTier==="full") {
       pages.push(

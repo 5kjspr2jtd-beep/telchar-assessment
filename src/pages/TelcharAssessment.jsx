@@ -1551,6 +1551,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onAdvancedChec
   const mobile = useIsMobile();
   const [visible, setVisible] = useState(false);
   const [advancedLoading, setAdvancedLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
   const [pricingGlow, setPricingGlow] = useState(false);
   const pricingRef = useRef(null);
   useEffect(() => { setTimeout(() => setVisible(true), 200); }, []);
@@ -1568,7 +1569,14 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onAdvancedChec
 
   const handleAdvancedCheckout = async () => {
     setAdvancedLoading(true);
-    try { if (onAdvancedCheckout) await onAdvancedCheckout(); } catch (err) { console.error("Advanced checkout error:", err); setAdvancedLoading(false); }
+    setCheckoutError("");
+    try {
+      if (onAdvancedCheckout) await onAdvancedCheckout();
+    } catch (err) {
+      console.error("Advanced checkout error:", err);
+      setCheckoutError("Unable to start checkout. Please try again or contact support.");
+      setAdvancedLoading(false);
+    }
   };
 
   const getScoreLabel = scoreTier;
@@ -1652,6 +1660,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onAdvancedChec
                   >
                     {advancedLoading ? "Redirecting..." : "Get the Full AI Action Plan \u2014 $150"}
                   </button>
+                  {checkoutError && <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: "#ef4444", marginTop: 10, marginBottom: 0, lineHeight: 1.5 }}>{checkoutError}</p>}
                   <button onClick={() => navigate("/report?tier=plan&demo=true")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, color: P.muted, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px", marginTop: 10, background: "none", border: "none", padding: 0 }}>View sample report</button>
                 </div>
                 <p style={{ fontFamily: FONT, fontSize: 11, fontWeight: 300, color: P.muted, marginTop: 14, marginBottom: 0, lineHeight: 1.5 }}>One-time purchase of $150. All sales final. Recommendations based on your responses; results vary by execution. <Link to="/terms" style={{ color: P.muted, textDecoration: "underline", textUnderlineOffset: "3px" }}>Terms</Link></p>
@@ -1699,6 +1708,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onAdvancedChec
                 >
                   {advancedLoading ? "Redirecting..." : "Get the Full AI Action Plan \u2014 $150"}
                 </button>
+                {checkoutError && <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: "#ef4444", marginTop: 10, marginBottom: 0, lineHeight: 1.5 }}>{checkoutError}</p>}
                 <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Three priority improvements with tool recommendations, 30-day action plan, 90-day implementation roadmap, deep category analysis, risk and execution guidance, and a downloadable branded PDF.</p>
                 <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, marginTop: 8, fontStyle: "italic", maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>Generated from your assessment responses. More detailed inputs produce a stronger plan.</p>
                 <p style={{ marginTop: 10 }}>
@@ -1725,6 +1735,7 @@ function ResultsPage({ answers, scores, quickWins, tier = "free", onAdvancedChec
                   >
                     {advancedLoading ? "Redirecting..." : "Add 90-Day Roadmap"}
                   </button>
+                  {checkoutError && <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 400, color: "#ef4444", marginTop: 10, marginBottom: 0, lineHeight: 1.5 }}>{checkoutError}</p>}
                   <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 300, color: P.dim, marginTop: 14, maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.5 }}>A phased 90-day implementation sequence with milestones, risk analysis, data infrastructure guidance, and execution pacing.</p>
                 </div>
               </div>
@@ -1864,14 +1875,21 @@ export default function TelcharAssessment() {
     console.log("Scores:", calculatedScores);
     console.log("Lead Quality:", lead);
 
+    // Generate IDs client-side SYNCHRONOUSLY so they're available for checkout immediately.
+    // This avoids a race condition where the user clicks the CTA before the async Supabase INSERT completes.
+    const submissionId = crypto.randomUUID();
+    const reportToken = crypto.randomUUID();
+
+    // Store checkout-critical values synchronously, BEFORE the async Supabase save
+    try {
+      sessionStorage.setItem("telchar_submission_id", submissionId);
+      sessionStorage.setItem("telchar_report_token", reportToken);
+    } catch (e) { /* sessionStorage unavailable */ }
+
     // Fire-and-forget Supabase save
     if (supabase) {
       (async () => {
         try {
-          // Generate IDs client-side so we don't need .select() (avoids anon SELECT RLS)
-          const submissionId = crypto.randomUUID();
-          const reportToken = crypto.randomUUID();
-
           const { error: subErr } = await supabase
             .from("submissions")
             .insert({
@@ -1898,12 +1916,6 @@ export default function TelcharAssessment() {
 
           const sub = { id: submissionId, report_token: reportToken };
           console.log("[Telchar] Saved to Supabase — submission_id:", sub.id, "report_token:", sub.report_token);
-
-          // Store for report save later
-          try {
-            sessionStorage.setItem("telchar_submission_id", sub.id);
-            sessionStorage.setItem("telchar_report_token", sub.report_token);
-          } catch (e) { /* sessionStorage unavailable */ }
 
           // Save individual answers — derive from live QUESTIONS array
           const answerRows = QUESTIONS
@@ -1962,6 +1974,27 @@ export default function TelcharAssessment() {
                 else console.warn("[Telchar] Submission alert email skipped:", data.reason);
               })
               .catch((err) => console.error("[Telchar] Submission alert email failed:", err));
+
+            // Send confirmation email to submitter (fire-and-forget)
+            if (finalAnswers.contact_email) {
+              fetch(`${supabaseUrl}/functions/v1/confirm-submission`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  contact_name: finalAnswers.contact_name || "",
+                  contact_email: finalAnswers.contact_email,
+                  company_name: finalAnswers.company_name || "",
+                  overall_score: calculatedScores.overall,
+                  report_url: `https://www.telcharai.com/report?token=${sub.report_token}&tier=free`,
+                }),
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  if (data.ok) console.log("[Telchar] Confirmation email sent:", data.email_id);
+                  else console.warn("[Telchar] Confirmation email skipped:", data.reason);
+                })
+                .catch((err) => console.error("[Telchar] Confirmation email failed:", err));
+            }
           }
         } catch (err) {
           console.error("[Telchar] Supabase save error:", err);
@@ -1986,30 +2019,35 @@ export default function TelcharAssessment() {
       }
     } catch (e) { /* ignore */ }
 
-    // If Supabase save hasn't completed yet or is not configured, fall back to free report
     if (!supabaseUrl || !submissionId || !reportToken) {
-      console.warn("[Telchar] Cannot create checkout — missing submission data, opening free report");
-      navigate("/report?tier=free");
-      return;
+      console.warn("[Telchar] Cannot create checkout — missing submission data");
+      throw new Error("Your session data is missing. Please retake the assessment to purchase the full report.");
     }
 
-    const res = await fetch(`${supabaseUrl}/functions/v1/create-checkout`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        submission_id: submissionId,
-        report_token: reportToken,
-        contact_email: contactEmail || "",
-      }),
-    });
+    try {
+      const res = await fetch(`${supabaseUrl}/functions/v1/create-checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          submission_id: submissionId,
+          report_token: reportToken,
+          contact_email: contactEmail || "",
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      console.error("[Telchar] Checkout session creation failed:", data);
-      throw new Error("Failed to start checkout");
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("[Telchar] Checkout session creation failed:", data);
+        throw new Error("Payment is not available at this time. Please try again later or contact support.");
+      }
+    } catch (err) {
+      if (err.message && !err.message.includes("Payment is not available") && !err.message.includes("session data is missing")) {
+        throw new Error("Unable to connect to payment service. Please check your connection and try again.");
+      }
+      throw err;
     }
   };
 
