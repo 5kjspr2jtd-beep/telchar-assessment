@@ -7,7 +7,7 @@
  *   trackEvent("assessment_completed", { … });  // fire anywhere
  */
 
-const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
+const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || "G-WWJ18E6D7D";
 
 let initialized = false;
 
