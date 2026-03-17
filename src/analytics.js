@@ -2,17 +2,16 @@
  * GA4 Analytics — single initialization, env-var-driven measurement ID.
  *
  * Usage:
- *   import { initGA, trackEvent } from "./analytics";
- *   initGA();                                   // call once at app root
- *   trackEvent("assessment_completed", { … });  // fire anywhere
+ *   import { trackEvent } from "./analytics";
+ *   trackEvent("assessment_completed", { … });  // auto-inits on first call
  */
 
 const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || "G-WWJ18E6D7D";
 
 let initialized = false;
 
-/** Load gtag.js script and initialise the dataLayer. Call once. */
-export function initGA() {
+/** Load gtag.js script and initialise the dataLayer. Idempotent. */
+function ensureGA() {
   if (initialized || !GA_ID) return;
   initialized = true;
 
@@ -34,7 +33,8 @@ export function initGA() {
 /** Send a page_view event (call on every SPA route change). */
 export function trackPageView(path, title) {
   if (!GA_ID) return;
-  window.gtag?.("event", "page_view", {
+  ensureGA();
+  window.gtag("event", "page_view", {
     page_path: path,
     page_title: title || document.title,
   });
@@ -43,5 +43,6 @@ export function trackPageView(path, title) {
 /** Send a custom GA4 event. */
 export function trackEvent(name, params = {}) {
   if (!GA_ID) return;
-  window.gtag?.("event", name, params);
+  ensureGA();
+  window.gtag("event", name, params);
 }

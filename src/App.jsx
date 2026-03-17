@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useSearchParams, useLocation, Navigate } from "react-router-dom";
-import { initGA, trackPageView } from "./analytics";
+import { trackPageView } from "./analytics";
 import TelcharLandingPage from "./pages/TelcharLandingPage";
 import TelcharAssessment from "./pages/TelcharAssessment";
 import TelcharReport from "./pages/TelcharReport";
@@ -286,7 +286,6 @@ function PageViewTracker() {
 }
 
 export default function App() {
-  useEffect(() => { initGA(); }, []);
   return (
     <>
     <PageViewTracker />
