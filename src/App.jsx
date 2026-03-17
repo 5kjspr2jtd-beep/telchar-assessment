@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useSearchParams, Navigate } from "react-router-dom";
+import { Routes, Route, useSearchParams, useLocation, Navigate } from "react-router-dom";
+import { initGA, trackPageView } from "./analytics";
 import TelcharLandingPage from "./pages/TelcharLandingPage";
 import TelcharAssessment from "./pages/TelcharAssessment";
 import TelcharReport from "./pages/TelcharReport";
@@ -276,8 +277,19 @@ function ReportRoute() {
   return <TelcharReport initialTier={effectiveTier} demo={demo} />;
 }
 
+function PageViewTracker() {
+  const location = useLocation();
+  useEffect(() => {
+    trackPageView(location.pathname + location.search);
+  }, [location]);
+  return null;
+}
+
 export default function App() {
+  useEffect(() => { initGA(); }, []);
   return (
+    <>
+    <PageViewTracker />
     <Routes>
       <Route path="/" element={<RootRoute />} />
       <Route path="/roi" element={<ROICalculator />} />
@@ -287,5 +299,6 @@ export default function App() {
       <Route path="/terms" element={<TelcharTerms />} />
       <Route path="/privacy" element={<TelcharPrivacy />} />
     </Routes>
+    </>
   );
 }

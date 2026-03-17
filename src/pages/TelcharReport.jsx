@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, TEXT, LIGHT_TEXT, TYPE, CTA, scoreColor, scoreTier, hexToRgb, Diamond, Rule, SecLabel } from "../design/telcharDesign";
 import { getReportData, TIER_MAP, REPORT_NOTES, REPORT_VERSION } from "../data/reportData";
 import HamburgerMenu from "../components/HamburgerMenu";
+import { trackEvent } from "../analytics";
 import { supabase } from "../lib/supabase";
 
 // ─────────────────────────────────────────────────────────────
@@ -1233,6 +1234,7 @@ export default function App({ initialTier = "free", demo = false }) {
     if (checkoutLoading) return;
     setCheckoutLoading(true);
     setCheckoutError("");
+    trackEvent("begin_checkout", { value: 150, currency: "USD" });
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     let submissionId, reportToken, contactEmail;
     try {
@@ -1328,6 +1330,7 @@ export default function App({ initialTier = "free", demo = false }) {
   const handleDownloadPDF = async () => {
     if (pdfBusy) return;
     setPdfBusy(true);
+    trackEvent("pdf_download", { tier, demo: !!demo });
     try {
       const { generatePdf } = await import("../pdf/generatePdf.jsx");
       await generatePdf({ tier, demo });

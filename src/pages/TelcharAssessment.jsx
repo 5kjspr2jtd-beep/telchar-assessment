@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { TELCHAR as P, FONT, SERIF, scoreColor, scoreTier, GOOGLE_FONTS_URL, TEXT, TYPE, CTA, OPTION_CARD } from "../design/telcharDesign";
 import HamburgerMenu from "../components/HamburgerMenu";
 import { supabase } from "../lib/supabase";
+import { trackEvent } from "../analytics";
 import { REPORT_VERSION } from "../data/reportData";
 
 // ============================================================
@@ -1885,6 +1886,11 @@ export default function TelcharAssessment() {
       sessionStorage.setItem("telchar_submission_id", submissionId);
       sessionStorage.setItem("telchar_report_token", reportToken);
     } catch (e) { /* sessionStorage unavailable */ }
+
+    trackEvent("assessment_completed", {
+      overall_score: calculatedScores.overall,
+      industry: finalAnswers.industry || "",
+    });
 
     // Fire-and-forget Supabase save
     if (supabase) {

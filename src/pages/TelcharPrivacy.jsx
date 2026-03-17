@@ -75,7 +75,7 @@ export default function TelcharPrivacy() {
             color: "#fff", marginBottom: 8, letterSpacing: "-0.01em",
           }}>Privacy Policy</h1>
           <p style={{ ...bodyText, fontSize: 12, color: P.muted, marginBottom: 32 }}>
-            Effective March 15, 2026
+            Effective March 16, 2026
           </p>
 
           {/* 1. What We Collect */}
@@ -113,7 +113,10 @@ export default function TelcharPrivacy() {
           {/* 5. Cookies & Analytics */}
           <div style={sectionHead}>5. Cookies & Analytics</div>
           <p style={bodyText}>
-            This site does not use cookies, analytics, or any tracking technologies.
+            This site uses Google Analytics 4 (GA4) to collect anonymous usage data such as page views
+            and feature interactions (e.g., assessment completion, PDF downloads). GA4 may set first-party
+            cookies to distinguish sessions. We do not use analytics data for advertising, retargeting, or
+            profiling. No personal information from your assessment is sent to Google.
           </p>
 
           {/* 6. Data Retention */}
@@ -128,9 +131,9 @@ export default function TelcharPrivacy() {
           <div style={sectionHead}>7. Future Changes</div>
           <p style={bodyText}>
             Payment processing is handled by Stripe. Stripe collects payment information directly on their
-            hosted checkout page; we do not store your card details. If we add analytics or other data
-            collection in the future, this policy will be updated before those features go live. Changes will
-            be reflected on this page with an updated effective date.
+            hosted checkout page; we do not store your card details. If we add additional data collection
+            beyond what is described above, this policy will be updated before those features go live. Changes
+            will be reflected on this page with an updated effective date.
           </p>
 
           {/* 8. Contact */}

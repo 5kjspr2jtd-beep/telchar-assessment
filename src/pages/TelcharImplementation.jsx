@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, Diamond, Rule, SecLabel, TEXT, TYPE, CTA } from "../design/telcharDesign";
 import HamburgerMenu from "../components/HamburgerMenu";
 import { supabase } from "../lib/supabase";
+import { trackEvent } from "../analytics";
 
 // ============================================================
 // TELCHAR AI — Implementation Support Application
@@ -851,6 +852,7 @@ export default function TelcharImplementation() {
     sendOwnerNotification(answers, fit, result.applicationId);
 
     console.log("[Telchar] Application submitted", { applicationId: result.applicationId, fitClassification: fit });
+    trackEvent("apply_submitted", { fit_class: fit });
     setStep(3);
   };
 

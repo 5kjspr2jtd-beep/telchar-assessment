@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { TELCHAR as P, FONT, SERIF, GOOGLE_FONTS_URL, Diamond, Rule, SecLabel, TYPE, CTA } from "./design/telcharDesign";
 import HamburgerMenu from "./components/HamburgerMenu";
+import { trackEvent } from "./analytics";
 
 // ── Pluralize helper ──────────────────────────────────────────────────────────
 const pl = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -287,6 +288,7 @@ export default function ROICalculator({ embedded = false }) {
   const txt = { fontFamily: FONT, fontSize: 12, fontWeight: 300, color: P.muted, lineHeight: 1.6, marginTop: 0 };
 
   const goResults = () => {
+    trackEvent("roi_calculator_completed");
     setStep("results");
     setScrollToResults(true);
   };
