@@ -280,6 +280,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<RootRoute />} />
+      <Route path="/roi" element={<ROICalculator />} />
       <Route path="/assessment" element={<TelcharAssessment />} />
       <Route path="/report" element={<ReportRoute />} />
       <Route path="/apply" element={<TelcharImplementation />} />
