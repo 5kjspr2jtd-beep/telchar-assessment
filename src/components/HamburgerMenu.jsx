@@ -5,7 +5,7 @@ import { TELCHAR as P, FONT } from "../design/telcharDesign";
 const MENU_ITEMS = [
   { label: "Back Home", to: "/", type: "link" },
   { label: "Diagnostic", to: "/assessment", type: "link" },
-  { label: "ROI Calculator", to: "/?page=roi", type: "a" },
+  { label: "ROI Calculator", to: "/roi", type: "link" },
   { label: "Sample Report", to: "/report?demo=true", type: "link" },
   { label: "About", to: "/#about", type: "a" },
   { label: "Advisory Services", to: "/apply", type: "link" },

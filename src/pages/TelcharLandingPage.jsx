@@ -173,8 +173,8 @@ function HeroSection({ onCTA }) {
                 >
                   Diagnostic
                 </Link>
-                <a
-                  href="/?page=roi"
+                <Link
+                  to="/roi"
                   style={{
                     fontFamily: FONT,
                     fontSize: 12,
@@ -186,7 +186,7 @@ function HeroSection({ onCTA }) {
                   }}
                 >
                   ROI Calculator
-                </a>
+                </Link>
                 <Link
                   to="/report?demo=true"
                   style={{
@@ -1874,8 +1874,8 @@ function Footer() {
           >
             Sample Report
           </Link>
-          <a
-            href="/?page=roi"
+          <Link
+            to="/roi"
             style={{
               fontFamily: FONT,
               fontSize: 12,
@@ -1886,7 +1886,7 @@ function Footer() {
             }}
           >
             ROI Calculator
-          </a>
+          </Link>
           <Link
             to="/terms"
             style={{

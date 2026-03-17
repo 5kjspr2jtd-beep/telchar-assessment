@@ -24,7 +24,7 @@
 | Path | Component | File |
 |---|---|---|
 | `/` | `TelcharLandingPage` | `src/pages/TelcharLandingPage.jsx` (1630 lines) |
-| `/?page=roi` | `ROICalculator` | `src/ROICalculator.jsx` (765 lines) |
+| `/roi` | `ROICalculator` | `src/ROICalculator.jsx` (765 lines) |
 | `/assessment` | `TelcharAssessment` | `src/pages/TelcharAssessment.jsx` (1872 lines) |
 | `/report` | `TelcharReport` | `src/pages/TelcharReport.jsx` (1286 lines) |
 | `/apply` | `TelcharImplementation` | `src/pages/TelcharImplementation.jsx` (942 lines) |
@@ -277,7 +277,7 @@ Amber:  #f59e0b / rgb(245,158,11)
 
 **Key components:** `NavLogo`, `Chip`, `SliderInput`, `SavingsDisplay`
 
-**Embedded:** Can be accessed standalone at `/?page=roi` or embedded in TelcharLandingPage
+**Embedded:** Canonical route is `/roi` (legacy `/?page=roi` still supported for backward compatibility)
 
 ---
 
