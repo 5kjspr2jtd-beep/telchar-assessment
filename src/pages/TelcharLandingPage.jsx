@@ -279,7 +279,7 @@ function HeroSection({ onCTA }) {
                 color: P.dim,
               }}
             >
-              AI Advisory · 5 to 100 Employees
+              AI Readiness Diagnostic · 5 to 100 Employees
             </span>
           </div>
 
@@ -294,8 +294,8 @@ function HeroSection({ onCTA }) {
               letterSpacing: '-0.03em',
             }}
           >
-            Find the gaps that are costing you{' '}
-            <em style={{ fontFamily: SERIF, fontStyle: 'italic', color: 'rgba(255,255,255,0.45)' }}>time and money</em>
+            See exactly where AI fits in{' '}
+            <em style={{ fontFamily: SERIF, fontStyle: 'italic', color: 'rgba(255,255,255,0.45)' }}>your operations</em>
           </h1>
 
           <p
@@ -309,7 +309,7 @@ function HeroSection({ onCTA }) {
               lineHeight: 1.7,
             }}
           >
-            A practical AI readiness diagnostic for small business owners and executives. Five minutes, real results on screen, no sales call required.
+            Answer 15 focused questions about how your team works today. Get a scored breakdown across five operational categories — with your top starting point and specific tool recommendations. Takes about 5 minutes. No email, no sales call.
           </p>
 
           {/* Actions */}
@@ -494,7 +494,7 @@ function HeroSection({ onCTA }) {
               }}
             >
               <span style={{ fontFamily: FONT, fontSize: 12, fontWeight: 500, color: P.blue2, letterSpacing: '0.02em' }}>
-                Get your personalized score in ~5 minutes
+                See where your business stands — free
               </span>
             </div>
           </div>
